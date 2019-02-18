@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.1">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" /><updated>2019-02-05T00:02:36+00:00</updated><id>http://0.0.0.0:4000/</id><title type="html">Leonardo Benicio</title><subtitle>Personal web site.</subtitle><entry><title type="html">Fix Google Photo backup OSX dark mode</title><link href="http://0.0.0.0:4000/2015/05/28/Fix-Google-Photos-backup-OSX-dark-mode/" rel="alternate" type="text/html" title="Fix Google Photo backup OSX dark mode" /><published>2015-05-28T00:00:00+00:00</published><updated>2015-05-28T00:00:00+00:00</updated><id>http://0.0.0.0:4000/2015/05/28/Fix-Google-Photos-backup-OSX-dark-mode</id><content type="html" xml:base="http://0.0.0.0:4000/2015/05/28/Fix-Google-Photos-backup-OSX-dark-mode/">&lt;p&gt;As at the beginning of the Google Drive at OSX dark mode, the Google Photos Backup do not adept it’s menu bar icon to Dark Mode, even worst, at Photos, it even came the dark mode icons at download.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/post/googlePhotos.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So, i made a little script to solve this problem.&lt;/p&gt;
+
+&lt;p&gt;To run it, make it could change files, so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# chmod 777 fix_google_photos.sh&lt;/span&gt;
+than: &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;to change to dark mode icons&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# /fix_google_photos.sh black&lt;/span&gt;
+or: &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;to change to white mode icons&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# /fix_google_photos.sh white&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Downloads: &lt;a href=&quot;http://github.com/lbenicio/fixGooglePhotos&quot;&gt;fixGooglePhotos&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="tutorial" /><category term="fix" /><category term="google photos" /><summary type="html">As at the beginning of the Google Drive at OSX dark mode, the Google Photos Backup do not adept it’s menu bar icon to Dark Mode, even worst, at Photos, it even came the dark mode icons at download.</summary></entry><entry><title type="html">Razer Synapse Bug on MacOSX</title><link href="http://0.0.0.0:4000/2015/05/25/Razer-Synapse-Bug-on-MacOSX/" rel="alternate" type="text/html" title="Razer Synapse Bug on MacOSX" /><published>2015-05-25T00:00:00+00:00</published><updated>2015-05-25T00:00:00+00:00</updated><id>http://0.0.0.0:4000/2015/05/25/Razer-Synapse-Bug-on-MacOSX</id><content type="html" xml:base="http://0.0.0.0:4000/2015/05/25/Razer-Synapse-Bug-on-MacOSX/">&lt;p&gt;Since i update to Synapses 1.37 version it keep disconnecting my Razer Orochi e make my bluetooth driver crashes down, so i have to restart the computer after 2 min with the mouse connected over bluetooth.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/post/install.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Tried contact razer but it took so many buroceatics that i give away and just downgrade my synapses to 1.36 that works fine on my OSX Yosemite.&lt;/p&gt;
+
+&lt;p&gt;Download: &lt;a href=&quot;https://razerdrivers.s3.amazonaws.com/drivers/Synapse2/mac/Razer_Synapse_Mac_Driver_v1.36.dmg&quot;&gt;Razer Synapse 1.36&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="tutorial" /><category term="fix" /><category term="razer" /><category term="synapse" /><summary type="html">Since i update to Synapses 1.37 version it keep disconnecting my Razer Orochi e make my bluetooth driver crashes down, so i have to restart the computer after 2 min with the mouse connected over bluetooth.</summary></entry><entry><title type="html">Printer script over network</title><link href="http://0.0.0.0:4000/2015/05/16/Printer-script-over-network/" rel="alternate" type="text/html" title="Printer script over network" /><published>2015-05-16T00:00:00+00:00</published><updated>2015-05-16T00:00:00+00:00</updated><id>http://0.0.0.0:4000/2015/05/16/Printer-script-over-network</id><content type="html" xml:base="http://0.0.0.0:4000/2015/05/16/Printer-script-over-network/">&lt;p&gt;As i IME-USP student, i have a little problem with the need of login into Rede Linux just for print a document, so a made a shell script to it automatically. It just send the file over ssh to your machine and then send a command to print it out.&lt;/p&gt;
+
+&lt;p&gt;Downloads: &lt;a href=&quot;http://github.com/lbenicio/printRedeLinux&quot;&gt;RazerFix&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><category term="tutorial" /><category term="ime" /><summary type="html">As i IME-USP student, i have a little problem with the need of login into Rede Linux just for print a document, so a made a shell script to it automatically. It just send the file over ssh to your machine and then send a command to print it out.</summary></entry><entry><title type="html">Fixing Razer Synapses OSX Dark Theme</title><link href="http://0.0.0.0:4000/2015/05/14/fixing-razer-synapses-osx-dark-theme/" rel="alternate" type="text/html" title="Fixing Razer Synapses OSX Dark Theme" /><published>2015-05-14T00:00:00+00:00</published><updated>2015-05-14T00:00:00+00:00</updated><id>http://0.0.0.0:4000/2015/05/14/fixing-razer-synapses-osx-dark-theme</id><content type="html" xml:base="http://0.0.0.0:4000/2015/05/14/fixing-razer-synapses-osx-dark-theme/">&lt;p&gt;Since i’ve downloaded the Razer synapses i got a lot of problem, they are terrible with softwares, but still do good hardware.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/post/razer1.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/img/post/razer2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;OK, so, the problem is on dark mode OSX Yosemite (10.10), the Synapase do got at dark theme, so i made a shell script to solde that problem. At the Terminal.app:&lt;/p&gt;
+
+&lt;p&gt;Downloads: &lt;a href=&quot;http://github.com/lbenicio/fixRazerSynapses&quot;&gt;RazerFix&lt;/a&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;chmod 777 razer.sh
+./razer.sh black &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;dark mode icon&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+./razer.sh white &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;white mode icon – icons back to normal&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><category term="tutorial" /><category term="razer" /><category term="fix" /><summary type="html">Since i’ve downloaded the Razer synapses i got a lot of problem, they are terrible with softwares, but still do good hardware.</summary></entry></feed>
