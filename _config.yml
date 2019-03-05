@@ -2,8 +2,8 @@ title: Leonardo Benicio
 email: leonardo@lbenicio.com
 description: Personal web site.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://lbenicio.com" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: leonardobenicio
+url: "https://lbenicio.com" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: lbenicio_
 github_username:  lbenicio
 linkedin_username: leonardo-benicio-1a55a1ba
 
