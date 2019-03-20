@@ -26,3 +26,12 @@ You can talk to me in:
 - Ruby
 
 Feel free to visit my [blog](http://lbenicio.com/blog) or access my cydia [repository](http://cydia.lbenicio.com). Or, you can contact me as well, let's have a fun conversation, just [email me](mailto:leonardo@lbenicio.com).
+
+
+Here is my social media:
+- [leonardo@lbenicio.com](mailto:{{site.email}})
+- [@lbenicio_](https://twitter.com/{{site.twitter_username}})
+- [/u/lbenicio_](https://reddit.com/u/{{site.reddit_username}})
+- [lbenicio](https://keybase.io/{{site.keybase_username}})
+- [Github](https://github.com/{{site.github_username}})
+- [LinkedIn](https://www.linkedin.com/in/{{site.linkedin_username}})

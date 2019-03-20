@@ -1,9 +1,8 @@
 <div class="menu" id="menu">
   <ul class="menu-options">
-    <li class="menu-option" onclick="">Back</li>
-    <li class="menu-option" onclick="location.reload();">Reload</li>
-    <li class="menu-option" onclick="location.replace('https://lbenicio.com/blog/')">Back to blog posts</li>
-    <li class="menu-option" onclick="location.replace('https://lbenicio.com/')">Back to home</li>
+    <li class="menu-option" onclick="location.reload();">Reload page</li>
+    <li class="menu-option" onclick="location.replace('{{ site.url }}/blog/')">Back to blog posts</li>
+    <li class="menu-option" onclick="location.replace('{{ site.url }}')">Back to home</li>
     <li class="menu-option" onclick="window.history.back();">Back</li>
   </ul>
 </div>

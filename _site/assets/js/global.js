@@ -36,6 +36,7 @@ const toggleMenu = command => {
 const setPosition = ({ top, left }) => {
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
+  menu.style.position = 'absolute'
   toggleMenu("show");
 };
 
