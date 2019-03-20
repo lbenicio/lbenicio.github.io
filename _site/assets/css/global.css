@@ -11,6 +11,66 @@ body {
     background-color: #fff; 
 }
 
+body.darkmode {
+    background-color: black;
+    color: white;
+}
+
+body.darkmode .svg-icon {
+    fill: white;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+svg:hover {
+    cursor: pointer;
+}
+
+svg{
+    pointer-events: none;
+}
+
+a{
+    display: inline-block; /* or block if you need */
+}
+
+.main-nav ul li svg {
+    cursor: pointer;
+}
+
+.menu {
+  box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  display: none;
+  z-index: 9999;
+  background-color: white;
+  opacity: 1;
+  color: black;
+}
+.menu .menu-options {
+    list-style: none;
+    padding: 10px 0;
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+.menu .menu-options .menu-option {
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 40px 10px 20px;
+  cursor: pointer;
+}
+.menu .menu-options .menu-option:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+
 .meta time {
     position: relative;
     top: 3em;
