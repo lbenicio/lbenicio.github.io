@@ -14,3 +14,14 @@ group :jekyll_plugins do
     gem "jekyll-feed"
     gem 'jekyll-seo-tag'
 end
+
+gem "puma"
+
+group :development, :test do
+  gem "rspec"
+  gem "selenium-webdriver"
+  gem "chromedriver-helper"
+  gem "capybara"
+  gem "rack-jekyll"
+  gem "pry"
+end
