@@ -24,4 +24,5 @@ group :development, :test do
   gem "capybara"
   gem "rack-jekyll"
   gem "pry"
+  gem 'html-proofer'
 end
