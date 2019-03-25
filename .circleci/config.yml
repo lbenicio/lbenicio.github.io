@@ -10,10 +10,13 @@ jobs:
             - rubygems-v1-{{ checksum "Gemfile.lock" }}
             - rubygems-v1-fallback
       - run:
-        name: Configure Bundler
-        step:
+          name: Configure Bundler setp 1
           command: echo 'export BUNDLER_VERSION=2' >> $BASH_ENV
+      - run:
+          name: Configure Bundler setp 3  
           command: source $BASH_ENV
+      - run:
+          name: Configure Bundler setp 3
           command: gem install bundler
       - run:
           name: Bundle Install
