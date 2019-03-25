@@ -30,8 +30,6 @@ jobs:
               --check-favicon  \
               --check-html \
               --disable-external
-      - run: 
-          bundle exec rspec
       - persist_to_workspace:
           root: ./
           paths:
