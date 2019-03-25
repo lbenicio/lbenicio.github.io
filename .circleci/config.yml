@@ -11,7 +11,10 @@ jobs:
             - rubygems-v1-fallback
       - run:
         name: Configure Bundler
-        command: echo 'export BUNDLER_VERSION=2' >> $BASH_ENV && source $BASH_ENV && gem install bundler 
+        step:
+          command: echo 'export BUNDLER_VERSION=2' >> $BASH_ENV
+          command: source $BASH_ENV
+          command: gem install bundler
       - run:
           name: Bundle Install
           command: bundle check || bundle install
