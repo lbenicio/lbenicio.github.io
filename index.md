@@ -29,9 +29,9 @@ Feel free to visit my [blog](http://lbenicio.com/blog) or access my cydia [repos
 
 
 Here is my social media:
-- [leonardo@lbenicio.com](mailto:{{site.email}})
-- [@lbenicio_](https://twitter.com/{{site.twitter_username}})
-- [/u/lbenicio_](https://reddit.com/u/{{site.reddit_username}})
-- [lbenicio](https://keybase.io/{{site.keybase_username}})
-- [Github](https://github.com/{{site.github_username}})
-- [LinkedIn](https://www.linkedin.com/in/{{site.linkedin_username}})
+- Email: [{{site.email}](mailto:{{site.email}})
+- Twitter: [@{{site.twitter_username}}](https://twitter.com/{{site.twitter_username}})
+- Reddit: [/u/{{site.reddit_username}}](https://reddit.com/u/{{site.reddit_username}})
+- Keybase: [site.keybase_username}}](https://keybase.io/{{site.keybase_username}})
+- Github [{{site.github_username}}](https://github.com/{{site.github_username}})
+- LinkedIn [{{site.linkedin_username}}](https://www.linkedin.com/in/{{site.linkedin_username}})
