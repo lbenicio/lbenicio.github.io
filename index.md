@@ -29,7 +29,7 @@ Feel free to visit my [blog](http://lbenicio.com/blog) or access my cydia [repos
 
 
 Here is my social media:
-- Email: [{{site.email}](mailto:{{site.email}})
+- Email: [{{site.email}}](mailto:{{site.email}})
 - Twitter: [@{{site.twitter_username}}](https://twitter.com/{{site.twitter_username}})
 - Reddit: [/u/{{site.reddit_username}}](https://reddit.com/u/{{site.reddit_username}})
 - Keybase: [site.keybase_username}}](https://keybase.io/{{site.keybase_username}})
