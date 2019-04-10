@@ -314,6 +314,7 @@ DEPENDENCIES
   pry
   puma
   rack-jekyll
+  rouge
   rspec
   selenium-webdriver
 

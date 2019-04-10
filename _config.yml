@@ -10,6 +10,9 @@ reddit_username: lbenicio_
 github_username: lbenicio
 linkedin_username: leonardo-benicio-1a55a1ba
 
+# code highliting
+highlighter: rouge
+
 # SEO
 twitter:
   username: lbenicio_
