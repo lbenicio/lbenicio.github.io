@@ -4,6 +4,7 @@ email: leonardo@lbenicio.com
 description: Leonardo Benicio blog.
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://lbenicio.com" # the base hostname & protocol for your site, e.g. http://example.com
+blog: "https://blog.lbenicio.com"
 twitter_username: lbenicio_
 keybase_username: lbenicio_
 reddit_username: lbenicio_
