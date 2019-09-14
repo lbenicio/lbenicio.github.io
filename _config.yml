@@ -1,10 +1,11 @@
 title: Leonardo Benicio
 author: Leonardo Benicio
-email: leonardo@lbenicio.com
+email: leonardo@lbenicio.dev
 description: Leonardo Benicio blog.
 baseurl: "/" # the subpath of your site, e.g. /blog
-url: "https://lbenicio.com" # the base hostname & protocol for your site, e.g. http://example.com
-blog: "https://blog.lbenicio.com"
+url: "https://lbenicio.dev" # the base hostname & protocol for your site, e.g. http://example.com
+blog: "https://blog.lbenicio.dev"
+repository: "https://apt.lbenicio.dev"
 twitter_username: lbenicio_
 keybase_username: lbenicio_
 reddit_username: lbenicio_

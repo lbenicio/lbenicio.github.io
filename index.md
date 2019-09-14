@@ -25,7 +25,7 @@ You can talk to me in:
 - JavaScript
 - Ruby
 
-Feel free to visit my [blog](http://lbenicio.com/blog) or access my cydia [repository](http://cydia.lbenicio.com). Or, you can contact me as well, let's have a fun conversation, just [email me](mailto:leonardo@lbenicio.com).
+Feel free to visit my [blog]({{ site.blog }}) or access my cydia [repository]({{ site.repository }}). Or, you can contact me as well, let's have a fun conversation, just [email me](mailto:{{site.email}}).
 
 
 Here is my social media:
