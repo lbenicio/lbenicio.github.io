@@ -11,7 +11,7 @@ jobs:
             - rubygems-v1-fallback
       - run:
           name: Configure Bundler setp 1
-          command: echo 'export BUNDLER_VERSION=2.0.1' >> $BASH_ENV
+          command: echo 'export BUNDLER_VERSION=2.0.2' >> $BASH_ENV
       - run:
           name: Configure Bundler setp 3  
           command: source $BASH_ENV
