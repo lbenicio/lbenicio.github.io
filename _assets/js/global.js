@@ -26,7 +26,6 @@ function darkmode() {
      const menu = document.getElementById('menu');
 let menuVisible = false;
 
-console.log(menu)
 
 const toggleMenu = command => {
   menu.style.display = command === "show" ? "block" : "none";

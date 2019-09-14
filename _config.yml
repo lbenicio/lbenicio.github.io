@@ -12,6 +12,8 @@ reddit_username: lbenicio_
 github_username: lbenicio
 linkedin_username: leonardo-benicio-1a55a1ba
 
+include: [/_assets]
+
 # code highliting
 highlighter: rouge
 
@@ -27,8 +29,8 @@ social:
     - https://github.com/lbenicio
     - https://keybase.io/lbenicio_
 
-logo: /assets/img/logo.png
-image: /assets/img/logo.png
+logo: /_assets/img/logo.png
+image: /_assets/img/logo.png
 
 # Build settings
 permalink: pretty
@@ -42,3 +44,4 @@ plugins:
   - jekyll-seo-tag
 svg:
   optimize: true
+

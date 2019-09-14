@@ -3,14 +3,15 @@
         <meta content='Leonardo Benicio' property='og:title' />
 
 <!-- favicon -->
-<link href="/assets/img/favicon.ico" rel='shortcut icon'>
+<link href="//_assets/img/favicon.ico" rel='shortcut icon'>
 
 <!-- JS -->
-<script src="/assets/js/global.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+<script src="/_assets/js/global.js" type="text/javascript"></script>
 
 <!-- CSS -->
 <link rel='stylesheet' href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css'>
-<link rel='stylesheet' href='/assets/css/global.css'>
+<link rel='stylesheet' href='/_assets/css/global.css'>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
@@ -22,7 +23,7 @@
   <title>Leonardo Benicio</title>
   <meta content='Leonardo Benicio' property='og:title' />
   <meta content='http://localhost:4000' property='og:url' />
-  <meta content="Personal web site." property='og:description' />
+  <meta content="Leonardo Benicio blog." property='og:description' />
   <meta content="blog" property="og:type" />
 
 
@@ -32,22 +33,27 @@
 <title>Home | Leonardo Benicio</title>
 <meta name="generator" content="Jekyll v3.7.4" />
 <meta property="og:title" content="Home" />
+<meta name="author" content="Leonardo Benicio" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Personal web site." />
-<meta property="og:description" content="Personal web site." />
+<meta name="description" content="Leonardo Benicio blog." />
+<meta property="og:description" content="Leonardo Benicio blog." />
 <link rel="canonical" href="http://localhost:4000/" />
 <meta property="og:url" content="http://localhost:4000/" />
 <meta property="og:site_name" content="Leonardo Benicio" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@lbenicio_" />
+<meta name="twitter:creator" content="@Leonardo Benicio" />
 <script type="application/ld+json">
-{"name":"Leonardo Benicio","description":"Personal web site.","@type":"WebSite","url":"http://localhost:4000/","headline":"Home","@context":"http://schema.org"}</script>
+{"name":"Leonardo Benicio","description":"Leonardo Benicio blog.","author":{"@type":"Person","name":"Leonardo Benicio"},"@type":"WebSite","url":"http://localhost:4000/","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/_assets/img/logo.png"},"name":"Leonardo Benicio"},"headline":"Home","sameAs":["https://twitter.com/lbenicio_","https://linkedin.com/in/leonardo-benicio-1a55a1ba","https://github.com/lbenicio","https://keybase.io/lbenicio_"],"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     </head>
     
-    <body ondblclick="darkmode()" id="body">
+    <body id="body">
         
         <div class="wrapper">
-             <a id="fork-me" class="fork-me" href="https://github.com/lbenicio/lbenicio.github.io">Fork this site on GitHub</a>
+             <a id="fork-me" class="fork-me" onclick="darkmode()" href="#">Fork this site on GitHub</a>
+             <a id="dmode" class="fork-me" onclick="darkmode()" href="#">Switch to Dark Mode</a>
             <div class="menu" id="menu">
   <ul class="menu-options">
     <li class="menu-option" onclick="darkmode();">Toggle dark mode</li>
@@ -58,17 +64,17 @@
   </ul>
 </div>
 <header class="site-header">
-    <div class="instagram"><img src="/assets/img/profile3@2x.png" alt="profile picture"></div>
+    <div class="instagram"><img src="/_assets/img/profile3@2x.png" alt="profile picture"></div>
     
     <nav class="main-nav" id="site-nav">
         <ul>
-            <li><a href="/">
+            <li><a href="http://localhost:4000">
                 <svg class="svg-icon" viewBox="0 0 20 20" style="width:16px; fill: grey;">
                     <style>svg { cursor: pointer;  fill: grey;}</style>
                             <path d="M18.121,9.88l-7.832-7.836c-0.155-0.158-0.428-0.155-0.584,0L1.842,9.913c-0.262,0.263-0.073,0.705,0.292,0.705h2.069v7.042c0,0.227,0.187,0.414,0.414,0.414h3.725c0.228,0,0.414-0.188,0.414-0.414v-3.313h2.483v3.313c0,0.227,0.187,0.414,0.413,0.414h3.726c0.229,0,0.414-0.188,0.414-0.414v-7.042h2.068h0.004C18.331,10.617,18.389,10.146,18.121,9.88 M14.963,17.245h-2.896v-3.313c0-0.229-0.186-0.415-0.414-0.415H8.342c-0.228,0-0.414,0.187-0.414,0.415v3.313H5.032v-6.628h9.931V17.245z M3.133,9.79l6.864-6.868l6.867,6.868H3.133z"></path>
                         </svg></a>
             </li>
-            <li><a href="/blog">
+            <li><a href="https://blog.lbenicio.dev">
                 <svg class="svg-icon" viewBox="0 0 20 20" style="width:16px; fill: grey;">
                     <style>svg { cursor: pointer;  fill: grey;}</style>
                             <path d="M14.999,8.543c0,0.229-0.188,0.417-0.416,0.417H5.417C5.187,8.959,5,8.772,5,8.543s0.188-0.417,0.417-0.417h9.167C14.812,8.126,14.999,8.314,14.999,8.543 M12.037,10.213H5.417C5.187,10.213,5,10.4,5,10.63c0,0.229,0.188,0.416,0.417,0.416h6.621c0.229,0,0.416-0.188,0.416-0.416C12.453,10.4,12.266,10.213,12.037,10.213 M14.583,6.046H5.417C5.187,6.046,5,6.233,5,6.463c0,0.229,0.188,0.417,0.417,0.417h9.167c0.229,0,0.416-0.188,0.416-0.417C14.999,6.233,14.812,6.046,14.583,6.046 M17.916,3.542v10c0,0.229-0.188,0.417-0.417,0.417H9.373l-2.829,2.796c-0.117,0.116-0.71,0.297-0.71-0.296v-2.5H2.5c-0.229,0-0.417-0.188-0.417-0.417v-10c0-0.229,0.188-0.417,0.417-0.417h15C17.729,3.126,17.916,3.313,17.916,3.542 M17.083,3.959H2.917v9.167H6.25c0.229,0,0.417,0.187,0.417,0.416v1.919l2.242-2.215c0.079-0.077,0.184-0.12,0.294-0.12h7.881V3.959z"></path>
@@ -77,7 +83,7 @@
 
             
             <!-- Direct email -->
-            <li><a href="mailto:leonardo@lbenicio.com?Subject=Site">
+            <li><a href="mailto:leonardo@lbenicio.dev?Subject=Site">
                 <svg class="svg-icon" viewBox="0 0 20 20" style="width: 16px; fill: grey;">
                     <style>svg { cursor: pointer;  fill: grey;}</style>
                     <path d="M17.218,2.268L2.477,8.388C2.13,8.535,2.164,9.05,2.542,9.134L9.33,10.67l1.535,6.787c0.083,0.377,0.602,0.415,0.745,0.065l6.123-14.74C17.866,2.46,17.539,2.134,17.218,2.268 M3.92,8.641l11.772-4.89L9.535,9.909L3.92,8.641z M11.358,16.078l-1.268-5.613l6.157-6.157L11.358,16.078z"></path>
@@ -85,7 +91,7 @@
             </a></li>
             
             <!-- Cydia Repo -->
-            <li><a href="https://cydia.lbenicio.com" class="">
+            <li><a href="https://apt.lbenicio.dev" class="">
                 <svg class="svg-icon" viewBox="0 0 20 20" style="width:16px;">
                     <style>svg { cursor: pointer; }</style>
                             <path d="M17.283,5.549h-5.26V4.335c0-0.222-0.183-0.404-0.404-0.404H8.381c-0.222,0-0.404,0.182-0.404,0.404v1.214h-5.26c-0.223,0-0.405,0.182-0.405,0.405v9.71c0,0.223,0.182,0.405,0.405,0.405h14.566c0.223,0,0.404-0.183,0.404-0.405v-9.71C17.688,5.731,17.506,5.549,17.283,5.549 M8.786,4.74h2.428v0.809H8.786V4.74z M16.879,15.26H3.122v-4.046h5.665v1.201c0,0.223,0.182,0.404,0.405,0.404h1.618c0.222,0,0.405-0.182,0.405-0.404v-1.201h5.665V15.26z M9.595,9.583h0.81v2.428h-0.81V9.583zM16.879,10.405h-5.665V9.19c0-0.222-0.183-0.405-0.405-0.405H9.191c-0.223,0-0.405,0.183-0.405,0.405v1.215H3.122V6.358h13.757V10.405z"></path>
@@ -150,11 +156,11 @@
   <li>Ruby</li>
 </ul>
 
-<p>Feel free to visit my <a href="http://lbenicio.com/blog">blog</a> or access my cydia <a href="http://cydia.lbenicio.com">repository</a>. Or, you can contact me as well, let’s have a fun conversation, just <a href="mailto:leonardo@lbenicio.com">email me</a>.</p>
+<p>Feel free to visit my <a href="https://blog.lbenicio.dev">blog</a> or access my cydia <a href="https://apt.lbenicio.dev">repository</a>. Or, you can contact me as well, let’s have a fun conversation, just <a href="mailto:leonardo@lbenicio.dev">email me</a>.</p>
 
 <p>Here is my social media:</p>
 <ul>
-  <li>Email: <a href="mailto:leonardo@lbenicio.com">leonardo@lbenicio.com</a></li>
+  <li>Email: <a href="mailto:leonardo@lbenicio.dev">leonardo@lbenicio.dev</a></li>
   <li>Twitter: <a href="https://twitter.com/lbenicio_">@lbenicio_</a></li>
   <li>Reddit: <a href="https://reddit.com/u/lbenicio_">/u/lbenicio_</a></li>
   <li>Keybase: <a href="https://keybase.io/lbenicio_">lbenicio_</a></li>

@@ -12,7 +12,7 @@ body {
 }
 
 body.darkmode {
-    background-color: black;
+    background-color: rgb(24, 26, 27);;
     color: white;
 }
 
@@ -243,6 +243,10 @@ small:hover {
 }
 
 /* Fork me */
+#dmode {
+    margin-top: 5%;
+}
+
 .fork-me {
     padding: 5px 35px 3px 10px;
     color: #fff;
@@ -262,6 +266,7 @@ small:hover {
     content: '';
     display: block;
     position: absolute;
+    color: #eee !important;
 }
 .fork-me:hover:before, .fork-me:hover:after {
     right: 15px;

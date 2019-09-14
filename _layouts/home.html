@@ -3,10 +3,11 @@
         {% include head.html %}
     </head>
     
-    <body ondblclick="darkmode()" id="body">
+    <body id="body">
         
         <div class="wrapper">
-             <a id="fork-me" class="fork-me" href="https://github.com/lbenicio/lbenicio.github.io">Fork this site on GitHub</a>
+             <a id="fork-me" class="fork-me" onclick="darkmode()" href="#">Fork this site on GitHub</a>
+             <a id="dmode" class="fork-me" onclick="darkmode()" href="#">Switch to Dark Mode</a>
             {% include header.html %}
       
             <section class="content">
