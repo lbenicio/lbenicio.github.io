@@ -9,6 +9,7 @@ gem "minima"
 gem 'github-pages', group: :jekyll_plugins
 
 gem 'rouge'
+gem 'execjs'
 
 # If you have any plugins, put them here!
 group :jekyll_plugins do
