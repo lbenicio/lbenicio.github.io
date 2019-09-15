@@ -19,6 +19,9 @@ jobs:
           name: Configure Bundler setp 3
           command: gem install bundler
       - run:
+          name: Fix JS Runtime
+          command: gem install therubyracer
+      - run:
           name: Bundle Install
           command: bundle check || bundle install
       - save_cache:

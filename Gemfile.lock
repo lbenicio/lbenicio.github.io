@@ -214,7 +214,6 @@ PLATFORMS
 DEPENDENCIES
   capybara
   chromedriver-helper
-  execjs
   github-pages
   html-proofer
   jekyll-feed
