@@ -28,6 +28,9 @@ jobs:
           name: Fix JS Runtime 3
           command: gem install jekyll
       - run:
+          name: Fix JS Runtime 4
+          command: apt-get install nodejs
+      - run:
           name: Bundle Install
           command: bundle check || bundle install
       - save_cache:
