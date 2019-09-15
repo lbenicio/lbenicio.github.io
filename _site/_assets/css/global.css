@@ -11,6 +11,10 @@ body {
     background-color: #fff; 
 }
 
+small.meta time {
+    left: -49% !important;
+}
+
 body.darkmode {
     background-color: rgb(24, 26, 27);;
     color: white;
