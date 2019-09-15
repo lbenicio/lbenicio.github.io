@@ -8,7 +8,7 @@ tags: [tutorial, fix, razer, synapse]
 {% include JB/setup %}
 Since i update to Synapses 1.37 version it keep disconnecting my Razer Orochi e make my bluetooth driver crashes down, so i have to restart the computer after 2 min with the mouse connected over bluetooth.
 
-![package image](/assets/img/post/install.png)
+![package image](/_assets/img/post/install.png)
 
 Tried contact razer but it took so many buroceatics that i give away and just downgrade my synapses to 1.36 that works fine on my OSX Yosemite.
 
