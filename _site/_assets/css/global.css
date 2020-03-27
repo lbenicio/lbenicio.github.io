@@ -21,7 +21,7 @@ body.darkmode {
 }
 
 body.darkmode .svg-icon {
-    fill: white;
+    fill: grey;
 }
 
 a {
@@ -90,7 +90,6 @@ a{
 
 .posts {
     list-style: none;
-    padding-left: 0;
     margin-top: 0;
 }
 
@@ -181,7 +180,6 @@ a{
 .meta, .meta * {
     color: #a0a0a0;
     position: relative;
-    top: -0.4em;
     text-decoration: none;
 }
 
