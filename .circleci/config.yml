@@ -11,7 +11,7 @@ jobs:
             - rubygems-v1-fallback
       - run:
           name: Update APT
-          command sudo apt-get update
+          command: sudo apt-get update
       - run:
           name: Configure Bundler setp 1
           command: echo 'export BUNDLER_VERSION=2.0.2' >> $BASH_ENV
