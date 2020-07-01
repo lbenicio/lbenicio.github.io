@@ -19,6 +19,7 @@ end
 gem "puma"
 
 group :development, :test do
+  gem "rack"
   gem "rspec"
   gem "selenium-webdriver"
   gem "chromedriver-helper"
