@@ -43,6 +43,12 @@ jobs:
           name: Update Capybara
           command: bundle update capybara
       - run:
+          name: Install github-pages
+          command: gem install github-pages
+      - run:
+          name: Update github-pages
+          command: bundle update github-pages
+      - run:
           name: Bundle Install
           command: bundle check || bundle install
       - save_cache:
