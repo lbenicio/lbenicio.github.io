@@ -40,6 +40,9 @@ jobs:
           name: Install Capybara
           command: gem install capybara
       - run:
+          name: Update Capybara
+          command: bundle update capybara
+      - run:
           name: Bundle Install
           command: bundle check || bundle install
       - save_cache:
