@@ -34,21 +34,6 @@ jobs:
           name: Fix JS Runtime 4
           command: sudo apt-get install nodejs
       - run:
-          name: Install Rack
-          command: gem install rack
-      - run:
-          name: Install Capybara
-          command: gem install capybara
-      - run:
-          name: Update Capybara
-          command: bundle update capybara
-      - run:
-          name: Install github-pages
-          command: gem install github-pages
-      - run:
-          name: Update github-pages
-          command: bundle update github-pages
-      - run:
           name: Bundle Install
           command: bundle check || bundle install
       - save_cache:
