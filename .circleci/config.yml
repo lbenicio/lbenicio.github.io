@@ -38,7 +38,7 @@ jobs:
           command: gem install rack
       - run:
           name: Install Capybara
-          command: gem install capybara --full-index
+          command: gem install capybara
       - run:
           name: Bundle Install
           command: bundle check || bundle install
