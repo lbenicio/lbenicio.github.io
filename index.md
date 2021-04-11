@@ -9,10 +9,9 @@ icon: ui-icon-home
 
 Hi,
 
-I'm Leo, a {{ site.time | date: '%Y' | minus:1994 }} years old, graduated on computer science at Instituto de Matemática e Estatística of Universidade de São Paulo (IME-USP). FullStack developer, hobbyist security researcher, game player and coffe addicted. Welcome to my site. I enjoy developing studying sys scalability, distributed web applications and , eventually, hack around.
+I'm Leo, a {{ site.time | date: '%Y' | minus:1994 }} years old, graduated on computer science at Instituto de Matemática e Estatística of Universidade de São Paulo (IME-USP). FullStack developer, hobbyist security researcher, game player and coffe addicted. 
 
-
-I will stick with the canonical definition: i'm machine who transform code into coffe.
+Welcome to my site. I enjoy developing studying sys scalability, distributed web applications and , eventually, hack around. I will stick with the canonical definition: i'm machine who transform code into coffe.
 
 You can talk to me in:
 
