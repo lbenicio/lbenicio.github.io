@@ -19,4 +19,4 @@ bundle install
 
 ## Running
 ```bash
-jekyll serve
+bundle exec jekyll serve
