@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.6.3
+      - image: circleci/ruby:2.7.2
     steps:
       - checkout
       - restore_cache:
@@ -13,29 +13,14 @@ jobs:
           name: Update APT
           command: sudo apt-get update
       - run:
-          name: Configure Bundler setp 1
-          command: echo 'export BUNDLER_VERSION=2.0.2' >> $BASH_ENV
-      - run:
-          name: Configure Bundler setp 3  
-          command: source $BASH_ENV
-      - run:
           name: Configure Bundler setp 3
           command: gem install bundler
-      - run:
-          name: Fix JS Runtime
-          command: gem install therubyracer
-      - run:
-          name: Fix JS Runtime 2
-          command: gem install execjs
       - run:
           name: Fix JS Runtime 3
           command: gem install jekyll
       - run:
-          name: Fix JS Runtime 4
-          command: sudo apt-get install nodejs
-      - run:
           name: Bundle Install
-          command: bundle check || bundle install
+          command: bundle install
       - save_cache:
           key: rubygems-v1-{{ checksum "Gemfile.lock" }}
           paths:
