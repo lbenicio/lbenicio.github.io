@@ -34,6 +34,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install bundler
+          command: gem install bundler
+       - run:
+          name: Install jekyll Gem
+          command: gem install jekyll
+      - run:
+          name: Bundle Install
+      - run:
           name: HTMLProofer tests
           command: |
             bundle exec htmlproofer ./_site \
