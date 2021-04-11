@@ -10,6 +10,8 @@ gem 'github-pages', '~> 206', group: :jekyll_plugins
 
 gem 'rouge'
 
+gem 'kramdown'
+
 # If you have any plugins, put them here!
 group :jekyll_plugins do
     gem "jekyll-feed"

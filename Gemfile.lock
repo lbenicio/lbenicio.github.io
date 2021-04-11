@@ -313,6 +313,7 @@ DEPENDENCIES
   html-proofer
   jekyll-feed
   jekyll-seo-tag
+  kramdown
   minima
   pry
   puma
