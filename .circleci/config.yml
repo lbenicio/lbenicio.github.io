@@ -32,6 +32,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.7.2
     steps:
+      - checkout
       - run:
           name: HTMLProofer tests
           command: |
@@ -44,6 +45,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.7.2
     steps:
+      - checkout
       - persist_to_workspace:
           root: ./
           paths:
