@@ -46,6 +46,6 @@ svg:
   optimize: true
 
 # Gems
-gems:
+plugins:
   - jekyll-seo-tag
 
