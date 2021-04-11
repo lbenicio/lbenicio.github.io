@@ -28,6 +28,7 @@ jobs:
       - run:
           name: Jekyll build
           command: bundle exec jekyll build
+  test:
       - run:
           name: HTMLProofer tests
           command: |
@@ -36,6 +37,7 @@ jobs:
               --check-favicon  \
               --check-html \
               --disable-external
+  deploy:
       - persist_to_workspace:
           root: ./
           paths:
