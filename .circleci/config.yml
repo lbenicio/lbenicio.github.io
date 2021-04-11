@@ -41,6 +41,7 @@ jobs:
           command: gem install jekyll
       - run:
           name: Bundle Install
+          command: bundle install
       - run:
           name: HTMLProofer tests
           command: |
