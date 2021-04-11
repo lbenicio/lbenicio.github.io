@@ -34,7 +34,7 @@ You can talk to me in:
 
 - Ruby
 
-Feel free to visit my [blog]({{site.blog}}) or access my cydia [repository]({{site.repository}}). Or, you can contact me as well, let's have a fun conversation, just [email me](mailto:{{site.email}}).
+Feel free to visit my [blog]({{site.blog}}). Or, you can contact me as well, let's have a fun conversation, just [email me](mailto:{{site.email}}).
 
 [@{{site.twitter_username}}](https://twitter.com/{ { site.twitter_username } })
 
