@@ -9,7 +9,7 @@ end
 
 gem "rouge"
 gem "puma"
-gem "rack"
+gem "rack", "2.2.3"
 
 group :development, :test do
   gem "rspec"
