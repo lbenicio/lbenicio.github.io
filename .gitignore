@@ -1,2 +1,7 @@
 # Ignore macOS files
 .DS_Store
+
+# dev files
+.sass-cache
+_site/
+Gemfile.lock
