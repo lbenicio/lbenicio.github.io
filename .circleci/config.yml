@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -29,6 +29,9 @@ jobs:
           name: Jekyll build
           command: bundle exec jekyll build
   test:
+    docker:
+      - image: circleci/ruby:2.7.2
+    steps:
       - run:
           name: HTMLProofer tests
           command: |
@@ -38,7 +41,35 @@ jobs:
               --check-html \
               --disable-external
   deploy:
+    docker:
+      - image: circleci/ruby:2.7.2
+    steps:
       - persist_to_workspace:
           root: ./
           paths:
             - _site
+
+workflows:
+  build-and-test-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only:
+                - master
+
