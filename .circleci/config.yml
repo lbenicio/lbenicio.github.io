@@ -13,10 +13,10 @@ jobs:
           name: Update APT
           command: sudo apt-get update
       - run:
-          name: Configure Bundler setp 3
+          name: Install bundler
           command: gem install bundler
       - run:
-          name: Fix JS Runtime 3
+          name: Install jekyll Gem
           command: gem install jekyll
       - run:
           name: Bundle Install
