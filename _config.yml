@@ -1,0 +1,66 @@
+title: Leonardo Benicio
+author: Leonardo Benicio
+email: hello@lbenicio.dev
+description: Leonardo Benicio blog.
+baseurl: "/" # the subpath of your site, e.g. /blog
+url: "https://lbenicio.dev" # the base hostname & protocol for your site, e.g. http://example.com
+blog: "https://blog.lbenicio.dev"
+repository: "https://apt.lbenicio.dev"
+twitter_username: lbenicio_
+keybase_username: lbenicio_
+reddit_username: lbenicio_
+github_username: lbenicio
+linkedin_username: leonardo-benicio-1a55a1ba
+
+include: [/_assets]
+
+# SEO
+twitter:
+  username: lbenicio_
+  card: summary
+social:
+  name: Leonardo Benicio
+  links:
+    - https://twitter.com/lbenicio_
+    - https://linkedin.com/in/leonardo-benicio-1a55a1ba
+    - https://github.com/lbenicio
+    - https://keybase.io/lbenicio_
+
+logo: /_assets/img/logo.png
+image: /_assets/img/logo.png
+
+# Build settings
+plugins:
+  - jekyll-feed
+
+# Build settings
+permalink: pretty
+highlighter: rouge
+timezone: America/Brazil
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+svg:
+  optimize: true
+
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
+#
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/

@@ -1,0 +1,24 @@
+<meta content='{{ site.title }}' property='og:title' />
+<!-- favicon -->
+<link href="{{ '_assets/favicon.ico' | prepend: (site.baseurl + '/') }}" rel='shortcut icon'>
+<!-- CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<link rel="stylesheet" href="../_assets/style.css">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+<!-- Configs -->
+<meta content='width=device-width, initial-scale=1.0, user-scalable=no' name='viewport'>
+<meta content='text/html; charset=utf-8' http-equiv='content-type' />
+{% if page.date %}
+<meta content='{{ site.url }}{{ page.url }}' property='og:url' />
+<meta content="{{ page.content | strip_html | strip_newlines | truncate: 120 }}" property='og:description' />
+<meta content="article" property="og:type" />
+<meta content='{{ page.title }} - {{ site.title }}' property='og:title' />
+<title>{{ page.title }} - {{ site.title }}</title>
+{% else %}
+<title>{{ site.title }}</title>
+<meta content='{{ site.title }}' property='og:title' />
+<meta content='{{ site.url }}' property='og:url' />
+<meta content="{{ site.description }}" property='og:description' />
+<meta content="blog" property="og:type" />
+{% endif %}
