@@ -1,12 +1,17 @@
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.2.0"
-gem "minima", "~> 2.5"
+gem "lbenicio-minimal-v1", "0.0.14", git: "https://github.com/lbenicio/lbenicio-minimal-v1"
 
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
   gem "jekyll-seo-tag"
   gem "jekyll-sitemap"
+  gem "jekyll-archives"
+  gem "jekyll-tagging"
+  gem "jekyll-tagging-related_posts"
+  gem "jekyll-paginate-v2"
+  gem "jekyll-minifier"
 end
 
 gem "rouge"

@@ -1,18 +1,19 @@
+theme: lbenicio-minimal-v1
 title: Leonardo Benicio
 author: Leonardo Benicio
 email: hello@lbenicio.dev
-description: Leonardo Benicio blog.
+description: Leonardo Benicio personal website.
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://lbenicio.dev" # the base hostname & protocol for your site, e.g. http://example.com
 blog: "https://blog.lbenicio.dev"
-repository: "https://apt.lbenicio.dev"
 twitter_username: lbenicio_
 keybase_username: lbenicio_
 reddit_username: lbenicio_
 github_username: lbenicio
 linkedin_username: leonardo-benicio-1a55a1ba
 
-include: [/_assets]
+google_search_console:
+  verification_file_code: 81233z9544357e4
 
 # SEO
 twitter:
@@ -32,6 +33,13 @@ image: /_assets/img/logo.png
 # Build settings
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-archives
+  - jekyll-tagging
+  - jekyll-tagging-related_posts
+  - jekyll-paginate-v2
+  - jekyll-minifier
 
 # Build settings
 permalink: pretty
