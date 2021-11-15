@@ -12,6 +12,7 @@ group :jekyll_plugins do
   gem "jekyll-tagging-related_posts"
   gem "jekyll-paginate-v2"
   gem "jekyll-minifier"
+  gem "jekyll-analytics"
 end
 
 gem "rouge"

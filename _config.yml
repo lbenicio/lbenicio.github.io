@@ -15,6 +15,11 @@ linkedin_username: leonardo-benicio-1a55a1ba
 
 fa_token: 05f30c23e6
 
+jekyll_analytics:
+  GoogleAnalytics:              # Add, if you want to track with Google Analytics
+    id: UA-126620648-1          # Required - replace with your tracking id
+    anonymizeIp: false          # Optional - Default: false - set to true for anonymized tracking
+
 # SEO
 twitter:
   username: lbenicio_
@@ -40,6 +45,7 @@ plugins:
   - jekyll-tagging-related_posts
   - jekyll-paginate-v2
   - jekyll-minifier
+  - jekyll-analytics
 
 # Build settings
 permalink: pretty
