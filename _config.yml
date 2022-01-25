@@ -1,5 +1,4 @@
 remote_theme: lbenicio/lbenicio-minimal-v1
-theme: lbenicio-minimal-v1
 title: Leonardo Benicio
 author: Leonardo Benicio
 email: hello@lbenicio.dev
@@ -46,6 +45,7 @@ plugins:
   - jekyll-paginate-v2
   - jekyll-minifier
   - jekyll-analytics
+  - jekyll-remote-theme
 
 # Build settings
 permalink: pretty
