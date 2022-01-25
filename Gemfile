@@ -13,6 +13,7 @@ group :jekyll_plugins do
   gem "jekyll-paginate-v2"
   gem "jekyll-minifier"
   gem "jekyll-analytics"
+  gem "jekyll-remote-theme"
 end
 
 gem "rouge"
