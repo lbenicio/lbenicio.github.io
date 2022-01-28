@@ -12,8 +12,6 @@ reddit_username: lbenicio_
 github_username: lbenicio
 linkedin_username: leonardo-benicio-1a55a1ba
 
-fa_token: 05f30c23e6
-
 jekyll_analytics:
   GoogleAnalytics:              # Add, if you want to track with Google Analytics
     id: G-LL33ZN1L70            # Required - replace with your tracking id

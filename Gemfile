@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.2.0"
-gem "lbenicio-minimal-v1", "0.1.2", git: "https://github.com/lbenicio/lbenicio-minimal-v1", branch: "main"
+gem "lbenicio-minimal-v1", "0.1.3", git: "https://github.com/lbenicio/lbenicio-minimal-v1", branch: "main"
 
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
