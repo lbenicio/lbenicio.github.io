@@ -9,6 +9,8 @@ Contact email: <a href="mailto:hello@lbenicio.dev">hello@lbenicio.dev</a>
 
 PGP key:
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
 mDMEYiTMGxYJKwYBBAHaRw8BAQdAA5qq2Bw7eSB3V61lKB+8oyWaDshvis+H3oAu
 1ugEDc+0JWxlb25hcmRvIGJlbmljaW8gPGhlbGxvQGxiZW5pY2lvLmRldj6IlAQT
 FgoAPBYhBOh4s8xFiu8UsuAjxV9eMj08yOUVBQJiJMwbAhsDBQsJCAcCAyICAQYV
@@ -19,3 +21,5 @@ sa1UkZ6QEi4DAQgHiHgEGBYKACAWIQToeLPMRYrvFLLgI8VfXjI9PMjlFQUCYiTM
 GwIbDAAKCRBfXjI9PMjlFSWXAP9Wwa96nr+GNOjkDtmPUjudeKTYVJrwBK4HAG2U
 EkV/iwD+IRFVyfb9cnOHxzYqF0YB2q5aJQ3ircIgPY0Qw4kkogs=
 =tZ/6
+
+-----END PGP PUBLIC KEY BLOCK-----
