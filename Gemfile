@@ -12,7 +12,7 @@ group :jekyll_plugins do
   gem "jekyll-tagging-related_posts"
   gem "jekyll-paginate-v2"
   gem "jekyll-minifier"
-  gem "jekyll-analytics"
+  gem "jekyll-analytics", git: "https://github.com/lbenicio/jekyll-analytics", branch: "master"
   gem "jekyll-remote-theme"
 end
 
