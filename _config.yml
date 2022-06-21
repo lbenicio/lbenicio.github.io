@@ -17,6 +17,10 @@ jekyll_analytics:
     id: G-LL33ZN1L70            # Required - replace with your tracking id
     anonymizeIp: false          # Optional - Default: false - set to true for anonymized tracking
 
+sass:
+  sass_dir: assets
+  style: compressed
+
 # SEO
 twitter:
   username: lbenicio_
@@ -44,6 +48,10 @@ plugins:
   - jekyll-minifier
   - jekyll-analytics
   - jekyll-remote-theme
+
+jekyll-minifier:
+  uglifier_args:
+    harmony: true
 
 # Build settings
 permalink: pretty
