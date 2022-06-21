@@ -28,7 +28,7 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
       - name: Install Jekyll
-        run: JEKYLL_ENV="production" bundle exec jekyll build
+        run: bundle exec jekyll build
       - name: Check HTML
         uses: chabad360/htmlproofer@master
         with:
