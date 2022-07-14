@@ -30,7 +30,7 @@ jobs:
       - name: Install Jekyll
         run: bundle exec jekyll build
       - name: Check HTML
-        uses: chabad360/htmlproofer@master
+        uses: chabad360/htmlproofer@3.19.4
         with:
           directory: "./_site"
           arguments: --report-invalid-tags --report-missing-names --report-script-embeds --report-missing-doctype --report-eof-tags --report-mismatched-tags --assume-extension --check-external-hash --allow-hash-href --check-favicon --check-html --check-opengraph --enforce-https --disable-external
