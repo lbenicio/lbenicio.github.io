@@ -17,6 +17,7 @@ group :jekyll_plugins do
 end
 
 gem "rouge"
+gem "rake"
 
 group :development, :test do
   gem "rspec"
