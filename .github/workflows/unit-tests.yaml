@@ -31,6 +31,5 @@ jobs:
         run: bundle exec jekyll build
       - name: Check HTML
         run: bundle exec rake test
-
       - name: Results
         run: echo "🍏 This job's status is ${{ job.status }}."
