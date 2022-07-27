@@ -1,10 +1,11 @@
-remote_theme: lbenicio/lbenicio-minimal-v1
+theme: lbenicio-minimal-v1
 title: Leonardo Benicio
 author: Leonardo Benicio
 email: hello@lbenicio.dev
 description: Leonardo Benicio personal website.
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://lbenicio.dev" # the base hostname & protocol for your site, e.g. http://example.com
+default_url: "https://lbenicio.dev" # the base hostname & protocol for your site, e.g. http://example.com
 blog: "https://blog.lbenicio.dev"
 twitter_username: lbenicio_
 keybase_username: lbenicio_
@@ -12,10 +13,8 @@ reddit_username: lbenicio_
 github_username: lbenicio
 linkedin_username: leonardo-benicio-1a55a1ba
 
-jekyll_analytics:
-  GoogleAnalytics:              # Add, if you want to track with Google Analytics
-    id: G-LL33ZN1L70            # Required - replace with your tracking id
-    anonymizeIp: false          # Optional - Default: false - set to true for anonymized tracking
+analytics:
+  google: G-LL33ZN1L70
 
 sass:
   sass_dir: assets
@@ -46,8 +45,6 @@ plugins:
   - jekyll-tagging-related_posts
   - jekyll-paginate-v2
   - jekyll-minifier
-  - jekyll-analytics
-  - jekyll-remote-theme
 
 jekyll-minifier:
   uglifier_args:
@@ -65,22 +62,22 @@ plugins:
 svg:
   optimize: true
 
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+  - _config.yml
+  - CNAME
+  - Gemfile
+  - Gemfile.lock
+  - Rakefile
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

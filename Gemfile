@@ -1,19 +1,13 @@
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.2.0"
-gem "lbenicio-minimal-v1", "0.2.32", git: "https://github.com/lbenicio/lbenicio-minimal-v1", branch: "main"
+gem "lbenicio-minimal-v1", "0.2.36", git: "https://github.com/lbenicio/lbenicio-minimal-v1", branch: "pagination"
 
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
   gem "jekyll-seo-tag"
   gem "jekyll-sitemap"
-  gem "jekyll-archives"
-  gem "jekyll-tagging"
-  gem "jekyll-tagging-related_posts"
-  gem "jekyll-paginate-v2"
   gem "jekyll-minifier", "0.1.8", git: "https://github.com/lbenicio/jekyll-minifier", branch: "master"
-  gem "jekyll-analytics", "0.1.13", git: "https://github.com/lbenicio/jekyll-analytics", branch: "master"
-  gem "jekyll-remote-theme"
 end
 
 gem "rouge"
