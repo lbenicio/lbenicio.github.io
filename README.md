@@ -22,20 +22,12 @@ bundle install
 bundle exec jekyll serve
 ```
 
+## Build
+```bash
+bundle exec jekyll build
+```
+
 ## Unit tests
 ```bash
-bundle exec htmlproofer \
-    --report-invalid-tags \
-    --report-missing-names \
-    --report-script-embeds \
-    --report-missing-doctype \
-    --report-eof-tags \
-    --report-mismatched-tags \
-    --assume-extension \
-    --check-external-hash \
-    --allow-hash-href \
-    --check-favicon \
-    --check-html \
-    --check-opengraph \
-    --enforce-https --disable-external
+bundle exec rake test
 ```
