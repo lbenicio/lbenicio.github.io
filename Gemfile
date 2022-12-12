@@ -1,13 +1,13 @@
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.2.0"
-gem "lbenicio-minimal-v1", "0.2.36", git: "https://github.com/lbenicio/lbenicio-minimal-v1", branch: "pagination"
+gem "lbenicio-minimal-v1", "1.0.7"
 
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
   gem "jekyll-seo-tag"
   gem "jekyll-sitemap"
-  gem "jekyll-minifier", "0.1.8", git: "https://github.com/lbenicio/jekyll-minifier", branch: "master"
+  gem "jekyll-minifier"
 end
 
 gem "rouge"
