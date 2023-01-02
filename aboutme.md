@@ -2,7 +2,6 @@
 layout: default
 title: About me
 icon: fa-address-card
-permalink: /aboutme
 ---
 Hi,
 
