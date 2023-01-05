@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
 #
 # The Ruby documentation for #sort_by describes what's called a Schwartzian transform:
 #
@@ -18,16 +19,16 @@
 
 require 'benchmark/ips'
 require 'minitest'
-require File.expand_path("../lib/jekyll", __dir__)
+require File.expand_path('../lib/jekyll', __dir__)
 
 def site
   @site ||= Jekyll::Site.new(
-    Jekyll.configuration("source" => File.expand_path("../docs", __dir__))
+    Jekyll.configuration('source' => File.expand_path('../docs', __dir__))
   ).tap(&:reset).tap(&:read)
 end
 
 def site_docs
-  site.collections["docs"].docs.dup
+  site.collections['docs'].docs.dup
 end
 
 def sort_by_property_directly(docs, meta_key)
@@ -48,9 +49,9 @@ def sort_by_property_directly(docs, meta_key)
 end
 
 def schwartzian_transform(docs, meta_key)
-  docs.collect! { |d|
+  docs.collect! do |d|
     [d[meta_key], d]
-  }.sort! { |apple, orange|
+  end.sort! do |apple, orange|
     if !apple[0].nil? && !orange[0].nil?
       apple.first <=> orange.first
     elsif !apple[0].nil? && orange[0].nil?
@@ -60,14 +61,13 @@ def schwartzian_transform(docs, meta_key)
     else
       apple[-1] <=> orange[-1]
     end
-  }.collect! { |d| d[-1] }
+  end.collect! { |d| d[-1] }
 end
 
 # Before we test efficiency, do they produce the same output?
 class Correctness
   include Minitest::Assertions
 
-  require "pp"
   define_method :mu_pp, &:pretty_inspect
 
   attr_accessor :assertions
@@ -79,16 +79,16 @@ class Correctness
   end
 
   def assert!
-    assert sort_by_property_directly(@docs, @property).is_a?(Array), "sort_by_property_directly must return an array"
-    assert schwartzian_transform(@docs, @property).is_a?(Array), "schwartzian_transform must return an array"
+    assert sort_by_property_directly(@docs, @property).is_a?(Array), 'sort_by_property_directly must return an array'
+    assert schwartzian_transform(@docs, @property).is_a?(Array), 'schwartzian_transform must return an array'
     assert_equal sort_by_property_directly(@docs, @property),
-      schwartzian_transform(@docs, @property)
+                 schwartzian_transform(@docs, @property)
     puts "Yeah, ok, correctness all checks out for property #{@property.inspect}"
   end
 end
 
-Correctness.new(site_docs, "redirect_from".freeze).assert!
-Correctness.new(site_docs, "title".freeze).assert!
+Correctness.new(site_docs, 'redirect_from').assert!
+Correctness.new(site_docs, 'title').assert!
 
 def property(property, meta_key)
   Benchmark.ips do |x|

@@ -10,19 +10,19 @@ class FooPage
   end
 
   def slow_path
-    File.join(*[@dir, @name].map(&:to_s).reject(&:empty?)).sub(%r!\A/!, "")
+    File.join(*[@dir, @name].map(&:to_s).reject(&:empty?)).sub(%r{\A/}, '')
   end
 
   def fast_path
-    Jekyll::PathManager.join(@dir, @name).sub(%r!\A/!, "")
+    Jekyll::PathManager.join(@dir, @name).sub(%r{\A/}, '')
   end
 end
 
-nil_page     = FooPage.new(:dir => nil, :name => nil)
-empty_page   = FooPage.new(:dir => "", :name => "")
-root_page    = FooPage.new(:dir => "", :name => "ipsum.md")
-nested_page  = FooPage.new(:dir => "lorem", :name => "ipsum.md")
-slashed_page = FooPage.new(:dir => "/lorem/", :name => "/ipsum.md")
+nil_page     = FooPage.new(dir: nil, name: nil)
+empty_page   = FooPage.new(dir: '', name: '')
+root_page    = FooPage.new(dir: '', name: 'ipsum.md')
+nested_page  = FooPage.new(dir: 'lorem', name: 'ipsum.md')
+slashed_page = FooPage.new(dir: '/lorem/', name: '/ipsum.md')
 
 if nil_page.slow_path == nil_page.fast_path
   Benchmark.ips do |x|

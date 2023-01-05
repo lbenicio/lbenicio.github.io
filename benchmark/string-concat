@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'benchmark/ips'
 
-url = "https://jekyllrb.com"
+url = 'https://jekyllrb.com'
 
 Benchmark.ips do |x|
   x.report('+=') { url += '/' }

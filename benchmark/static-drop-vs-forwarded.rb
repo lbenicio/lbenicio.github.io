@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "forwardable"
-require "colorator"
-require "liquid"
-require "benchmark/ips"
-require "memory_profiler"
+require 'forwardable'
+require 'colorator'
+require 'liquid'
+require 'benchmark/ips'
+require 'memory_profiler'
 
 # Set up (memory) profiler
 
@@ -56,7 +56,7 @@ end
 
 class Document
   def name
-    "lipsum"
+    'lipsum'
   end
 end
 
@@ -70,14 +70,14 @@ count    = ARGV[0] || 10_000
 # Run profilers
 puts "\nMemory profiles for #{count} calls to invoke drop key:"
 Profiler.run do |x|
-  x.report("forwarded", :cyan) { alpha["name"] }
-  x.report("static", :green) { beta["name"] }
+  x.report('forwarded', :cyan) { alpha['name'] }
+  x.report('static', :green) { beta['name'] }
 end
 
 # Benchmark
 puts "\nBenchmarking the two scenarios..."
 Benchmark.ips do |x|
-  x.report("forwarded".cyan) { alpha["name"] }
-  x.report("static".green) { beta["name"] }
+  x.report('forwarded'.cyan) { alpha['name'] }
+  x.report('static'.green) { beta['name'] }
   x.compare!
 end

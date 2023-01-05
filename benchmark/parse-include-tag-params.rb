@@ -8,17 +8,15 @@ require 'bundler/setup'
 require 'memory_profiler'
 require 'jekyll'
 
-CONTEXT = {"bar"=>"The quick brown fox"}
-MARKUP_1 = %Q(foo=bar lorem="ipsum \\"dolor\\"" alpha='beta \\'gamma\\'').freeze
-MARKUP_2 = %Q(foo=bar lorem="ipsum 'dolor'" alpha='beta "gamma"').freeze
-
-#
+CONTEXT = { 'bar' => 'The quick brown fox' }.freeze
+MARKUP_1 = %(foo=bar lorem="ipsum \\"dolor\\"" alpha='beta \\'gamma\\'')
+MARKUP_2 = %(foo=bar lorem="ipsum 'dolor'" alpha='beta "gamma"')
 
 def old_parse_params(markup)
   params = {}
 
   while (match = Jekyll::Tags::IncludeTag::VALID_SYNTAX.match(markup))
-    markup = markup[match.end(0)..-1]
+    markup = markup[match.end(0)..]
 
     value = if match[2]
               match[2].gsub('\\"', '"')
@@ -49,10 +47,8 @@ def new_parse_params(markup)
   params
 end
 
-#
-
-def report(label, markup, color)
-  prof_report = MemoryProfiler.report { yield }
+def report(label, markup, color, &block)
+  prof_report = MemoryProfiler.report(&block)
 
   allocated_memory  = prof_report.scale_bytes(prof_report.total_allocated_memsize)
   allocated_objects = prof_report.total_allocated
@@ -60,7 +56,7 @@ def report(label, markup, color)
   retained_objects  = prof_report.total_retained
 
   puts <<~MSG.send(color)
-    #{(label + " ").ljust(49, "-")}
+    #{"#{label} ".ljust(49, '-')}
 
     MARKUP: #{markup}
     RESULT: #{yield}
@@ -76,16 +72,14 @@ report('new w/ escaping', MARKUP_1, :cyan)    { new_parse_params(MARKUP_1) }
 report('old no escaping', MARKUP_2, :green)  { old_parse_params(MARKUP_2) }
 report('new no escaping', MARKUP_2, :yellow) { new_parse_params(MARKUP_2) }
 
-#
-
 Benchmark.ips do |x|
-  x.report("old + esc".magenta) { old_parse_params(MARKUP_1) }
-  x.report("new + esc".cyan)    { new_parse_params(MARKUP_1) }
+  x.report('old + esc'.magenta) { old_parse_params(MARKUP_1) }
+  x.report('new + esc'.cyan)    { new_parse_params(MARKUP_1) }
   x.compare!
 end
 
 Benchmark.ips do |x|
-  x.report("old - esc".green)  { old_parse_params(MARKUP_2) }
-  x.report("new - esc".yellow) { new_parse_params(MARKUP_2) }
+  x.report('old - esc'.green)  { old_parse_params(MARKUP_2) }
+  x.report('new - esc'.yellow) { new_parse_params(MARKUP_2) }
   x.compare!
 end

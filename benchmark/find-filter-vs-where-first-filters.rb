@@ -9,11 +9,11 @@ print 'Setting up... '
 
 SITE = Jekyll::Site.new(
   Jekyll.configuration({
-    "source"             => File.expand_path("../docs", __dir__),
-    "destination"        => File.expand_path("../docs/_site", __dir__),
-    "disable_disk_cache" => true,
-    "quiet"              => true,
-  })
+                         'source' => File.expand_path('../docs', __dir__),
+                         'destination' => File.expand_path('../docs/_site', __dir__),
+                         'disable_disk_cache' => true,
+                         'quiet' => true
+                       })
 )
 
 TEMPLATE_1 = Liquid::Template.parse(<<~HTML)
@@ -26,7 +26,7 @@ TEMPLATE_2 = Liquid::Template.parse(<<~HTML)
   {{- doc.title -}}
 HTML
 
-[:reset, :read, :generate].each { |phase| SITE.send(phase) }
+%i[reset read generate].each { |phase| SITE.send(phase) }
 
 puts 'done.'
 puts 'Testing... '

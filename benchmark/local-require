@@ -5,7 +5,7 @@ require 'benchmark/ips'
 require 'jekyll'
 require 'json'
 
-DATA = {"foo"=>"bar", "alpha"=>{"beta"=>"gamma"}, "lipsum"=>["lorem", "ipsum", "dolor"]}
+DATA = { 'foo' => 'bar', 'alpha' => { 'beta' => 'gamma' }, 'lipsum' => %w[lorem ipsum dolor] }.freeze
 
 def local_require
   require 'json'
@@ -17,13 +17,13 @@ def global_require
 end
 
 def graceful_require
-  Jekyll::External.require_with_graceful_fail("json")
+  Jekyll::External.require_with_graceful_fail('json')
   JSON.pretty_generate(DATA)
 end
 
 Benchmark.ips do |x|
-  x.report("local-require") { local_require }
-  x.report("global-require") { global_require }
-  x.report("graceful-require") { graceful_require }
+  x.report('local-require') { local_require }
+  x.report('global-require') { global_require }
+  x.report('graceful-require') { graceful_require }
   x.compare!
 end

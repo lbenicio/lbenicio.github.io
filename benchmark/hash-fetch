@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'benchmark/ips'
 
-h = {:bar => 'uco'}
+h = { bar: 'uco' }
 
 Benchmark.ips do |x|
   x.report('fetch with no block') { h.fetch(:bar, (0..9).to_a)    }

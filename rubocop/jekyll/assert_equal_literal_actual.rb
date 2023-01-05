@@ -27,9 +27,9 @@ module RuboCop
       #   )
       #
       class AssertEqualLiteralActual < Cop
-        MSG = "Provide the 'expected value' as the first argument to `assert_equal`.".freeze
+        MSG = "Provide the 'expected value' as the first argument to `assert_equal`."
 
-        SIMPLE_LITERALS = %i(
+        SIMPLE_LITERALS = %i[
           true
           false
           nil
@@ -40,16 +40,16 @@ module RuboCop
           complex
           rational
           regopt
-        ).freeze
+        ].freeze
 
-        COMPLEX_LITERALS = %i(
+        COMPLEX_LITERALS = %i[
           array
           hash
           pair
           irange
           erange
           regexp
-        ).freeze
+        ].freeze
 
         def_node_matcher :literal_actual?, <<-PATTERN
           (send nil? :assert_equal $(send ...) $#literal?)
@@ -61,6 +61,7 @@ module RuboCop
 
         def on_send(node)
           return unless literal_actual?(node) || literal_actual_with_msg?(node)
+
           add_offense(node, location: :expression)
         end
 
@@ -97,13 +98,14 @@ module RuboCop
           replaced_text = \
             if second_param.type == :hash
               replace_hash_with_variable(first_param.source, second_param.source)
-            elsif second_param.type == :array && second_param.source != "[]"
+            elsif second_param.type == :array && second_param.source != '[]'
               replace_array_with_variable(first_param.source, second_param.source)
             else
               replace_based_on_line_length(first_param.source, second_param.source)
             end
 
           return "#{replaced_text}, #{optional_param.source}" if optional_param
+
           replaced_text
         end
 
@@ -121,7 +123,7 @@ module RuboCop
         end
 
         def replace_hash_with_variable(first_expression, second_expression)
-          expect_expression = if second_expression.start_with?("{")
+          expect_expression = if second_expression.start_with?('{')
                                 second_expression
                               else
                                 "{#{second_expression}}"
@@ -133,7 +135,7 @@ module RuboCop
         end
 
         def replace_array_with_variable(first_expression, second_expression)
-          expect_expression = if second_expression.start_with?("%")
+          expect_expression = if second_expression.start_with?('%')
                                 second_expression
                               else
                                 Array(second_expression)

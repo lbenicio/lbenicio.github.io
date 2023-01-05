@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require_relative '../lib/jekyll'
 require 'benchmark/ips'
 
-date = "2014-08-02 14:43:06 PDT".freeze
+date = '2014-08-02 14:43:06 PDT'
 time = Time.parse(date)
 
 Benchmark.ips do |x|
