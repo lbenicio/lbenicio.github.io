@@ -1,5 +1,5 @@
 [![Gem Version](https://img.shields.io/gem/v/jekyll.svg?style=flat-square)](https://rubygems.org)
-[![CI/CD Pipeline](https://github.com/lbenicio/lbenicio.blog/actions/workflows/ci.yaml/badge.svg)](https://github.com/lbenicio/lbenicio.blog/actions/workflows/ci.yaml)
+[![CI/CD Pipeline](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/ci.yaml/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/ci.yaml)
 ![GitHub issues](https://img.shields.io/github/issues-raw/lbenicio/lbenicio.github.io?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/lbenicio/lbenicio.github.io?style=flat-square)
 ![license](https://img.shields.io/github/license/lbenicio/lbenicio.github.io?style=flat-square)

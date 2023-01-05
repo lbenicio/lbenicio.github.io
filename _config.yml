@@ -2,6 +2,7 @@ theme: lbenicio-minimal-v1
 title: Leonardo Benicio
 author: Leonardo Benicio
 email: hello@lbenicio.dev
+tagline: Leonardo Benicio personal website.
 description: Leonardo Benicio personal website.
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://lbenicio.dev" # the base hostname & protocol for your site, e.g. http://example.com
