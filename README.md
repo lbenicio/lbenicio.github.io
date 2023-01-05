@@ -1,5 +1,5 @@
 [![Gem Version](https://img.shields.io/gem/v/jekyll.svg?style=flat-square)](https://rubygems.org)
-[![CircleCI](https://img.shields.io/circleci/build/github/lbenicio/lbenicio.github.io?style=flat-square)](https://circleci.com/gh/lbenicio/lbenicio.github.io)
+[![CI/CD Pipeline](https://github.com/lbenicio/lbenicio.blog/actions/workflows/ci.yaml/badge.svg)](https://github.com/lbenicio/lbenicio.blog/actions/workflows/ci.yaml)
 ![GitHub issues](https://img.shields.io/github/issues-raw/lbenicio/lbenicio.github.io?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/lbenicio/lbenicio.github.io?style=flat-square)
 ![license](https://img.shields.io/github/license/lbenicio/lbenicio.github.io?style=flat-square)
@@ -30,4 +30,14 @@ bundle exec jekyll build
 ## Unit tests
 ```bash
 bundle exec rake test
+```
+
+## Profiling
+```bash
+bundle exec rake profile:memory
+```
+
+## Benchmark
+```bash
+bundle exec ruby benchmark/capture-assign.rb
 ```
