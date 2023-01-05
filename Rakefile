@@ -36,8 +36,6 @@ task :test do
   end
 end
 
-task :default => [:test]
-
 namespace :profile do
   desc "Profile allocations from a build session"
   task :memory, [:file, :mode] do |_t, args|
@@ -91,3 +89,5 @@ namespace :profile do
     end
   end
 end
+
+task :default => [:test]
