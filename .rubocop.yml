@@ -21,7 +21,6 @@ AllCops:
     - script/**/*
     - vendor/**/*
     - tmp/**/*
-    - _site/**/*
 
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: true
