@@ -14,7 +14,7 @@ group :jekyll_plugins do
   gem "jekyll-tagging-related_posts"
   # fix for using theme's pagination theme
   gem "jekyll-paginate-v2", git: "https://github.com/lbenicio/jekyll-paginate-v2/"
-  gem "jekyll-minifier", "0.1.8"
+  gem "jekyll-minifier", "0.1.10"
 end
 
 group :development, :test do
