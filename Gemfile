@@ -37,7 +37,7 @@ group :development, :test do
   gem "capybara"
   gem "rack-jekyll"
   gem "pry"
-  gem "html-proofer", "~> 3.19.4"
+  gem "html-proofer", "~> 5.0.7"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
