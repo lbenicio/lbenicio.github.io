@@ -183,7 +183,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ github.event.inputs.ruby_version }}
+          ruby-version: 3.2.2
           bundler-cache: true
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -221,7 +221,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ github.event.inputs.ruby_version }}
+          ruby-version: 3.2.2
           bundler-cache: true
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -259,7 +259,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ github.event.inputs.ruby_version }}
+          ruby-version: 3.2.2
           bundler-cache: true
       - name: Check out repository code
         uses: actions/checkout@v3
