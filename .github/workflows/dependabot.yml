@@ -5,6 +5,9 @@
 
 name: Dependabot
 version: 2
+on:
+  schedule:
+    - cron: "0 0 * * 0"
 updates:
   - package-ecosystem: "bundler" # See documentation for possible values
     directory: "/" # Location of package manifests
