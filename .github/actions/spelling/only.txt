@@ -1,5 +1,0 @@
-^_posts/.*\.md$
-index.md
-aboutme.md
-404.md
-contact.md

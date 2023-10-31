@@ -15,8 +15,6 @@ on:
       - ".jekyll-cache"
       - "Rakefile"
       - "CHANGELOG.md"
-    # Allows you to run this workflow manually from the Actions tab
-    workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -172,6 +170,7 @@ jobs:
           suppress_push_for_open_pull_request: 1
           checkout: true
           post_comment: 0
+          quit_without_error: 1
   profiler:
     name: "Profiler"
     runs-on: "ubuntu-latest"
