@@ -35,6 +35,8 @@ Here is my social media:
 
 - Twitter [@{{site.twitter_username}}](https://twitter.com/{{site.twitter_username}})
 
+- Mastodon [@{{site.mastodon_username}}@mastodon.social](https://mastodon.social/@{{site.twitter_username}})
+
 - Reddit: [/u/{{site.reddit_username}}](https://reddit.com/u/{{site.reddit_username}})
 
 - Keybase: [{{site.keybase_username}}](https://keybase.io/{{site.keybase_username}})
@@ -42,6 +44,5 @@ Here is my social media:
 - Github [{{site.github_username}}](https://github.com/{{site.github_username}})
 
 - LinkedIn [{{site.linkedin_username}}](https://www.linkedin.com/in/{{site.linkedin_username}})
-
 
 And for today, that's all folks!
