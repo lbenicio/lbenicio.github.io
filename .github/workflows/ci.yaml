@@ -35,7 +35,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -68,7 +68,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -101,7 +101,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@master
         with:
@@ -142,7 +142,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@master
         with:
@@ -178,14 +178,14 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Checkout Jekyll
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
           bundler-cache: true
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@master
         with:
@@ -216,14 +216,14 @@ jobs:
       BENCHMARK: true
     steps:
       - name: Checkout Jekyll
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
           bundler-cache: true
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@master
         with:
@@ -254,14 +254,14 @@ jobs:
       BENCHMARK: true
     steps:
       - name: Checkout Jekyll
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
           bundler-cache: true
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@master
         with:
@@ -318,7 +318,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
         with:
           title: "Release: v$version"
