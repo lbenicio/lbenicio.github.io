@@ -58,3 +58,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - fix build script
+
+## v1.1.6
+
+### Changed
+
+- update dependecies
