@@ -77,3 +77,9 @@ All notable changes to this project will be documented in this file.
 
 - update theme
 - fix ci
+
+## v1.2.2
+
+### Changed
+
+- change url pattern
