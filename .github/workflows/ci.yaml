@@ -5,16 +5,12 @@ on:
       - main
     # Ignored paths to update on git commit
     paths-ignore:
-      - "README.md"
-      - "LICENSE"
       - "docs/"
       - ".gitignore"
       - "CNAME"
-      - ".ruby-version"
       - "benchmark"
       - ".jekyll-cache"
       - "Rakefile"
-      - "CHANGELOG.md"
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

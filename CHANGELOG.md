@@ -40,3 +40,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - fix dependabot
+
+## v1.1.3
+
+### Changed
+
+- fix release script
