@@ -28,3 +28,9 @@ All notable changes to this project will be documented in this file.
 
 - fix ci
 - update theme version
+
+## v1.1.1
+
+### Changed
+
+- fix ci
