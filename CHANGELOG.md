@@ -64,3 +64,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - update dependecies
+
+## v1.2.0
+
+### Changed
+
+- update theme
