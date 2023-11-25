@@ -52,3 +52,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - fix release script
+
+## v1.1.5
+
+### Changed
+
+- fix build script
