@@ -18,7 +18,7 @@ group :jekyll_plugins do
 end
 
 group :development, :test do
-  gem "rubocop", "~> 1.56.0"
+  gem "rubocop", "~> 1.57.2"
   gem "rubocop-minitest"
   gem "rubocop-performance"
   gem "rubocop-rake"
