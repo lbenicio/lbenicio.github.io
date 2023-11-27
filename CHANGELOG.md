@@ -91,3 +91,10 @@ All notable changes to this project will be documented in this file.
 - fix navigation
 - update theme
 - update dependecies
+
+## v1.3.1
+
+### Changed
+
+- fix tagging import
+- linter

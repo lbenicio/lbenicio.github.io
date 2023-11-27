@@ -5,7 +5,7 @@ icon: fa-address-card
 ---
 Hi,
 
-I'm Leo, a {{ site.time | date: '%Y' | minus:1994 }} years old, graduated on computer science at Instituto de Matemática e Estatística of Universidade de São Paulo (IME-USP). Researching web applications on distributed and parallel systems. FullStack developer, security enthusiast, game player and coffee addicted. 
+I'm Leo, a {{ site.time | date: '%Y' | minus:1994 }} years old, graduated on computer science at Instituto de Matemática e Estatística of Universidade de São Paulo (IME-USP). Researching web applications on distributed and parallel systems. FullStack developer, security enthusiast, game player and coffee addicted.
 
 Welcome to my site. I enjoy studying system scalability, distributed web applications and , eventually, hack around. I will stick with the canonical definition: I'm machine who transform code into coffee.
 
