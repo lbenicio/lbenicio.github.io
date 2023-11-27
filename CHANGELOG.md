@@ -83,3 +83,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - change url pattern
+
+## v1.3.0
+
+### Changed
+
+- fix navigation
+- update theme
+- update dependecies

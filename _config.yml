@@ -5,8 +5,8 @@ email: hello@lbenicio.dev
 tagline: Leonardo Benicio personal website.
 description: Leonardo Benicio personal website.
 baseurl: "/" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-default_url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "/" # the base hostname & protocol for your site, e.g. http://example.com
+default_url: "/" # the base hostname & protocol for your site, e.g. http://example.com
 blog: "https://blog.lbenicio.dev"
 twitter_username: lbenicio_
 keybase_username: lbenicio_
@@ -55,12 +55,9 @@ jekyll-minifier:
 # Build settings
 permalink: pretty
 highlighter: rouge
-timezone: America/Brazil
+timezone: America/Sao_Paulo
 markdown: kramdown
-plugins:
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
+
 svg:
   optimize: true
 
@@ -76,8 +73,6 @@ exclude:
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/
-  - Gemfile
-  - Gemfile.lock
   - node_modules/
   - vendor/
   - benchmark
