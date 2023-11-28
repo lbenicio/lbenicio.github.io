@@ -98,3 +98,9 @@ All notable changes to this project will be documented in this file.
 
 - fix tagging import
 - linter
+
+## v1.3.2
+
+### Changed
+
+- update theme
