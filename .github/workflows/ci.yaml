@@ -43,7 +43,7 @@ jobs:
   Unit-Tests:
     name: "Unit Tests"
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -76,7 +76,7 @@ jobs:
     name: "Build"
     runs-on: ubuntu-latest
     needs: [Unit-Tests, spelling, benchmark, rubocop]
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,7 +109,7 @@ jobs:
       followup: ${{ steps.spelling.outputs.followup }}
     runs-on: ubuntu-latest
     needs: Unit-Tests
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -150,7 +150,7 @@ jobs:
       followup: ${{ steps.spelling.outputs.followup }}
     runs-on: ubuntu-latest
     needs: Unit-Tests
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -186,7 +186,7 @@ jobs:
     name: "Profiler"
     runs-on: "ubuntu-latest"
     needs: Unit-Tests
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     steps:
       - name: Checkout Jekyll
         uses: actions/checkout@v4
@@ -222,7 +222,7 @@ jobs:
     name: "Stress Test"
     runs-on: "ubuntu-latest"
     needs: Unit-Tests
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     env:
       BENCHMARK: true
     steps:
@@ -260,7 +260,7 @@ jobs:
     name: "Benchmark"
     runs-on: "ubuntu-latest"
     needs: Unit-Tests
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     env:
       BENCHMARK: true
     steps:
@@ -297,7 +297,7 @@ jobs:
   notification:
     name: "Notification"
     needs: [build, deploy, release, spelling, benchmark, rubocop, Unit-Tests]
-    if: ${{ always() }}
+    # if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Send Telegram message
@@ -326,7 +326,7 @@ jobs:
   release:
     name: "Release"
     needs: [Unit-Tests, spelling, benchmark, rubocop]
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
