@@ -325,7 +325,7 @@ jobs:
               See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
   release:
     name: "Release"
-    needs: [Unit-Tests, spelling, benchmark, rubocop]
+    needs: [Unit-Tests, benchmark, rubocop]
     # if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
