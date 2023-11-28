@@ -110,3 +110,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - update theme
+
+## v1.4.1
+
+### Changed
+
+- update theme
