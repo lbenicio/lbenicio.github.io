@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "jekyll"
-gem "lbenicio-minimal-v1", "1.6.3"
+gem "lbenicio-minimal-v1", "1.6.4"
 gem "rouge"
 gem "rake"
 
