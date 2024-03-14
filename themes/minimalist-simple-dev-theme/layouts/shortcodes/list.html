@@ -1,0 +1,8 @@
+<ul class="list-disc max-w-md my-2 list-inside">
+{{- with .Get "items" }}
+    {{ range $i := split . "," }}
+    <li>{{ $i }}
+    </li>
+    {{ end }}
+{{ end }}
+</ul>

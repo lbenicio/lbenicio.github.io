@@ -1,0 +1,21 @@
+name: Release
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: CupOfTea696/gh-action-auto-release@v1.0.2
+        with:
+          title: "Release: v$version"
+          tag: "v$semver"
+          draft: false
+          regex: "/^release: v#{semver}$/i"
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}

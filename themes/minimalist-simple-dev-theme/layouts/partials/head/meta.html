@@ -1,0 +1,9 @@
+{{ $title := (cond (.IsHome) site.Title (printf "%s | %s" .Page.Title site.Title)) }}
+<meta content='text/html; charset=utf-8' http-equiv='content-type' />
+<meta content='width=device-width, initial-scale=1.0, , maximum-scale=1, minimum-scale=1, user-scalable=no'
+    name='viewport'>
+<meta content='{{ $title }}' property='og:title' />
+<meta content='{{ site.BaseURL }}' property='og:url' />
+<meta content="{{ .Description }}" property='og:description' />
+<meta content="blog" property="og:type" />
+<title>{{ $title }}</title>

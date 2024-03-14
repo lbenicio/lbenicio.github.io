@@ -1,0 +1,83 @@
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'bold';
+  src: url('/static/webfonts/RobotoMono-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'bold-italic';
+  src: url('/static/webfonts/RobotoMono-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'extra-light';
+  src: url('/static/webfonts/RobotoMono-ExtraLight.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'extra-light-italic';
+  src: url('/static/webfonts/RobotoMono-ExtraLightItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'italic';
+  src: url('/static/webfonts/RobotoMono-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'light';
+  src: url('/static/webfonts/RobotoMono-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'light-italic';
+  src: url('/static/webfonts/RobotoMono-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'medium-italic';
+  src: url('/static/webfonts/RobotoMono-MediumItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'medium';
+  src: url('/static/webfonts/RobotoMono-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'semi-bold';
+  src: url('/static/webfonts/RobotoMono-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'semi-bold-italic';
+  src: url('/static/webfonts/RobotoMono-SemiBoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'thin';
+  src: url('/static/webfonts/RobotoMono-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'thin-italic';
+  src: url('/static/webfonts/RobotoMono-ThinItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: 'normal';
+  src: url('/static/webfonts/RobotoMono-Regular.ttf') format('truetype');
+}

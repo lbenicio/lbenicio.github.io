@@ -1,0 +1,13 @@
+<nav>
+{{- with .Site.Params.social }}
+<ul class="flex flex-row flex-wrap justify-center space-x-4">
+    {{ range $k, $v := . }}
+    <li>
+        <a href="https://{{ $v.instance }}/{{ $v.username }}">
+            <i class="{{ $v.icon }} text-gray-500"></i>
+        </a>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}
+</nav>

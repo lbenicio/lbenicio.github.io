@@ -1,0 +1,41 @@
+{{ $isBlog := or (eq .Kind "taxonomy") (eq .Kind "term") (eq .Kind "section") (eq .Type "posts") (eq .Type "articles") }}
+{{ $isPage := and (eq .Type "page") (eq .Kind "page") }}
+<!DOCTYPE html>
+
+<html lang="{{ or site.Language.LanguageCode site.Language.Lang }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
+
+<head>
+  {{ partial "head.html" . }}
+  {{ if or $isBlog $isPage }}
+  {{ partial "head/single.html" . }}
+  {{ end }}
+</head>
+
+<body class="bg-gray-50">
+  {{ partial "fork.html" . }}
+  <container class="container flex flex-col h-screen mx-auto w-11/12 sm:w-100">
+
+    <header class="w-100 sm:w-3/4 sm:mx-auto h-fit flex flex-col justify-center {{ if or $isBlog $isPage }}my-16{{ else }}my-auto{{ end }}">
+      {{ partial "header.html" . }}
+      {{ if $isBlog }}
+        {{ partial "blog/navigation.html" . }}
+      {{ end }}
+    </header>
+
+    {{ if or $isBlog $isPage }}
+    <main class="w-fit sm:w-3/4 flex flex-col mx-auto text-wrap">
+      {{ block "main" . }}{{ end }}
+    </main>
+    {{ end }}
+
+    <footer class="w-100 sm:w-3/4 h-fit flex flex-col mb-3 justify-center mx-auto">
+      {{ partial "footer.html" . }}
+    </footer>
+
+  </container>
+  
+  {{ partial "footer/analytics.html" . }}
+  {{ partialCached "footer/js.html" . }}
+</body>
+
+</html>

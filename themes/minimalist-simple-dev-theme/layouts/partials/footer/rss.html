@@ -1,0 +1,3 @@
+{{ with .OutputFormats.Get "rss" -}}
+    {{ printf `Subscribe to the <a href=%q class="text-blue-600 hover:underline">RSS feed</a>.` .Permalink | safeHTML }}
+{{ end }}
