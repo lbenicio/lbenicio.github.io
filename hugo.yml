@@ -11,7 +11,7 @@ disableKinds:
   - taxonomy
   - term
   - section
-
+enableRobotsTXT: true
 menus:
   main:
     - name: Home
