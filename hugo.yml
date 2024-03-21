@@ -2,8 +2,8 @@ baseURL: 'https://lbenicio.dev'
 languageCode: en-us
 title: Leonardo Benicio
 description: >-
-  A minimal website/blog theme for developers. It is a simple and clean theme
-  for developers who want to showcase their work and write about their
+  A minimal website/blog by leonardo benicio. It is a simple and clean homepage/blog
+  where i showcase my work and write about my
   experiences.
 theme: minimalist-simple-dev-theme
 paginate: 0
