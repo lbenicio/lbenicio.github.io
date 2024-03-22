@@ -33,6 +33,7 @@ menus:
 params:
   author: Leonardo Benicio
   email: hello@lbenicio.dev
+  blogURL: https://blog.lbenicio.dev
   social:
     twitter:
       username: lbenicio_
