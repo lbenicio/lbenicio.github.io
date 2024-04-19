@@ -56,7 +56,7 @@ params:
       visible: false
       icon: fab fa-mastodon
     reddit:
-      username: /u/lbenicio
+      username: u/lbenicio
       instance: reddit.com
       visible: false
       icon: fab fa-reddit
