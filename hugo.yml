@@ -46,7 +46,7 @@ params:
       icon: fab fa-github
       visible: true
     linkedin:
-      username: in/leonardo-benicio-1a55a1ba
+      username: in/leonardo-benicio
       instance: linkedin.com
       icon: fab fa-linkedin-in
       visible: true
