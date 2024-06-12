@@ -31,6 +31,8 @@ menus:
           weight: 40
           pre: fas fa-comment-alt
 params:
+    analytics:
+        google: G-LL33ZN1L70
     author: Leonardo Benicio
     email: hello@lbenicio.dev
     blogURL: https://blog.lbenicio.dev
@@ -80,8 +82,7 @@ params:
             instance: buymeacoffee.com
             visible: false
             icon: fa fa-coffee
-analytics:
-    google: G-LL33ZN1L70
+
 module:
     hugoVersion:
         extended: false
