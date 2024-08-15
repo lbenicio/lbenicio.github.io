@@ -15,3 +15,9 @@ All notable changes to this project will be documented in this file.
 - change config files to yaml
 - update theme version to support social footer
 - add more social networks
+
+## 1.0.0
+
+### Changed
+
+- initial closed release
