@@ -30,3 +30,9 @@ All notable changes to this project will be documented in this file.
 - update naming
 - update theme version support
 - fix auto merge action
+
+## 1.3.4
+
+### Changed
+
+- update dependencies
