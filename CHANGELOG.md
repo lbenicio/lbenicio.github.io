@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Initial Release
+- Initial test Release
 
 ## v0.0.5
 
@@ -21,3 +21,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - initial closed release
+
+## 1.3.3
+
+### Changed
+
+- initial closed release
+- update naming
+- update theme version support
