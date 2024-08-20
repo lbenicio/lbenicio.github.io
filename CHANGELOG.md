@@ -29,3 +29,4 @@ All notable changes to this project will be documented in this file.
 - initial closed release
 - update naming
 - update theme version support
+- fix auto merge action
