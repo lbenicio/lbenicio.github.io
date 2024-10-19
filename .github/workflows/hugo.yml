@@ -31,7 +31,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.123.8
+      HUGO_VERSION: 0.135.0
     steps:
       - name: Install Hugo CLI
         run: |
@@ -50,6 +50,10 @@ jobs:
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
       - name: Run development server first
         run: hugo server &
+      - name: Rename contacts
+        run: mv ./content/contacts/index.md ./content/contacts/_index.md && mv ./content/contacts/_index.md ./content/contacts/index.md
+      - name: Rename aboutme
+        run: mv ./content/aboutme/index.md ./content/aboutme/_index.md && mv ./content/aboutme/_index.md ./content/aboutme/index.md
       - name: Kill server
         run: pkill hugo
       - name: Build with Hugo
