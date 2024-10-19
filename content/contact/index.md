@@ -1,7 +1,6 @@
 ---
-title: 'Contact'
-date: 2023-01-01T08:00:00-07:00
-draft: false
+title: Contact
+date: 2024-10-10T08:00:00-07:00
 ---
 
 Contact email: [{{% mail %}}](mailto:{{% mail %}})
