@@ -54,6 +54,8 @@ jobs:
         run: mv ./content/contact/index.md ./content/contact/_index.md && mv ./content/contact/_index.md ./content/contact/index.md
       - name: Rename aboutme
         run: mv ./content/aboutme/index.md ./content/aboutme/_index.md && mv ./content/aboutme/_index.md ./content/aboutme/index.md
+      - name: sleep
+        run: sleep 5000
       - name: Kill server
         run: pkill hugo
       - name: Build with Hugo
