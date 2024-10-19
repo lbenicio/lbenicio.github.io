@@ -50,8 +50,8 @@ jobs:
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
       - name: Run development server first
         run: hugo server &
-      - name: Rename contacts
-        run: mv ./content/contacts/index.md ./content/contacts/_index.md && mv ./content/contacts/_index.md ./content/contacts/index.md
+      - name: Rename contact
+        run: mv ./content/contact/index.md ./content/contact/_index.md && mv ./content/contact/_index.md ./content/contact/index.md
       - name: Rename aboutme
         run: mv ./content/aboutme/index.md ./content/aboutme/_index.md && mv ./content/aboutme/_index.md ./content/aboutme/index.md
       - name: Kill server
