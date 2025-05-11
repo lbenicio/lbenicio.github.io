@@ -9,4 +9,4 @@ updates:
     schedule:
       interval: weekly
       ignore:
-        - dependency-name: "tailwindcss"
+        - tailwindcss
