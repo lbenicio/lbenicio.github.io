@@ -10,7 +10,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
         with:
           title: "Release: v$version"
