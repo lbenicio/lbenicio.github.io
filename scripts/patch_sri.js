@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const child_process = require('child_process');
 
 // patch_sri.js
 // - Computes SHA256 SRI for local script and stylesheet assets referenced in HTML files under a public dir.
@@ -23,8 +24,24 @@ function walk(dir) {
   return out;
 }
 
-function computeIntegrity(filePath) {
-  const buf = fs.readFileSync(filePath);
+function computeIntegrity(filePathOrUrl) {
+  // If starts with http/https or protocol-less //, fetch via curl and compute hash
+  try {
+    if (/^\/\//.test(filePathOrUrl)) {
+      filePathOrUrl = 'https:' + filePathOrUrl;
+    }
+    if (/^https?:\/\//i.test(filePathOrUrl)) {
+      // use curl to fetch binary data
+      const out = child_process.execSync(`curl -fsSL "${filePathOrUrl}"`, { encoding: null, maxBuffer: 50 * 1024 * 1024 });
+      const hash = crypto.createHash('sha256').update(out).digest('base64');
+      return `sha256-${hash}`;
+    }
+  } catch (e) {
+    // fall back to local file read if fetch fails; caller will see mismatch or missing
+    // console.error('Failed fetching', filePathOrUrl, e && e.message);
+  }
+  if (!fs.existsSync(filePathOrUrl)) throw new Error('file not found: ' + filePathOrUrl);
+  const buf = fs.readFileSync(filePathOrUrl);
   const hash = crypto.createHash('sha256').update(buf).digest('base64');
   return `sha256-${hash}`;
 }
@@ -75,14 +92,23 @@ function processHtmlFile(htmlFile, publicDir, options) {
       const ref = decodeHtmlEntities(src);
       // ignore dev/live-reload references
       if (/livereload\.js/i.test(ref)) return full;
-      if (isRemote(ref)) return full;
-      const target = resolveResource(publicDir, htmlFile, ref);
-      if (!target) {
-        // skip reporting for dev-only livereload (already handled) otherwise report
-        reports.push({ type: 'missing', tag: 'script', html: htmlFile, src: ref });
-        return full;
+      let computed;
+      let target = null;
+      if (isRemote(ref)) {
+        try {
+          computed = computeIntegrity(ref);
+        } catch (e) {
+          reports.push({ type: 'missing', tag: 'script', html: htmlFile, src: ref, reason: 'remote fetch failed' });
+          return full;
+        }
+      } else {
+        target = resolveResource(publicDir, htmlFile, ref);
+        if (!target) {
+          reports.push({ type: 'missing', tag: 'script', html: htmlFile, src: ref });
+          return full;
+        }
+        computed = computeIntegrity(target);
       }
-      const computed = computeIntegrity(target);
       const attrs = (a1 + ' ' + a2);
       const existingMatch = attrs.match(/integrity=\"([^\"]*)\"/i) || attrs.match(/integrity=\'([^\']*)\'/i);
       const existingRaw = existingMatch ? decodeHtmlEntities(existingMatch[1]) : null;
@@ -96,9 +122,9 @@ function processHtmlFile(htmlFile, publicDir, options) {
       if (options.check) return full;
 
       // remove existing integrity and crossorigin then add
-      const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '').replace(/\s+crossorigin=\"[^\"]*\"/i, '').replace(/\s+crossorigin=\'[^\']*\'/i, '');
+  const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '').replace(/\s+crossorigin=\"[^\"]*\"/i, '').replace(/\s+crossorigin=\'[^\']*\'/i, '');
       changed = true;
-      return `<script${cleanedAttrs} src="${src}" integrity="${computed}" crossorigin="${crossoriginVal}">${inner}</script>`;
+  return `<script${cleanedAttrs} src="${src}" integrity="${computed}" crossorigin="${crossoriginVal}">${inner}</script>`;
     }
   );
 
@@ -109,15 +135,25 @@ function processHtmlFile(htmlFile, publicDir, options) {
       const relMatch = combined.match(/rel=["']([^"']+)["']/i) || combined.match(/rel=([^\s>]+)/i);
       if (!relMatch || !/stylesheet/i.test(relMatch[1])) return full;
       const ref = decodeHtmlEntities(href);
-      if (isRemote(ref)) return full;
       // ignore dev livereload if it ever appears here
       if (/livereload\.js/i.test(ref)) return full;
-      const target = resolveResource(publicDir, htmlFile, ref);
-      if (!target) {
-        reports.push({ type: 'missing', tag: 'link', html: htmlFile, src: ref });
-        return full;
+      let computed;
+      let target = null;
+      if (isRemote(ref)) {
+        try {
+          computed = computeIntegrity(ref);
+        } catch (e) {
+          reports.push({ type: 'missing', tag: 'link', html: htmlFile, src: ref, reason: 'remote fetch failed' });
+          return full;
+        }
+      } else {
+        target = resolveResource(publicDir, htmlFile, ref);
+        if (!target) {
+          reports.push({ type: 'missing', tag: 'link', html: htmlFile, src: ref });
+          return full;
+        }
+        computed = computeIntegrity(target);
       }
-      const computed = computeIntegrity(target);
       const existingMatch = combined.match(/integrity=\"([^\"]*)\"/i) || combined.match(/integrity=\'([^\']*)\'/i);
       const existingRaw = existingMatch ? decodeHtmlEntities(existingMatch[1]) : null;
       const cxMatch = combined.match(/crossorigin=\"([^\"]*)\"/i) || combined.match(/crossorigin=\'([^\']*)\'/i);
@@ -130,8 +166,8 @@ function processHtmlFile(htmlFile, publicDir, options) {
       if (options.check) return full;
 
       const cleanedAttrs = combined.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '').replace(/\s+crossorigin=\"[^\"]*\"/i, '').replace(/\s+crossorigin=\'[^\']*\'/i, '');
-      changed = true;
-      return `<link${cleanedAttrs} href="${href}" integrity="${computed}" crossorigin="${crossoriginVal}"/>`;
+  changed = true;
+  return `<link${cleanedAttrs} href="${href}" integrity="${computed}" crossorigin="${crossoriginVal}"/>`;
     }
   );
 
