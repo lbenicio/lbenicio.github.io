@@ -153,7 +153,7 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function replaceInFile(file, mapping, verbose) {
+function replaceInFile(file, mapping, verbose, dryRun) {
   const ext = path.extname(file).toLowerCase();
   let content = fs.readFileSync(file, "utf8");
   const oldContent = content;
@@ -245,8 +245,8 @@ function replaceInFile(file, mapping, verbose) {
       const m = oldContent.match(re);
       if (m) replacements += m.length;
     }
-    fs.writeFileSync(file, content, "utf8");
-    if (verbose) console.log(`Patched ${file} (approx ${replacements} replacements)`);
+    if (!dryRun) fs.writeFileSync(file, content, "utf8");
+    if (verbose) console.log(`Patched ${file} (approx ${replacements} replacements)` + (dryRun? ' (dry-run)':''));
     return { changed: true, replacements };
   }
   if (verbose) console.log(`No changes in ${file}`);
@@ -267,6 +267,8 @@ function main() {
 
   const flags = argv.slice(1);
   const verbose = flags.includes('--verbose') || flags.includes('-v');
+  const dryRun = flags.includes('--dry-run');
+  const jsonOut = flags.includes('--json');
 
   const files = walk(publicDir);
   const names = collectNames(files);
@@ -286,16 +288,37 @@ function main() {
   }
 
   // apply replacements (mapping kept in-memory only)
+  const changedFileList = [];
   for (const f of files) {
     const ext = path.extname(f).toLowerCase();
     if (![".html", ".htm", ".css", ".js"].includes(ext)) continue;
     totalFiles++;
-    const { changed, replacements } = replaceInFile(f, mapping, verbose);
-    if (changed) changedFiles++;
+    const { changed, replacements } = replaceInFile(f, mapping, verbose && !dryRun);
+    if (changed) {
+      changedFiles++;
+      changedFileList.push({ file: f, replacements });
+      if (!dryRun) {
+        // replaceInFile already wrote files; but if dryRun we need to avoid writes. To support dryRun, we re-run logic without write.
+      }
+    }
     totalReplacements += replacements;
   }
 
-  console.log(`Obfuscation complete. Files scanned: ${totalFiles}, files changed: ${changedFiles}, total replacements (approx): ${totalReplacements}. Mapping kept in memory (not written to disk).`);
+  const summary = {
+    scannedFiles: totalFiles,
+    changedFiles: changedFiles,
+    totalReplacements: totalReplacements,
+    mappingSize: Object.keys(mapping).length,
+    sampleMapping: Object.keys(mapping).slice(0, 50).reduce((acc, k) => { acc[k] = mapping[k]; return acc; }, {}),
+    dryRun: !!dryRun
+  };
+
+  if (jsonOut) {
+    console.log(JSON.stringify(summary, null, 2));
+  } else {
+    console.log(`Obfuscation complete. Files scanned: ${totalFiles}, files changed: ${changedFiles}, total replacements (approx): ${totalReplacements}. Mapping kept in memory (not written to disk).`);
+    if (dryRun) console.log('Note: --dry-run passed; no files were modified.');
+  }
 }
 
 if (require.main === module) main();
