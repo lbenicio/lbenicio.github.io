@@ -287,11 +287,28 @@ function transformCssContent(content, mapping) {
   return c;
 }
 
-function replaceInFile(file, mapping, verbose, dryRun) {
+function replaceInFile(file, mapping, assetRenameMap = {}, publicDir, verbose, dryRun) {
   const ext = path.extname(file).toLowerCase();
   let content = fs.readFileSync(file, "utf8");
   const oldContent = content;
   let replacements = 0;
+  // helper to resolve a reference (href/src/url) to a leading-slash path relative to publicDir
+  function refToLeadingSlash(htmlFile, ref) {
+    if (!ref) return null;
+    if (/^https?:\/\//i.test(ref) || /^\/\//.test(ref)) return null; // remote
+    // strip query/hash
+    const clean = ref.split('?')[0].split('#')[0];
+    // if absolute-like starting with /, use as-is
+    if (clean.startsWith('/')) return clean;
+    try {
+      const abs = path.resolve(path.dirname(htmlFile), clean);
+      if (!abs) return null;
+      const rel = '/' + path.relative(publicDir, abs).replace(/\\/g, '/');
+      return rel;
+    } catch (e) {
+      return null;
+    }
+  }
   // replace HTML attributes
   if (ext === ".html" || ext === ".htm") {
     // class='a b c' or class="a b c" or class=a -> map each
@@ -318,6 +335,17 @@ function replaceInFile(file, mapping, verbose, dryRun) {
         } catch (e) {
           return full; // leave as-is on error
         }
+      });
+    }
+    // rewrite src/href asset references using assetRenameMap when available
+    if (assetRenameMap && Object.keys(assetRenameMap).length) {
+      content = content.replace(/(?:src|href)\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi, (m, g1, g2, g3) => {
+        const val = g1 || g2 || g3 || '';
+        const lead = refToLeadingSlash(file, val);
+        const mapped = lead && assetRenameMap[lead] ? assetRenameMap[lead] : null;
+        if (!mapped) return m;
+        const quote = g1 ? '"' : g2 ? "'" : '"';
+        return m.replace(val, mapped).replace(/^(?:src|href)\s*=\s*/i, match => match);
       });
     }
   }
@@ -409,6 +437,19 @@ function replaceInFile(file, mapping, verbose, dryRun) {
         return `url(${urlPlaceholders[idx]})`;
       });
     }
+    // rewrite asset urls in CSS (only if assetRenameMap provided)
+    if (assetRenameMap && Object.keys(assetRenameMap).length) {
+      content = content.replace(/url\(([^)]+)\)/gi, (m, inner) => {
+        // strip quotes and whitespace
+        const raw = inner.trim().replace(/^['"]|['"]$/g, '');
+        const lead = refToLeadingSlash(file, raw);
+        const mapped = lead && assetRenameMap[lead] ? assetRenameMap[lead] : null;
+        if (!mapped) return m;
+        // ensure quoted style matches original if present
+        const quote = /^['"]/.test(inner.trim()) ? inner.trim()[0] : '"';
+        return `url(${quote}${mapped}${quote})`;
+      });
+    }
   }
   // JS replacements for common patterns
   if (ext === ".js") {
@@ -465,6 +506,16 @@ function replaceInFile(file, mapping, verbose, dryRun) {
       });
   }
 
+  // rewrite simple asset string references in JS: '/assets/...' or 'assets/...'
+  if (ext === '.js' && assetRenameMap && Object.keys(assetRenameMap).length) {
+    content = content.replace(/(['"])(\/?assets\/[a-zA-Z0-9_\-./]+)\1/g, (m, q, p) => {
+      const lead = refToLeadingSlash(file, p);
+      const mapped = lead && assetRenameMap[lead] ? assetRenameMap[lead] : null;
+      if (!mapped) return m;
+      return `${q}${mapped}${q}`;
+    });
+  }
+
   if (content !== oldContent) {
     // Count occurrences of original names in the old content using a safe separator-aware regex.
     for (const key of Object.keys(mapping)) {
@@ -473,6 +524,13 @@ function replaceInFile(file, mapping, verbose, dryRun) {
       const re = new RegExp("(^|[^A-Za-z0-9_-])" + escapeRegExp(name) + "($|[^A-Za-z0-9_-])", "gi");
       const m = oldContent.match(re);
       if (m) replacements += m.length;
+    }
+    // count asset renames occurrences
+    if (assetRenameMap && Object.keys(assetRenameMap).length) {
+      for (const oldRel of Object.keys(assetRenameMap)) {
+        const occurrences = (oldContent.split(oldRel).length - 1);
+        if (occurrences > 0) replacements += occurrences;
+      }
     }
     if (!dryRun) fs.writeFileSync(file, content, "utf8");
     if (verbose) console.log(`Patched ${file} (approx ${replacements} replacements)` + (dryRun? ' (dry-run)':''));
@@ -498,8 +556,12 @@ function main() {
   const verbose = flags.includes('--verbose') || flags.includes('-v');
   const dryRun = flags.includes('--dry-run');
   const jsonOut = flags.includes('--json');
+  const obfAssets = flags.includes('--assets') || flags.includes('--obfuscate-assets');
   // Default to full mode (include vendor/minified files) unless explicitly disabled with --no-full
   const forceFull = !flags.includes('--no-full');
+  const checkOnly = flags.includes('--check');
+  // When running in check mode we should not perform any writes/renames; treat as dry-run
+  const effectiveDryRun = dryRun || checkOnly;
 
   const allFiles = walk(publicDir);
 
@@ -538,6 +600,45 @@ function main() {
   const names = collectNames(files);
   const mapping = buildMapping(names, protectedSet);
 
+  // --- Asset filename obfuscation (optional) ---
+  // If enabled, rename files under public/assets (preserving directories) and
+  // update references in HTML/CSS/JS to the new names. Mapping kept in-memory.
+  const assetRenameMap = {}; // oldRel -> newRel (both leading slash paths)
+  if (obfAssets) {
+    // consider multiple possible asset roots inside the public dir
+    const candidateRoots = [
+      path.join(publicDir, 'assets'),
+      path.join(publicDir, 'static', 'static', 'images'),
+      path.join(publicDir, 'static', 'images')
+    ];
+    const allAssetFiles = [];
+    for (const root of candidateRoots) {
+      if (!fs.existsSync(root)) continue;
+      const found = walk(root).filter(p => fs.existsSync(p) && fs.statSync(p).isFile());
+      for (const ff of found) allAssetFiles.push(ff);
+    }
+    // dedupe
+    const assetFiles = Array.from(new Set(allAssetFiles));
+    if (verbose) console.log(`Preparing to obfuscate ${assetFiles.length} asset files under candidate roots: ${candidateRoots.filter(r=>fs.existsSync(r)).join(', ')}`);
+    for (const f of assetFiles) {
+      const rel = '/' + path.relative(publicDir, f).replace(/\\/g, '/');
+      const ext = path.extname(f);
+      const token = randToken(12);
+      const newName = token + ext;
+      const dest = path.join(path.dirname(f), newName);
+      const newRel = '/' + path.relative(publicDir, dest).replace(/\\/g, '/');
+  assetRenameMap[rel] = newRel;
+  if (verbose) console.log(`${effectiveDryRun? '[dry-run]':'[rename]'} ${rel} -> ${newRel}`);
+  if (!effectiveDryRun) {
+        try {
+          fs.renameSync(f, dest);
+        } catch (e) {
+          console.error('Failed to rename asset', f, e && e.message);
+        }
+      }
+    }
+  }
+
   let totalFiles = 0;
   let changedFiles = 0;
   let totalReplacements = 0;
@@ -546,9 +647,9 @@ function main() {
     console.log(`Scanning ${files.length} files in ${publicDir}`);
     console.log(`Found ${names.length} candidate names for obfuscation`);
     const keys = Object.keys(mapping);
-    console.log(`Mapping size: ${keys.length}`);
-    const sample = keys.slice(0, 20).map(k => `${k} -> ${mapping[k]}`);
-    if (sample.length) console.log('Sample mapping (first 20):', sample);
+  console.log(`Mapping size: ${keys.length}`);
+  const sample = keys.slice(0, 20).map(k => `${k} -> ${mapping[k]}`);
+  if (sample.length) console.log('Sample mapping (first 20):', sample);
   }
 
   // apply replacements (mapping kept in-memory only)
@@ -557,7 +658,7 @@ function main() {
     const ext = path.extname(f).toLowerCase();
     if (![".html", ".htm", ".css", ".js"].includes(ext)) continue;
     totalFiles++;
-    const { changed, replacements } = replaceInFile(f, mapping, verbose && !dryRun);
+  const { changed, replacements } = replaceInFile(f, mapping, assetRenameMap, publicDir, verbose && !effectiveDryRun, effectiveDryRun);
     if (changed) {
       changedFiles++;
       changedFileList.push({ file: f, replacements });
@@ -584,8 +685,8 @@ function main() {
   }
 
   // --- SRI recompute / fix step ---
-  const checkOnly = flags.includes('--check');
   const publicDirResolved = publicDir;
+
 
   function decodeHtmlEntities(str) {
     if (str == null) return str;
@@ -705,11 +806,26 @@ function main() {
     for (const k of Object.keys(sriSummary)) console.error(`  ${k}: ${sriSummary[k]}`);
   }
   if (checkOnly) {
+    const health = {
+      sriAnyMismatch: !!sriAnyMismatch,
+      sriSummary: sriSummary,
+      obfuscation: summary
+    };
+    if (jsonOut) {
+      console.log(JSON.stringify({ health }, null, 2));
+      process.exit(sriAnyMismatch ? 3 : 0);
+    }
+    // concise human-friendly health summary
+    console.error('\nHealth summary:');
+    console.error(`  SRI mismatches/missing: ${sriAnyMismatch ? 'YES' : 'NO'}`);
+    console.error(`  SRI details: ${Object.keys(sriSummary).map(k=>`${k}=${sriSummary[k]}`).join(', ')}`);
+    console.error(`  Obfuscation candidates: ${summary.mappingSize}, files that would change: ${summary.changedFiles}`);
     if (sriAnyMismatch) {
       console.error('\nSRI check: mismatches or missing integrity found.');
       process.exit(3);
     } else {
       console.error('\nSRI check: no actionable mismatches found.');
+      process.exit(0);
     }
   }
   // Final consolidated report (human table + summary) or JSON output
