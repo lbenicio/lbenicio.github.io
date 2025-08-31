@@ -25,7 +25,7 @@ function updateHtml(filePath, publicDir) {
   let changed = false;
 
   // script tags with src
-  content = content.replace(/<script([^>]*)src=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/script>/gi, (m, a1, src, a2, inner) => {
+  content = content.replace(/<script([^>]*)src=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi, (m, a1, src, a2, inner) => {
     if (/^\s*https?:\/\//i.test(src) || src.startsWith('//')) return m;
     let resPath = path.join(path.dirname(filePath), src);
     if (!fs.existsSync(resPath)) {
