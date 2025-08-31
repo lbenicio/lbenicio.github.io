@@ -36,19 +36,21 @@ function walk(dir) {
 function extractNamesFromHtml(content) {
   const names = new Set();
   // class="..."
-  for (const m of content.matchAll(/class\s*=\s*"([^"]+)"/gi)) {
-    for (const cls of m[1].split(/\s+/))
-      if (cls) names.add({ type: "class", name: cls });
+  // class can be double-quoted, single-quoted, or unquoted
+  for (const m of content.matchAll(/class\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi)) {
+    const raw = m[1] || m[2] || m[3] || '';
+    for (const cls of raw.split(/\s+/)) if (cls) names.add({ type: 'class', name: cls });
   }
   // id="..."
-  for (const m of content.matchAll(/id\s*=\s*"([^"]+)"/gi)) {
-    const id = m[1].trim();
-    if (id) names.add({ type: "id", name: id });
+  // id can be double-quoted, single-quoted, or unquoted
+  for (const m of content.matchAll(/id\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi)) {
+    const id = (m[1] || m[2] || m[3] || '').trim();
+    if (id) names.add({ type: 'id', name: id });
   }
   // data-attr (attribute NAMES, not values)
   for (const m of content.matchAll(/data-([a-zA-Z0-9_-]+)(?=\s*=|\s|>)/gi)) {
     const an = m[1].trim();
-    if (an) names.add({ type: "data", name: an });
+    if (an) names.add({ type: 'data', name: an });
   }
   return names;
 }
@@ -185,12 +187,8 @@ function buildMapping(names, protectedSet = new Set()) {
     // avoid obfuscating names that look like map keys or template tokens (simple heuristic)
     // keep a short, explicit allowlist to avoid touching common third-party/vendor names
     // NOTE: previous regex was overbroad (e.g. /^h-?\w/) and accidentally skipped many names.
-    const SKIP_REGEX = /^(?:post|page|nav|main|content|header|footer|container|row|col|fa(?:-|$)|fas|far|fab|icon)$/i;
-  if (SKIP_REGEX.test(it.name)) {
-      // keep some common semantic or vendor names - adjust this list if you need to preserve more
-      continue;
-    }
-  // never obfuscate names that are present in protected vendor/minified/static CSS
+  // Do not skip Tailwind or semantic names - obfuscate all tokens except those
+  // explicitly present in protected vendor/minified/static CSS.
   if (protectedSet && protectedSet.has(`${it.type}:${it.name}`)) continue;
   const prefix = it.type === "id" ? "i" : it.type === "class" ? "c" : "d";
   const token = prefix + randToken(6);
@@ -296,15 +294,20 @@ function replaceInFile(file, mapping, verbose, dryRun) {
   let replacements = 0;
   // replace HTML attributes
   if (ext === ".html" || ext === ".htm") {
-    // class="a b c" -> map each
-    content = content.replace(/class\s*=\s*"([^"]+)"/gi, (m, group) => {
-      const parts = group
-        .split(/\s+/)
-        .map((p) => (p ? mapping[`class:${p}`] || p : p));
-      return `class="${parts.join(" ").trim()}"`;
+    // class='a b c' or class="a b c" or class=a -> map each
+    content = content.replace(/class\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi, (m, g1, g2, g3) => {
+      const group = g1 || g2 || g3 || '';
+      const parts = group.split(/\s+/).map((p) => (p ? mapping[`class:${p}`] || p : p));
+      // preserve original quoting style when possible
+      const quote = g1 ? '"' : g2 ? "'" : '"';
+      return `class=${quote}${parts.join(' ').trim()}${quote}`;
     });
-    content = content.replace(/id\s*=\s*"([^"]+)"/gi, (m, group) => {
-      return `id="${mapping[`id:${group.trim()}`] || group.trim()}"`;
+    // id replacements: handle double/single/unquoted
+    content = content.replace(/id\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/gi, (m, g1, g2, g3) => {
+      const val = (g1 || g2 || g3 || '').trim();
+      const replaced = mapping[`id:${val}`] || val;
+      const quote = g1 ? '"' : g2 ? "'" : '"';
+      return `id=${quote}${replaced}${quote}`;
     });
     // transform inline <style> blocks so CSS selectors inside them are rewritten
     if (/<style[\s>]/i.test(content)) {
