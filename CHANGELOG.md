@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
+## [1.5.0] - 2025-08-31
+
+### Added
+
+- Asset filename obfuscation support (`--assets`) now includes files under `public/assets` and static image paths (`public/static/images` and `public/static/static/images`). When enabled the script renames files in-place (or reports planned renames in `--dry-run`/`--check`).
+- Health check output for `--check`: prints a concise health summary and exits with 0 (pass) or 3 (fail); `--check` now implies a dry-run.
+
+### Changed
+
+- `package.json` minor version bumped to `1.5.0`.
+
 ## [1.4.3] - 2025-08-31
 
 ### Added
