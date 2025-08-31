@@ -256,7 +256,7 @@ function replaceInFile(file, mapping, verbose) {
 function main() {
   const argv = process.argv.slice(2);
   if (argv.length < 1) {
-    console.error("Usage: obfuscate.js <public_dir> [--verbose|-v]");
+    console.error("Usage: obfuscate.js <public_dir> [--check] [--verbose|-v]");
     process.exit(2);
   }
   const publicDir = path.resolve(argv[0]);
@@ -265,11 +265,12 @@ function main() {
     process.exit(2);
   }
 
+  const flags = argv.slice(1);
+  const verbose = flags.includes('--verbose') || flags.includes('-v');
+
   const files = walk(publicDir);
   const names = collectNames(files);
   const mapping = buildMapping(names);
-
-  const verbose = argv.includes("--verbose") || argv.includes("-v");
 
   let totalFiles = 0;
   let changedFiles = 0;
@@ -278,9 +279,6 @@ function main() {
   if (verbose) {
     console.log(`Scanning ${files.length} files in ${publicDir}`);
     console.log(`Found ${names.length} candidate names for obfuscation`);
-  }
-
-  if (verbose) {
     const keys = Object.keys(mapping);
     console.log(`Mapping size: ${keys.length}`);
     const sample = keys.slice(0, 20).map(k => `${k} -> ${mapping[k]}`);
