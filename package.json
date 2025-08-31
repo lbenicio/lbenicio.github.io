@@ -4,8 +4,13 @@
   "description": "A minimal website/blog theme for developers. It is a simple and clean theme for developers who want to showcase their work and write about their experiences.",
   "scripts": {
     "start:dev": "hugo server --buildDrafts --buildFuture --buildExpired",
-    "build:prod": "hugo --minify",
-    "build:obfuscate": "node scripts/obfuscate.js ./public",
+    "build:hugo": "hugo --minify",
+    "build:obfuscate": "node scripts/obfuscate.js ./public --verbose",
+    "build:prod": "npm run build:hugo && npm run build:obfuscate",
+    "clear:build": "rm -rf ./public",
+    "clear:deps": "rm -rf ./node_modules",
+    "clear:cache": "rm -rf resources && rm -rf .hugo_build.lock",
+    "clear:all": "npm run clear:build && npm run clear:cache && npm run clear:deps",
     "test:all": "grunt",
     "test:perf": "grunt perf-tests",
     "test:lint": "grunt htmllint",
@@ -30,6 +35,7 @@
     "postcss": "^8.5.3",
     "postcss-cli": "^11.0.1",
     "postcss-import": "^16.1.0",
+    "postcss-selector-parser": "^7.0.2",
     "tailwindcss": "^3.4.17"
   },
   "overrides": {

@@ -3,7 +3,6 @@
     "public/": true,
     "resources/**": true,
     "node_modules/": true,
-    "src/resources/": true,
     ".hugo_build.lock": true
   },
   "search.exclude": {

@@ -6,6 +6,14 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+let postcss = null;
+let selectorParser = null;
+try {
+  postcss = require('postcss');
+  selectorParser = require('postcss-selector-parser');
+} catch (e) {
+  // postcss or selector parser may not be installed; script will fall back to regex-based replacement
+}
 
 function randToken(n = 8) {
   return crypto
@@ -47,16 +55,61 @@ function extractNamesFromHtml(content) {
 
 function extractNamesFromCss(content) {
   const names = new Set();
-  // match selectors (dot/hash) that appear at selector boundaries (start, whitespace, comma or combinator)
-  // this avoids accidentally capturing file extensions inside url(...) or other places
-  for (const m of content.matchAll(/(^|[\s,>+~])\.([a-zA-Z0-9_-]+)/g))
-    names.add({ type: "class", name: m[2] });
-  // #id selector at selector boundaries
-  for (const m of content.matchAll(/(^|[\s,>+~])#([a-zA-Z0-9_-]+)/g))
-    names.add({ type: "id", name: m[2] });
-  // attribute selectors for data-*
-  for (const m of content.matchAll(/\[data-([a-zA-Z0-9_-]+)(?:[^\]]*)\]/g))
-    names.add({ type: "data", name: m[1] });
+  // Prefer AST-based extraction using PostCSS + selector parser when available. This avoids
+  // picking up tokens from inside declaration bodies (e.g. property values) and correctly
+  // handles escaped selectors (Tailwind-style).
+  if (postcss && selectorParser) {
+    try {
+      const root = postcss.parse(content, { from: undefined });
+      root.walkRules(rule => {
+        if (!rule.selector) return;
+        try {
+          selectorParser(selectors => {
+            selectors.walk(node => {
+              if (node.type === 'class') names.add({ type: 'class', name: node.value });
+              if (node.type === 'id') names.add({ type: 'id', name: node.value });
+              if (node.type === 'attribute') {
+                const attr = node.attribute || '';
+                if (/^data-/i.test(attr)) names.add({ type: 'data', name: attr.slice(5) });
+              }
+            });
+          }).processSync(rule.selector);
+        } catch (e) {
+          // ignore selector parse errors per-rule
+        }
+      });
+      return names;
+    } catch (e) {
+      // fall through to safer regex fallback below
+    }
+  }
+
+  // Regex fallback: only inspect selector blocks (text before the opening '{') to avoid
+  // matching tokens inside property values. This reduces false positives from minified
+  // or vendor files when PostCSS isn't available.
+  const selectorBlockRe = /([^{}]+)\{/g;
+  let sbm;
+  while ((sbm = selectorBlockRe.exec(content)) !== null) {
+    const selectorPart = sbm[1];
+    // class selectors (simple unescape for backslash-escaped chars)
+    const classRe = /(?:^|[\s,>+~])\.((?:\\.|[^\\\s\.|,>+~\[:])+)/g;
+    let m;
+    while ((m = classRe.exec(selectorPart)) !== null) {
+      const raw = m[1];
+      const name = raw.replace(/\\([\s\S])/g, '$1');
+      names.add({ type: 'class', name });
+    }
+    const idRe = /(?:^|[\s,>+~])#((?:\\.|[^\\\s\#{,>+~\[:])+)/g;
+    while ((m = idRe.exec(selectorPart)) !== null) {
+      const raw = m[1];
+      const name = raw.replace(/\\([\s\S])/g, '$1');
+      names.add({ type: 'id', name });
+    }
+    for (const mm of selectorPart.matchAll(/\[\s*data-([a-zA-Z0-9_\-]+)(?:[^\]]*)\]/g)) {
+      names.add({ type: 'data', name: mm[1] });
+    }
+  }
+
   return names;
 }
 
@@ -124,25 +177,28 @@ function collectNames(files) {
     if (ext === ".css") found = normalizeSet(extractNamesFromCss(content));
     if (ext === ".js") found = normalizeSet(extractNamesFromJs(content));
     for (const it of found) {
-      const key = `${it.type}:${it.name}`;
-      if (!map.has(key)) map.set(key, it);
+  // ignore names that already look like obfuscated tokens (e.g. c1a2b3)
+  if (/^[cid][0-9a-f]{4,}$/i.test(it.name)) continue;
+  const key = `${it.type}:${it.name}`;
+  if (!map.has(key)) map.set(key, it);
     }
   }
   return Array.from(map.values());
 }
 
-function buildMapping(names) {
+function buildMapping(names, protectedSet = new Set()) {
   const mapping = {};
   for (const it of names) {
     // avoid obfuscating names that look like map keys or template tokens (simple heuristic)
-    if (
-      /^h-?\w|^post|^page|^nav|^main|^content|^header|^footer|^container|^row|^col|^fa|^icon/.test(
-        it.name
-      )
-    ) {
-      // keep some common semantic names - optional: you can remove this filter
+    // keep a short, explicit allowlist to avoid touching common third-party/vendor names
+    // NOTE: previous regex was overbroad (e.g. /^h-?\w/) and accidentally skipped many names.
+    const SKIP_REGEX = /^(?:post|page|nav|main|content|header|footer|container|row|col|fa(?:-|$)|fas|far|fab|icon)$/i;
+  if (SKIP_REGEX.test(it.name)) {
+      // keep some common semantic or vendor names - adjust this list if you need to preserve more
       continue;
     }
+  // never obfuscate names that are present in protected vendor/minified/static CSS
+  if (protectedSet && protectedSet.has(`${it.type}:${it.name}`)) continue;
   const prefix = it.type === "id" ? "i" : it.type === "class" ? "c" : "d";
   const token = prefix + randToken(6);
     mapping[`${it.type}:${it.name}`] = token;
@@ -174,15 +230,92 @@ function replaceInFile(file, mapping, verbose, dryRun) {
   }
   // CSS selectors
   if (ext === ".css") {
-    // Avoid touching url(...) contents and file paths. Replace selectors only.
-    // Replace class selectors that appear at selector boundaries: (^|\s|,|>|\+|~)\.name
-    content = content.replace(/(^|[\s,>+~])\.([a-zA-Z0-9_-]+)/g, (m, prefix, name) => {
-      return prefix + "." + (mapping[`class:${name}`] || name);
-    });
-    // Replace id selectors at selector boundaries
-    content = content.replace(/(^|[\s,>+~])#([a-zA-Z0-9_-]+)/g, (m, prefix, name) => {
-      return prefix + "#" + (mapping[`id:${name}`] || name);
-    });
+    // Prefer AST-based selector rewriting using PostCSS + postcss-selector-parser for correctness.
+    if (postcss && selectorParser) {
+      try {
+        const root = postcss.parse(content, { from: undefined });
+        root.walkRules(rule => {
+          if (!rule.selector) return;
+          try {
+            const transformed = selectorParser(selectors => {
+              selectors.walk(node => {
+                // class node
+                if (node.type === 'class') {
+                  const name = node.value;
+                  const mapped = mapping[`class:${name}`];
+                  if (mapped) node.value = mapped;
+                }
+                // id node
+                if (node.type === 'id') {
+                  const name = node.value;
+                  const mapped = mapping[`id:${name}`];
+                  if (mapped) node.value = mapped;
+                }
+                // attribute node -- handle [data-foo] selectors
+                if (node.type === 'attribute') {
+                  const attr = node.attribute;
+                  if (/^data-/i.test(attr)) {
+                    const dataName = attr.slice(5);
+                    const mapped = mapping[`data:${dataName}`];
+                    if (mapped) node.attribute = 'data-' + mapped;
+                  }
+                }
+              });
+            }).processSync(rule.selector);
+            rule.selector = transformed;
+          } catch (err) {
+            // selector parser may fail on odd minified selectors; skip transformation for this rule
+          }
+        });
+        content = root.toString();
+      } catch (e) {
+        // parsing failed: fall back to previous regex-based handling below
+      }
+    }
+
+    // If content still unchanged or postcss not available, keep previous regex-based fallback
+    if (!postcss || !selectorParser || (postcss && selectorParser && content == fs.readFileSync(file, 'utf8'))) {
+      // Mask url(...) contents so path fragments aren't modified.
+      const urlPlaceholders = [];
+      content = content.replace(/url\(([^)]+)\)/gi, (m, inner) => {
+        const token = `__URL_PLACEHOLDER_${urlPlaceholders.length}__`;
+        urlPlaceholders.push(inner);
+        return `url(${token})`;
+      });
+
+      function cssEscapePatternForName(name) {
+        return name.split('').map(ch => {
+          if (/^[A-Za-z0-9_-]$/.test(ch)) return escapeRegExp(ch);
+          return '(?:\\\\)?' + escapeRegExp(ch);
+        }).join('');
+      }
+
+      const classKeys = Object.keys(mapping).filter(k => k.startsWith('class:'));
+      const idKeys = Object.keys(mapping).filter(k => k.startsWith('id:'));
+
+      content = content.replace(/([^{}]+)\{([^}]*)\}/g, (full, selectorPart, body) => {
+        let sel = selectorPart;
+        for (const k of classKeys) {
+          const name = k.split(':')[1];
+          const pat = cssEscapePatternForName(name);
+          const re = new RegExp('(^|[\\s,>+~])\\.(' + pat + ')','g');
+          sel = sel.replace(re, (m, prefix, matched) => prefix + '.' + (mapping[`class:${name}`] || matched));
+        }
+        for (const k of idKeys) {
+          const name = k.split(':')[1];
+          const pat = cssEscapePatternForName(name);
+          const re = new RegExp('(^|[\\s,>+~])#(' + pat + ')','g');
+          sel = sel.replace(re, (m, prefix, matched) => prefix + '#' + (mapping[`id:${name}`] || matched));
+        }
+        return sel + '{' + body + '}';
+      });
+
+      // restore url(...) placeholders
+      content = content.replace(/url\((__URL_PLACEHOLDER_[0-9]+__)\)/g, (m, token) => {
+        const idx = Number(token.replace(/[^0-9]/g, ''));
+        return `url(${urlPlaceholders[idx]})`;
+      });
+    }
   }
   // JS replacements for common patterns
   if (ext === ".js") {
@@ -272,6 +405,7 @@ function main() {
   const verbose = flags.includes('--verbose') || flags.includes('-v');
   const dryRun = flags.includes('--dry-run');
   const jsonOut = flags.includes('--json');
+  const forceFull = flags.includes('--full') || flags.includes('--force');
 
   const allFiles = walk(publicDir);
 
@@ -279,17 +413,36 @@ function main() {
     const rel = path.relative(publicDir, f).replace(/\\/g, '/');
     // never touch files under the public static tree (these are raw assets)
     if (rel === 'static' || rel.startsWith('static/') || rel.indexOf('/static/') !== -1) return true;
-    // skip vendor directories (often contain third-party assets with their own paths)
-    if (rel.indexOf('/vendor/') !== -1 || rel.startsWith('vendor/')) return true;
-    // skip minified CSS files to avoid touching filename fragments; this protects hashed filenames
-    if (path.extname(f).toLowerCase() === '.css' && path.basename(f).indexOf('.min.') !== -1) return true;
+    // skip vendor/minified only when not running in full/force mode
+    if (!forceFull) {
+      // skip vendor directories (often contain third-party assets with their own paths)
+      if (rel.indexOf('/vendor/') !== -1 || rel.startsWith('vendor/')) return true;
+      // skip minified CSS files to avoid touching filename fragments; this protects hashed filenames
+      if (path.extname(f).toLowerCase() === '.css' && path.basename(f).indexOf('.min.') !== -1) return true;
+    }
     return false;
   }
 
   const files = allFiles.filter(f => !isSkippable(f));
-  if (verbose) console.log(`Skipping ${allFiles.length - files.length} files due to skip rules (vendor/minified/static)`);
+  if (verbose) console.log(`Skipping ${allFiles.length - files.length} files due to skip rules (vendor/minified/static)` + (forceFull? ' (force/full mode ON: vendor/minified included)':''));
+  // Build a set of protected names that appear in skipped CSS files (vendor/minified/static).
+  // These names should not be obfuscated because their definitions live in untouched vendor CSS.
+  const protectedSet = new Set();
+  for (const f of allFiles) {
+    if (!isSkippable(f)) continue;
+    const ext = path.extname(f).toLowerCase();
+    if (ext !== '.css') continue;
+    try {
+      const content = fs.readFileSync(f, 'utf8');
+      const found = normalizeSet(extractNamesFromCss(content));
+      for (const it of found) protectedSet.add(`${it.type}:${it.name}`);
+    } catch (e) {
+      // ignore read errors for protected files
+    }
+  }
+
   const names = collectNames(files);
-  const mapping = buildMapping(names);
+  const mapping = buildMapping(names, protectedSet);
 
   let totalFiles = 0;
   let changedFiles = 0;
