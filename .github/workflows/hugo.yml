@@ -68,9 +68,6 @@ jobs:
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Obfuscate classes/ids in generated site
-        # Temporarily disabled because production CSS is currently broken by the post-build obfuscator.
-        # Re-enable after hardening `scripts/obfuscate.js` to skip vendor/minified assets.
-        if: false
         run: |
           echo "Running HTML/CSS/JS obfuscator (in-memory mapping)..."
           node scripts/obfuscate.js ./public --verbose
