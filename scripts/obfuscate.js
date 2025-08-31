@@ -83,104 +83,97 @@ function extractNamesFromCss(content) {
       // fall through to safer regex fallback below
     }
   }
-
   // Regex fallback: only inspect selector blocks (text before the opening '{') to avoid
   // matching tokens inside property values. This reduces false positives from minified
   // or vendor files when PostCSS isn't available.
   const selectorBlockRe = /([^{}]+)\{/g;
-  let sbm;
-  while ((sbm = selectorBlockRe.exec(content)) !== null) {
-    const selectorPart = sbm[1];
-    // class selectors (simple unescape for backslash-escaped chars)
-    const classRe = /(?:^|[\s,>+~])\.((?:\\.|[^\\\s\.|,>+~\[:])+)/g;
-    let m;
-    while ((m = classRe.exec(selectorPart)) !== null) {
-      const raw = m[1];
-      const name = raw.replace(/\\([\s\S])/g, '$1');
-      names.add({ type: 'class', name });
+  let m;
+  while ((m = selectorBlockRe.exec(content)) !== null) {
+    const selectorPart = m[1];
+    // find class selectors
+    for (const cm of selectorPart.matchAll(/\.([A-Za-z0-9_-]+)/g)) {
+      names.add({ type: 'class', name: cm[1] });
     }
-    const idRe = /(?:^|[\s,>+~])#((?:\\.|[^\\\s\#{,>+~\[:])+)/g;
-    while ((m = idRe.exec(selectorPart)) !== null) {
-      const raw = m[1];
-      const name = raw.replace(/\\([\s\S])/g, '$1');
-      names.add({ type: 'id', name });
+    // find id selectors
+    for (const im of selectorPart.matchAll(/#([A-Za-z0-9_-]+)/g)) {
+      names.add({ type: 'id', name: im[1] });
     }
-    for (const mm of selectorPart.matchAll(/\[\s*data-([a-zA-Z0-9_\-]+)(?:[^\]]*)\]/g)) {
-      names.add({ type: 'data', name: mm[1] });
+    // find [data-*] attribute selectors
+    for (const am of selectorPart.matchAll(/\[\s*data-([A-Za-z0-9_-]+)/g)) {
+      names.add({ type: 'data', name: am[1] });
     }
   }
 
   return names;
 }
 
-function extractNamesFromJs(content) {
-  const names = new Set();
-  // document.getElementById('id') or getElementsByClassName('cls') or querySelector('.cls'/'#id')
-  for (const m of content.matchAll(
-    /getElementById\(['\"]([a-zA-Z0-9_-]+)['\"]\)/g
-  ))
-    names.add({ type: "id", name: m[1] });
-  for (const m of content.matchAll(
-    /getElementsByClassName\(['\"]([a-zA-Z0-9_ -]+)['\"]\)/g
-  )) {
-    for (const cls of m[1].split(/\s+/))
-      if (cls) names.add({ type: "class", name: cls });
-  }
-  for (const m of content.matchAll(
-    /querySelector(All)?\s*\(\s*['\"]([^'\"]+)['\"]\s*\)/g
-  )) {
-    const sel = m[2];
-    // only simple selectors: .class or #id
-    if (sel.startsWith(".")) names.add({ type: "class", name: sel.slice(1) });
-    else if (sel.startsWith("#")) names.add({ type: "id", name: sel.slice(1) });
-  }
-  // getAttribute/setAttribute with data-*
-  for (const m of content.matchAll(/getAttribute\(\s*['\"]data-([a-zA-Z0-9_-]+)['\"]\s*\)/g))
-    names.add({ type: "data", name: m[1] });
-  for (const m of content.matchAll(/setAttribute\(\s*['\"]data-([a-zA-Z0-9_-]+)['\"]\s*,/g))
-    names.add({ type: "data", name: m[1] });
-  // dataset.prop accesses -> convert prop to kebab-case and add as data attr
-  for (const m of content.matchAll(/\.dataset\.([A-Za-z0-9_$]+)/g)) {
-    const prop = m[1];
-    // convert camelCase to kebab-case: fooBar -> foo-bar
-    const kebab = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
-    names.add({ type: "data", name: kebab });
-  }
-  return names;
-}
-
-function normalizeSet(set) {
-  // convert set of objects (since we used Set for uniqueness) back to array of names
+// Normalize a Set/Array of {type,name} items into a de-duplicated Array
+function normalizeSet(items) {
   const map = new Map();
-  for (const it of set) {
-    if (!it) continue;
+  if (!items) return [];
+  for (const it of items) {
+    if (!it || !it.type || !it.name) continue;
     const key = `${it.type}:${it.name}`;
-    map.set(key, it);
+    if (!map.has(key)) map.set(key, { type: it.type, name: it.name });
   }
   return Array.from(map.values());
 }
 
+function extractNamesFromJs(content) {
+  const names = new Set();
+  if (!content) return names;
+  // getElementById('foo')
+  for (const m of content.matchAll(/getElementById\(['"]([A-Za-z0-9_-]+)['"]\)/g)) {
+    names.add({ type: 'id', name: m[1] });
+  }
+  // getElementsByClassName('a b')
+  for (const m of content.matchAll(/getElementsByClassName\(['"]([A-Za-z0-9_ -]+)['"]\)/g)) {
+    for (const p of m[1].split(/\s+/)) if (p) names.add({ type: 'class', name: p });
+  }
+  // querySelector('...') and querySelectorAll('...') - extract simple selectors
+  for (const m of content.matchAll(/querySelector(All)?\s*\(\s*['"]([^'"]+)['"]\s*\)/g)) {
+    const sel = m[2];
+    for (const cm of sel.matchAll(/\.([A-Za-z0-9_-]+)/g)) names.add({ type: 'class', name: cm[1] });
+    for (const im of sel.matchAll(/#([A-Za-z0-9_-]+)/g)) names.add({ type: 'id', name: im[1] });
+    for (const am of sel.matchAll(/\[\s*data-([A-Za-z0-9_-]+)/g)) names.add({ type: 'data', name: am[1] });
+  }
+  // getAttribute('data-foo') and setAttribute('data-foo', ...)
+  for (const m of content.matchAll(/getAttribute\(\s*['"]data-([A-Za-z0-9_-]+)['"]\s*\)/g)) names.add({ type: 'data', name: m[1] });
+  for (const m of content.matchAll(/setAttribute\(\s*['"]data-([A-Za-z0-9_-]+)['"]\s*,/g)) names.add({ type: 'data', name: m[1] });
+  // dataset.prop usage -> convert camelCase prop to kebab-case
+  for (const m of content.matchAll(/\.dataset\.([A-Za-z0-9_$]+)/g)) {
+    const prop = m[1];
+    const kebab = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+    names.add({ type: 'data', name: kebab });
+  }
+  return names;
+}
+
 function collectNames(files) {
-  const map = new Map(); // key -> {type,name}
+  const map = new Map();
   for (const f of files) {
     const ext = path.extname(f).toLowerCase();
-    if (![".html", ".htm", ".css", ".js"].includes(ext)) continue;
-    let content = "";
-    try {
-      content = fs.readFileSync(f, "utf8");
-    } catch (e) {
-      continue;
+    let content = null;
+    try { content = fs.readFileSync(f, 'utf8'); } catch (e) { continue; }
+    let found = new Set();
+    if (ext === '.html' || ext === '.htm') {
+      found = extractNamesFromHtml(content);
+      // also extract names from inline <style> blocks inside HTML
+      for (const sm of content.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)) {
+        const css = sm[1] || '';
+        for (const it of normalizeSet(extractNamesFromCss(css))) {
+          found.add(it);
+        }
+      }
     }
-    let found = [];
-    if (ext === ".html" || ext === ".htm")
-      found = normalizeSet(extractNamesFromHtml(content));
-    if (ext === ".css") found = normalizeSet(extractNamesFromCss(content));
-    if (ext === ".js") found = normalizeSet(extractNamesFromJs(content));
-    for (const it of found) {
-  // ignore names that already look like obfuscated tokens (e.g. c1a2b3)
-  if (/^[cid][0-9a-f]{4,}$/i.test(it.name)) continue;
-  const key = `${it.type}:${it.name}`;
-  if (!map.has(key)) map.set(key, it);
+    else if (ext === '.css') found = extractNamesFromCss(content);
+    else if (ext === '.js') found = extractNamesFromJs(content);
+    const norm = normalizeSet(found);
+    for (const it of norm) {
+      // ignore names that already look like obfuscated tokens (e.g. c1a2b3)
+      if (/^[cid][0-9a-f]{4,}$/i.test(it.name)) continue;
+      const key = `${it.type}:${it.name}`;
+      if (!map.has(key)) map.set(key, it);
     }
   }
   return Array.from(map.values());
@@ -210,6 +203,92 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function transformCssContent(content, mapping) {
+  // Accepts raw CSS text and returns transformed CSS with selectors rewritten
+  // using PostCSS+selector parser when available, otherwise the safer regex fallback.
+  let out = content;
+  if (postcss && selectorParser) {
+    try {
+      const root = postcss.parse(out, { from: undefined });
+      root.walkRules(rule => {
+        if (!rule.selector) return;
+        try {
+          const transformed = selectorParser(selectors => {
+            selectors.walk(node => {
+              if (node.type === 'class') {
+                const mapped = mapping[`class:${node.value}`];
+                if (mapped) node.value = mapped;
+              }
+              if (node.type === 'id') {
+                const mapped = mapping[`id:${node.value}`];
+                if (mapped) node.value = mapped;
+              }
+              if (node.type === 'attribute') {
+                const attr = node.attribute || '';
+                if (/^data-/i.test(attr)) {
+                  const dataName = attr.slice(5);
+                  const mapped = mapping[`data:${dataName}`];
+                  if (mapped) node.attribute = 'data-' + mapped;
+                }
+              }
+            });
+          }).processSync(rule.selector);
+          rule.selector = transformed;
+        } catch (e) {
+          // ignore per-rule selector parse errors
+        }
+      });
+      out = root.toString();
+      return out;
+    } catch (e) {
+      // fall back to regex below
+    }
+  }
+
+  // Regex fallback: operate only on selector blocks to avoid touching declarations
+  const urlPlaceholders = [];
+  let c = out.replace(/url\(([^)]+)\)/gi, (m, inner) => {
+    const token = `__URL_PLACEHOLDER_${urlPlaceholders.length}__`;
+    urlPlaceholders.push(inner);
+    return `url(${token})`;
+  });
+
+  function cssEscapePatternForName(name) {
+    return name.split('').map(ch => {
+      if (/^[A-Za-z0-9_-]$/.test(ch)) return escapeRegExp(ch);
+      return '(?:\\\\)?' + escapeRegExp(ch);
+    }).join('');
+  }
+
+  const classKeys = Object.keys(mapping).filter(k => k.startsWith('class:'));
+  const idKeys = Object.keys(mapping).filter(k => k.startsWith('id:'));
+
+  c = c.replace(/([^{}]+)\{([^}]*)\}/g, (full, selectorPart, body) => {
+    let sel = selectorPart;
+    for (const k of classKeys) {
+      const name = k.split(':')[1];
+      const pat = cssEscapePatternForName(name);
+      const re = new RegExp('(^|[\\s,>+~])\\.(' + pat + ')','g');
+      sel = sel.replace(re, (m, prefix, matched) => prefix + '.' + (mapping[`class:${name}`] || matched));
+    }
+    for (const k of idKeys) {
+      const name = k.split(':')[1];
+      const pat = cssEscapePatternForName(name);
+      const re = new RegExp('(^|[\\s,>+~])#(' + pat + ')','g');
+      sel = sel.replace(re, (m, prefix, matched) => prefix + '#' + (mapping[`id:${name}`] || matched));
+    }
+    return sel + '{' + body + '}';
+  });
+
+  // restore url placeholders
+  c = c.replace(/url\((__URL_PLACEHOLDER_[0-9]+__)\)/g, (m, token) => {
+    const idx = Number(token.replace(/[^0-9]/g, ''));
+    return `url(${urlPlaceholders[idx]})`;
+  });
+
+  return c;
+}
+
 function replaceInFile(file, mapping, verbose, dryRun) {
   const ext = path.extname(file).toLowerCase();
   let content = fs.readFileSync(file, "utf8");
@@ -227,6 +306,17 @@ function replaceInFile(file, mapping, verbose, dryRun) {
     content = content.replace(/id\s*=\s*"([^"]+)"/gi, (m, group) => {
       return `id="${mapping[`id:${group.trim()}`] || group.trim()}"`;
     });
+    // transform inline <style> blocks so CSS selectors inside them are rewritten
+    if (/<style[\s>]/i.test(content)) {
+      content = content.replace(/<style([^>]*)>([\s\S]*?)<\/style>/gi, (full, attrs, css) => {
+        try {
+          const transformed = transformCssContent(css, mapping);
+          return `<style${attrs}>${transformed}</style>`;
+        } catch (e) {
+          return full; // leave as-is on error
+        }
+      });
+    }
   }
   // CSS selectors
   if (ext === ".css") {

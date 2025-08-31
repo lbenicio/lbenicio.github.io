@@ -10,6 +10,7 @@
     "clear:build": "rm -rf ./public",
     "clear:deps": "rm -rf ./node_modules",
     "clear:cache": "rm -rf resources && rm -rf .hugo_build.lock",
+    "clear:hugo": "npm run clear:build && npm run clear:cache",
     "clear:all": "npm run clear:build && npm run clear:cache && npm run clear:deps",
     "test:all": "grunt",
     "test:perf": "grunt perf-tests",
