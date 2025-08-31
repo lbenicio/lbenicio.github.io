@@ -1,0 +1,30 @@
+{
+  "files.exclude": {
+    "public/": true,
+    "resources/**": true,
+    "node_modules/": true,
+    "src/resources/": true,
+    ".hugo_build.lock": true
+  },
+  "search.exclude": {
+    "public/**": true,
+    "resources/**": true,
+    "node_modules/**": true,
+    ".hugo_build.lock": true
+  },
+  "files.watcherExclude": {
+    "public/**": true,
+    "resources/**": true,
+    "node_modules/**": true,
+    ".hugo_build.lock": true
+  },
+  "editor.formatOnSave": false,
+  "editor.tabSize": 2,
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "yaml.schemaStore.enable": false,
+  "terminal.integrated.env.osx": {
+    "SASS_PATH": "${workspaceFolder}/node_modules"
+  }
+}

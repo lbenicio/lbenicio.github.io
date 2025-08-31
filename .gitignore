@@ -8,12 +8,3 @@ node_modules
 
 # macOS
 .DS_Store
-
-# tmp
-tmp
-
-# VS Code
-.vscode
-
-# environemnt
-.env
