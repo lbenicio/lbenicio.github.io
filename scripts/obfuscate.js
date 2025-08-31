@@ -319,6 +319,137 @@ function main() {
     console.log(`Obfuscation complete. Files scanned: ${totalFiles}, files changed: ${changedFiles}, total replacements (approx): ${totalReplacements}. Mapping kept in memory (not written to disk).`);
     if (dryRun) console.log('Note: --dry-run passed; no files were modified.');
   }
+
+  // --- SRI recompute / fix step ---
+  const checkOnly = flags.includes('--check');
+  const publicDirResolved = publicDir;
+
+  function decodeHtmlEntities(str) {
+    if (str == null) return str;
+    str = str.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
+    str = str.replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)));
+    str = str.replace(/&#43;/g, '+');
+    return str.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  }
+
+  function isRemote(url) { if (!url) return false; return /^\s*https?:\/\//i.test(url) || url.startsWith('//'); }
+
+  function computeIntegrityForFile(filePath) {
+    try {
+      const buf = fs.readFileSync(filePath);
+      const hash = crypto.createHash('sha256').update(buf).digest('base64');
+      return `sha256-${hash}`;
+    } catch (e) { throw e; }
+  }
+
+  function resolveResource(publicDir, htmlFile, ref) {
+    if (!ref) return null;
+    ref = decodeHtmlEntities(ref).split('?')[0].split('#')[0];
+    if (/livereload\.js/i.test(ref)) return null;
+    let candidate = path.resolve(path.dirname(htmlFile), ref);
+    if (fs.existsSync(candidate)) return candidate;
+    if (ref.startsWith('/')) {
+      candidate = path.join(publicDir, ref.replace(/^\//, ''));
+      if (fs.existsSync(candidate)) return candidate;
+    }
+    return null;
+  }
+
+  function processHtmlSRI(htmlFile) {
+    let content = fs.readFileSync(htmlFile, 'utf8');
+    let changed = false;
+    const details = [];
+
+    // script tags
+    content = content.replace(/<script([^>]*)\s+src=(['"])?([^'"\s>]+)\2([^>]*)>([\s\S]*?)<\/script>/gi,
+      (full, before, q, src, after, inner) => {
+        const attrs = (before + ' ' + after).trim();
+        const existingMatch = attrs.match(/integrity=(?:"([^\"]*)"|'([^']*)'|([^\s>]+))/i);
+        const existingRaw = existingMatch ? decodeHtmlEntities(existingMatch[1]||existingMatch[2]||existingMatch[3]) : null;
+        const ref = decodeHtmlEntities(src);
+        if (/livereload\.js/i.test(ref)) return full;
+        const rec = { tag: 'script', html: htmlFile, src: ref, existing: existingRaw, computed: null, path: null, status: null };
+        let localPath = null;
+        if (isRemote(ref)) {
+          try { const parsed = new URL(ref.startsWith('//') ? 'https:' + ref : ref); const cand = path.join(publicDirResolved, parsed.pathname.replace(/^\//,'')); if (fs.existsSync(cand)) localPath = cand; } catch(e) {}
+        } else localPath = resolveResource(publicDirResolved, htmlFile, ref);
+        if (!localPath) { rec.status='SKIPPED'; details.push(rec); if (verbose) console.log(`${htmlFile} [script] ${ref} | existing:${existingRaw||'<none>'} | computed:<none> | status:SKIPPED`); return full; }
+        rec.path = localPath; try { rec.computed = computeIntegrityForFile(localPath); } catch(e){ rec.status='ERROR'; details.push(rec); if (verbose) console.log(`${htmlFile} [script] ${ref} | local:${localPath} | status:ERROR`); return full; }
+        if (!rec.existing) rec.status='NO_EXISTING'; else if (rec.existing===rec.computed) rec.status='MATCH'; else rec.status='MISMATCH';
+        details.push(rec);
+        if (verbose) console.log(`${htmlFile} [script] ${ref} | local:${localPath} | existing:${rec.existing||'<none>'} | computed:${rec.computed||'<none>'} | status:${rec.status}`);
+        if (checkOnly) return full;
+        // patch attributes
+        let newAttrs = (before+' '+after).replace(/\s+integrity=(?:"[^\"]*"|'[^']*'|[^\s>]*)/i,'');
+        if (!/crossorigin=/i.test(newAttrs)) newAttrs=(newAttrs+' crossorigin="anonymous"').trim();
+        if (rec.computed) newAttrs=(newAttrs+` integrity="${rec.computed}"`).trim();
+        const rebuilt=`<script ${newAttrs} src="${src}">${inner}</script>`;
+        changed = changed || rebuilt !== full;
+        return rebuilt;
+      });
+
+    // link tags
+    content = content.replace(/<link([^>]*)>/gi, (full, inside) => {
+      const relMatch = inside.match(/rel=(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+      const hrefMatch = inside.match(/href=(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+      if (!hrefMatch) return full;
+      const rel = relMatch ? (relMatch[1]||relMatch[2]||relMatch[3]||'').toLowerCase() : '';
+      const hrefRaw = hrefMatch[1]||hrefMatch[2]||hrefMatch[3];
+      const href = decodeHtmlEntities(hrefRaw);
+      const asMatch = inside.match(/as=(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+      const asVal = asMatch ? (asMatch[1]||asMatch[2]||asMatch[3]||'').toLowerCase() : '';
+      const looksLikeCss = /\.css(?:$|[?#])/i.test(href);
+      if (rel.indexOf('stylesheet')===-1 && !looksLikeCss && !(rel.indexOf('preload')!==-1 && asVal==='style')) return full;
+      const existingMatch = inside.match(/integrity=(?:"([^\"]*)"|'([^']*)'|([^\s>]+))/i);
+      const existingRaw = existingMatch ? decodeHtmlEntities(existingMatch[1]||existingMatch[2]||existingMatch[3]) : null;
+      const rec = { tag:'link', html:htmlFile, src:href, existing:existingRaw, computed:null, path:null, status:null };
+      let localPath = null;
+      if (isRemote(href)) { try { const parsed = new URL(href.startsWith('//') ? 'https:' + href : href); const cand = path.join(publicDirResolved, parsed.pathname.replace(/^\//,'')); if (fs.existsSync(cand)) localPath=cand; } catch(e) {} } else localPath = resolveResource(publicDirResolved, htmlFile, href);
+      if (!localPath) { rec.status='SKIPPED'; details.push(rec); if (verbose) console.log(`${htmlFile} [link] ${href} | local:<none> | existing:${existingRaw||'<none>'} | computed:<none> | status:SKIPPED`); return full; }
+      rec.path = localPath; try { rec.computed = computeIntegrityForFile(localPath); } catch(e){ rec.status='ERROR'; details.push(rec); if (verbose) console.log(`${htmlFile} [link] ${href} | local:${localPath} | status:ERROR`); return full; }
+      if (!rec.existing) rec.status='NO_EXISTING'; else if (rec.existing===rec.computed) rec.status='MATCH'; else rec.status='MISMATCH'; details.push(rec);
+      if (verbose) console.log(`${htmlFile} [link] ${href} | local:${localPath} | existing:${rec.existing||'<none>'} | computed:${rec.computed||'<none>'} | status:${rec.status}`);
+      if (checkOnly) return full;
+      let newInside = inside.replace(/\s+integrity=(?:"[^\"]*"|'[^']*'|[^\s>]*)/i,'');
+      if (!/crossorigin=/i.test(newInside)) newInside=(newInside+' crossorigin="anonymous"').trim();
+      if (rec.computed) newInside=(newInside+` integrity="${rec.computed}"`).trim();
+      const rebuilt = `<link ${newInside}>`;
+      changed = changed || rebuilt !== full;
+      return rebuilt;
+    });
+
+    return { changed, details, content };
+  }
+
+  // run SRI processing across HTML files
+  const htmlFiles = files.filter(f => f.toLowerCase().endsWith('.html'));
+  let sriAnyMismatch = false;
+  const sriDetailsAll = [];
+  for (const hf of htmlFiles) {
+    const { changed: sriChanged, details: sriDetails, content: newContent } = processHtmlSRI(hf);
+    sriDetailsAll.push(...sriDetails);
+    for (const d of sriDetails) if (d.status === 'MISMATCH' || d.status === 'NO_EXISTING') sriAnyMismatch = true;
+    if (sriChanged && !dryRun && !checkOnly) {
+      fs.writeFileSync(hf, newContent, 'utf8');
+      if (verbose) console.log(`SRI patched ${hf}`);
+    }
+  }
+
+  // report SRI summary
+  const sriSummary = sriDetailsAll.reduce((acc, d) => { acc[d.status] = (acc[d.status]||0)+1; return acc; }, {});
+  if (verbose) {
+    console.error('\nSRI Summary:');
+    for (const k of Object.keys(sriSummary)) console.error(`  ${k}: ${sriSummary[k]}`);
+  }
+  if (checkOnly) {
+    if (sriAnyMismatch) {
+      console.error('\nSRI check: mismatches or missing integrity found.');
+      process.exit(3);
+    } else {
+      console.error('\nSRI check: no actionable mismatches found.');
+    }
+  }
+
 }
 
 if (require.main === module) main();
