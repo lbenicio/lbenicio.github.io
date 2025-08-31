@@ -69,7 +69,7 @@ jobs:
             --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Obfuscate classes/ids in generated site
         run: |
-          echo "Running HTML/CSS/JS obfuscator (in-memory mapping)..."
+          echo "Running HTML/CSS/JS obfuscator..."
           node scripts/obfuscate.js ./public --verbose
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
