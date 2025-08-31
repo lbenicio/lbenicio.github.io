@@ -4,15 +4,21 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
-## [Released]
+## [1.4.3] - 2025-08-31
 
 ### Added
 
-- Obfuscation step for production builds: classes and ids are replaced with randomized tokens at deploy-time (in-memory mapping).
+- `scripts/preview-server.js`: small static preview server to serve `public/` (supports `--port` and `--open`).
+- `npm` scripts: `preview`, `preview:open`, and `build:prod:preview` for quick local previews of production builds.
 
 ### Changed
 
-- GitHub Actions workflow updated to run Node obfuscator after Hugo build.
+- Obfuscator (`scripts/obfuscate.js`) now obfuscates all classes/ids/data-* by default (Tailwind utilities and short tokens like `sr-only`, `ml-4`, `fas`, `fab` are included), while still protecting names defined inside skipped vendor/minified/static CSS.
+- HTML attribute parsing and replacement improved to handle single-quoted and unquoted attribute values (e.g. `id=menu`).
+
+### Fixed
+
+- SRI recomputation and patching after obfuscation validated; `--dry-run --check` reports no actionable mismatches on the current build.
 
 ## [1.4.2] - 2025-08-31
 
