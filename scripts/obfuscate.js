@@ -482,7 +482,7 @@ function replaceInFile(file, mapping, verbose, dryRun) {
 function main() {
   const argv = process.argv.slice(2);
   if (argv.length < 1) {
-    console.error("Usage: obfuscate.js <public_dir> [--check] [--verbose|-v]");
+    console.error("Usage: obfuscate.js <public_dir> [--check] [--verbose|-v] [--no-full]");
     process.exit(2);
   }
   const publicDir = path.resolve(argv[0]);
@@ -495,7 +495,8 @@ function main() {
   const verbose = flags.includes('--verbose') || flags.includes('-v');
   const dryRun = flags.includes('--dry-run');
   const jsonOut = flags.includes('--json');
-  const forceFull = flags.includes('--full') || flags.includes('--force');
+  // Default to full mode (include vendor/minified files) unless explicitly disabled with --no-full
+  const forceFull = !flags.includes('--no-full');
 
   const allFiles = walk(publicDir);
 
