@@ -1,28 +1,33 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented in this file. This project follows the "Keep a Changelog" format and adheres to Semantic Versioning.
 
-## v0.0.4
+Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
-### Changed
+## [Released]
 
-- Initial test Release
+### Added
 
-## v0.0.5
-
-### Changed
-
-- change config files to yaml
-- update theme version to support social footer
-- add more social networks
-
-## 1.0.0
+- Obfuscation step for production builds: classes and ids are replaced with randomized tokens at deploy-time (in-memory mapping).
 
 ### Changed
 
-- initial closed release
+- GitHub Actions workflow updated to run Node obfuscator after Hugo build.
 
-## 1.3.3
+## [1.4.0] - 2025-08-31
+
+### Changed
+
+- Bumped minor version to 1.4.0.
+- Refactored build workflow to integrate obfuscation step.
+
+## [1.3.4] - (previous)
+
+### Changed
+
+- update dependencies
+
+## [1.3.3] - (previous)
 
 ### Changed
 
@@ -31,8 +36,22 @@ All notable changes to this project will be documented in this file.
 - update theme version support
 - fix auto merge action
 
-## 1.3.4
+## [1.0.0] - (previous)
 
 ### Changed
 
-- update dependencies
+- initial closed release
+
+## [0.0.5] - (previous)
+
+### Changed
+
+- change config files to yaml
+- update theme version to support social footer
+- add more social networks
+
+## [0.0.4] - (previous)
+
+### Changed
+
+- Initial test Release

@@ -9,4 +9,6 @@ updates:
     schedule:
       interval: weekly
     ignore:
-      - dependency-name: tailwindcss
+      - dependency-name: "tailwindcss"
+      - dependency-name: "postcss"
+      - dependency-name: "autoprefixer"
