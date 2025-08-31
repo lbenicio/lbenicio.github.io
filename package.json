@@ -1,6 +1,6 @@
 {
   "name": "lbenicio.github.io",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A minimal website/blog theme for developers. It is a simple and clean theme for developers who want to showcase their work and write about their experiences.",
   "scripts": {
     "start:dev": "hugo server --buildDrafts --buildFuture --buildExpired",
@@ -51,5 +51,19 @@
       "psi": "^4.1.0"
     }
   },
-  "keywords": []
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lbenicio/lbenicio.github.io"
+  },
+  "keywords": [
+    "hugo",
+    "theme",
+    "blog",
+    "developer",
+    "minimalist",
+    "simple",
+    "clean",
+    "responsive",
+    "tailwindcss"
+  ]
 }

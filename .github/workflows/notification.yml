@@ -16,7 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pages: read
       packages: write
+    concurrency:
+      group: "notify-${{ github.ref }}"
+      cancel-in-progress: true
     steps:
       - name: Send Telegram message
         uses: appleboy/telegram-action@master

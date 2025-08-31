@@ -19,7 +19,14 @@ on:
       - completed
   status:
 
-permissions: write-all
+permissions:
+  contents: read
+  pull-requests: write
+  checks: read
+
+concurrency:
+  group: "automerge-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
   automerge:

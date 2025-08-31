@@ -18,7 +18,8 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  # Make concurrency branch-aware so runs on different refs don't conflict.
+  group: "pages-${{ github.ref }}"
   cancel-in-progress: false
 
 # Default to bash
@@ -29,9 +30,14 @@ defaults:
 jobs:
   # Build job
   build:
+    # Explicit job-level permissions (clarifies token scope for build steps).
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.135.0
+      HUGO_VERSION: 0.148.2
     steps:
       - name: Install Hugo CLI
         run: |
@@ -73,12 +79,17 @@ jobs:
 
   # Deployment job
   deploy:
+    # Limit token permissions for deployment only to what's needed.
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+  # `actions/deploy-pages` uses the default GITHUB_TOKEN and the job permissions above.

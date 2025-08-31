@@ -14,6 +14,12 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 - GitHub Actions workflow updated to run Node obfuscator after Hugo build.
 
+## [1.4.1] - 2025-08-31
+
+### Fixed
+
+- Workflow and CI: corrected permissions and workflow structure across GitHub Actions (release, pages deploy, and notification workflows).
+
 ## [1.4.0] - 2025-08-31
 
 ### Changed

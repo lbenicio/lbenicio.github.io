@@ -1,4 +1,5 @@
 name: Release
+
 on:
   # Runs on pushes targeting the default branch
   push:
@@ -6,9 +7,24 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+# Default workflow-level permissions (least privilege)
+permissions:
+  contents: read
+  packages: write
+  issues: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    concurrency:
+      group: "release-${{ github.ref }}"
+      cancel-in-progress: false
+    # Job-level permissions: releases need write access to contents (tags/releases)
+    permissions:
+      contents: write
+      packages: write
+      issues: write
     steps:
       - uses: actions/checkout@v5
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
@@ -18,4 +34,4 @@ jobs:
           draft: false
           regex: "/^release: v#{semver}$/i"
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
