@@ -637,6 +637,24 @@ function main() {
         }
       }
     }
+    // If we renamed files on disk, adjust any entries in `files` to point to the new paths
+    // so subsequent processing reads the correct files.
+    if (!effectiveDryRun) {
+      try {
+        const absOldToNew = new Map();
+        for (const oldRel of Object.keys(assetRenameMap)) {
+          const oldAbs = path.join(publicDir, oldRel.replace(/^\//, ''));
+          const newAbs = path.join(publicDir, assetRenameMap[oldRel].replace(/^\//, ''));
+          absOldToNew.set(path.normalize(oldAbs), path.normalize(newAbs));
+        }
+        for (let i = 0; i < files.length; i++) {
+          const normalized = path.normalize(files[i]);
+          if (absOldToNew.has(normalized)) files[i] = absOldToNew.get(normalized);
+        }
+      } catch (e) {
+        if (verbose) console.error('Warning: failed to update internal file list after renames:', e && e.message);
+      }
+    }
   }
 
   let totalFiles = 0;
