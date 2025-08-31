@@ -47,12 +47,13 @@ function extractNamesFromHtml(content) {
 
 function extractNamesFromCss(content) {
   const names = new Set();
-  // .class selector
-  for (const m of content.matchAll(/\.([a-zA-Z0-9_-]+)/g))
-    names.add({ type: "class", name: m[1] });
-  // #id selector
-  for (const m of content.matchAll(/#([a-zA-Z0-9_-]+)/g))
-    names.add({ type: "id", name: m[1] });
+  // match selectors (dot/hash) that appear at selector boundaries (start, whitespace, comma or combinator)
+  // this avoids accidentally capturing file extensions inside url(...) or other places
+  for (const m of content.matchAll(/(^|[\s,>+~])\.([a-zA-Z0-9_-]+)/g))
+    names.add({ type: "class", name: m[2] });
+  // #id selector at selector boundaries
+  for (const m of content.matchAll(/(^|[\s,>+~])#([a-zA-Z0-9_-]+)/g))
+    names.add({ type: "id", name: m[2] });
   // attribute selectors for data-*
   for (const m of content.matchAll(/\[data-([a-zA-Z0-9_-]+)(?:[^\]]*)\]/g))
     names.add({ type: "data", name: m[1] });
@@ -173,12 +174,14 @@ function replaceInFile(file, mapping, verbose, dryRun) {
   }
   // CSS selectors
   if (ext === ".css") {
-    // simple .class and #id replacements
-    content = content.replace(/\.([a-zA-Z0-9_-]+)/g, (m, name) => {
-      return "." + (mapping[`class:${name}`] || name);
+    // Avoid touching url(...) contents and file paths. Replace selectors only.
+    // Replace class selectors that appear at selector boundaries: (^|\s|,|>|\+|~)\.name
+    content = content.replace(/(^|[\s,>+~])\.([a-zA-Z0-9_-]+)/g, (m, prefix, name) => {
+      return prefix + "." + (mapping[`class:${name}`] || name);
     });
-    content = content.replace(/#([a-zA-Z0-9_-]+)/g, (m, name) => {
-      return "#" + (mapping[`id:${name}`] || name);
+    // Replace id selectors at selector boundaries
+    content = content.replace(/(^|[\s,>+~])#([a-zA-Z0-9_-]+)/g, (m, prefix, name) => {
+      return prefix + "#" + (mapping[`id:${name}`] || name);
     });
   }
   // JS replacements for common patterns
@@ -313,9 +316,8 @@ function main() {
     dryRun: !!dryRun
   };
 
-  if (jsonOut) {
-    console.log(JSON.stringify(summary, null, 2));
-  } else {
+  // keep `summary` for the final consolidated report after SRI processing
+  if (!jsonOut && verbose) {
     console.log(`Obfuscation complete. Files scanned: ${totalFiles}, files changed: ${changedFiles}, total replacements (approx): ${totalReplacements}. Mapping kept in memory (not written to disk).`);
     if (dryRun) console.log('Note: --dry-run passed; no files were modified.');
   }
@@ -449,6 +451,56 @@ function main() {
       console.error('\nSRI check: no actionable mismatches found.');
     }
   }
+  // Final consolidated report (human table + summary) or JSON output
+  const finalReport = {
+    obfuscation: summary,
+    sriSummary: sriSummary,
+    sriDetails: sriDetailsAll,
+    changedFiles: changedFileList
+  };
+
+  if (jsonOut) {
+    console.log(JSON.stringify(finalReport, null, 2));
+    return;
+  }
+
+  // Print a table of per-asset SRI decisions
+  if (sriDetailsAll.length) {
+    console.log('\nSRI Decisions:');
+    const rows = sriDetailsAll.map(d => ({
+      file: path.relative(process.cwd(), d.html),
+      tag: d.tag,
+      src: d.src,
+      local: d.path ? path.relative(process.cwd(), d.path) : '<none>',
+      existing: d.existing || '<none>',
+      computed: d.computed || '<none>',
+      status: d.status
+    }));
+    const headers = ['file','tag','src','local','existing','computed','status'];
+    const colWidths = headers.map(h => Math.max(h.length, ...rows.map(r => (r[h]||'').length)));
+    const pad = (s, n) => s + ' '.repeat(n - s.length);
+    // print header
+    const headerLine = headers.map((h,i) => pad(h, colWidths[i])).join('  |  ');
+    console.log(headerLine);
+    console.log(colWidths.map(w => '-'.repeat(w)).join('-+-'));
+    for (const r of rows) {
+      const line = headers.map((h,i) => pad(r[h]||'', colWidths[i])).join('  |  ');
+      console.log(line);
+    }
+  }
+
+  // Print obfuscation changed files summary
+  if (changedFileList.length) {
+    console.log('\nObfuscation Changes:');
+    for (const c of changedFileList) console.log(`  ${path.relative(process.cwd(), c.file)}  (~${c.replacements} replacements)`);
+  }
+
+  // Print final summary counts
+  console.log('\nSummary:');
+  console.log(`  Files scanned: ${summary.scannedFiles}`);
+  console.log(`  Files changed (obfuscation): ${summary.changedFiles}`);
+  console.log(`  Total replacements (approx): ${summary.totalReplacements}`);
+  for (const k of Object.keys(sriSummary)) console.log(`  SRI ${k}: ${sriSummary[k]}`);
 
 }
 
