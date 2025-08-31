@@ -57,7 +57,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - name: Install Node.js dependencies
-        run: npm ci --no-audit --no-fund --omit=dev
+        run: npm ci --no-audit --no-fund
       - name: Build with Hugo
         env:
           # For maximum backward compatibility with Hugo modules
@@ -71,6 +71,10 @@ jobs:
         run: |
           echo "Running HTML/CSS/JS obfuscator..."
           node scripts/obfuscate.js ./public --verbose
+      - name: Validate obfuscation and SRI
+        run: |
+          echo "Validating obfuscation (dry-run + check) — fail on SRI mismatch or missing assets"
+          node scripts/obfuscate.js ./public --dry-run --check --verbose
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
