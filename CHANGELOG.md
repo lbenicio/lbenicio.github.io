@@ -14,6 +14,13 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 - GitHub Actions workflow updated to run Node obfuscator after Hugo build.
 
+## [1.4.2] - 2025-08-31
+
+### Fixed
+
+- Recomputed SRI integrity attributes for local JS/CSS after obfuscation to ensure browser SRI checks pass.
+- `dataset` property access now uses bracket notation when obfuscated tokens are used to avoid invalid JS identifiers.
+
 ## [1.4.1] - 2025-08-31
 
 ### Fixed
