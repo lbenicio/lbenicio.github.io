@@ -273,7 +273,21 @@ function main() {
   const dryRun = flags.includes('--dry-run');
   const jsonOut = flags.includes('--json');
 
-  const files = walk(publicDir);
+  const allFiles = walk(publicDir);
+
+  function isSkippable(f) {
+    const rel = path.relative(publicDir, f).replace(/\\/g, '/');
+    // never touch files under the public static tree (these are raw assets)
+    if (rel === 'static' || rel.startsWith('static/') || rel.indexOf('/static/') !== -1) return true;
+    // skip vendor directories (often contain third-party assets with their own paths)
+    if (rel.indexOf('/vendor/') !== -1 || rel.startsWith('vendor/')) return true;
+    // skip minified CSS files to avoid touching filename fragments; this protects hashed filenames
+    if (path.extname(f).toLowerCase() === '.css' && path.basename(f).indexOf('.min.') !== -1) return true;
+    return false;
+  }
+
+  const files = allFiles.filter(f => !isSkippable(f));
+  if (verbose) console.log(`Skipping ${allFiles.length - files.length} files due to skip rules (vendor/minified/static)`);
   const names = collectNames(files);
   const mapping = buildMapping(names);
 
