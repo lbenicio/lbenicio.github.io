@@ -72,6 +72,11 @@ jobs:
         run: |
           echo "Running HTML/CSS/JS obfuscator (in-memory mapping)..."
           node scripts/obfuscate.js ./public
+      - name: Recompute SRI integrity attributes for local assets
+        if: always()
+        run: |
+          echo "Updating integrity attributes for scripts and styles..."
+          node scripts/update_sri.js ./public
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

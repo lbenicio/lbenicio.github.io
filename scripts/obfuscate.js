@@ -37,6 +37,11 @@ function extractNamesFromHtml(content) {
     const id = m[1].trim();
     if (id) names.add({ type: "id", name: id });
   }
+  // data-attr (attribute NAMES, not values)
+  for (const m of content.matchAll(/data-([a-zA-Z0-9_-]+)(?=\s*=|\s|>)/gi)) {
+    const an = m[1].trim();
+    if (an) names.add({ type: "data", name: an });
+  }
   return names;
 }
 
@@ -48,6 +53,9 @@ function extractNamesFromCss(content) {
   // #id selector
   for (const m of content.matchAll(/#([a-zA-Z0-9_-]+)/g))
     names.add({ type: "id", name: m[1] });
+  // attribute selectors for data-*
+  for (const m of content.matchAll(/\[data-([a-zA-Z0-9_-]+)(?:[^\]]*)\]/g))
+    names.add({ type: "data", name: m[1] });
   return names;
 }
 
@@ -71,6 +79,18 @@ function extractNamesFromJs(content) {
     // only simple selectors: .class or #id
     if (sel.startsWith(".")) names.add({ type: "class", name: sel.slice(1) });
     else if (sel.startsWith("#")) names.add({ type: "id", name: sel.slice(1) });
+  }
+  // getAttribute/setAttribute with data-*
+  for (const m of content.matchAll(/getAttribute\(\s*['\"]data-([a-zA-Z0-9_-]+)['\"]\s*\)/g))
+    names.add({ type: "data", name: m[1] });
+  for (const m of content.matchAll(/setAttribute\(\s*['\"]data-([a-zA-Z0-9_-]+)['\"]\s*,/g))
+    names.add({ type: "data", name: m[1] });
+  // dataset.prop accesses -> convert prop to kebab-case and add as data attr
+  for (const m of content.matchAll(/\.dataset\.([A-Za-z0-9_$]+)/g)) {
+    const prop = m[1];
+    // convert camelCase to kebab-case: fooBar -> foo-bar
+    const kebab = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+    names.add({ type: "data", name: kebab });
   }
   return names;
 }
@@ -122,7 +142,8 @@ function buildMapping(names) {
       // keep some common semantic names - optional: you can remove this filter
       continue;
     }
-    const token = (it.type === "id" ? "i" : "c") + randToken(6);
+  const prefix = it.type === "id" ? "i" : it.type === "class" ? "c" : "d";
+  const token = prefix + randToken(6);
     mapping[`${it.type}:${it.name}`] = token;
   }
   return mapping;
@@ -172,23 +193,41 @@ function replaceInFile(file, mapping) {
         return `getElementsByClassName('${replaced}')`;
       }
     );
-    content = content.replace(
-      /querySelector(All)?\s*\(\s*['\"]([^'\"]+)['\"]\s*\)/g,
-      (m, all, sel) => {
-        if (sel.startsWith(".")) {
-          const name = sel.slice(1);
-          return `querySelector${all || ""}('${
-            "." + (mapping[`class:${name}`] || name)
-          }')`;
-        } else if (sel.startsWith("#")) {
-          const name = sel.slice(1);
-          return `querySelector${all || ""}('${
-            "#" + (mapping[`id:${name}`] || name)
-          }')`;
+      content = content.replace(
+        /querySelector(All)?\s*\(\s*['\"]([^'\"]+)['\"]\s*\)/g,
+        (m, all, sel) => {
+          let newSel = sel;
+          // replace class selectors
+          newSel = newSel.replace(/\.([a-zA-Z0-9_-]+)/g, (mm, nm) => {
+            return "." + (mapping[`class:${nm}`] || nm);
+          });
+          // replace id selectors
+          newSel = newSel.replace(/#([a-zA-Z0-9_-]+)/g, (mm, nm) => {
+            return "#" + (mapping[`id:${nm}`] || nm);
+          });
+          // replace data-attr selectors inside selector strings
+          newSel = newSel.replace(/\[data-([a-zA-Z0-9_-]+)([^\]]*)\]/g, (mm, nm, rest) => {
+            return `[data-${mapping[`data:${nm}`] || nm}${rest}]`;
+          });
+          return `querySelector${all || ""}('${newSel}')`;
         }
-        return m;
-      }
-    );
+      );
+      // getAttribute / setAttribute for data-*
+      content = content.replace(/getAttribute\(\s*['\"]data-([a-zA-Z0-9_-]+)['\"]\s*\)/g, (m2, name) => {
+        return `getAttribute('data-${mapping[`data:${name}`] || name}')`;
+      });
+      content = content.replace(/setAttribute\(\s*['\"]data-([a-zA-Z0-9_-]+)['\"]\s*,/g, (m2, name) => {
+        return `setAttribute('data-${mapping[`data:${name}`] || name}',`;
+      });
+      // dataset.prop -> dataset['<token>'] (use bracket notation only when we have a mapping)
+      content = content.replace(/\.dataset\.([A-Za-z0-9_$]+)/g, (m2, prop) => {
+        const p = prop; // prop is the identifier after .dataset.
+        const kebab = p.replace(/([A-Z])/g, "-$1").toLowerCase();
+        const token = mapping[`data:${kebab}`];
+        if (token) return `.dataset['${token}']`;
+        // no mapping found: leave original dot-access to avoid breaking behavior
+        return `.dataset.${p}`;
+      });
   }
 
   fs.writeFileSync(file, content, "utf8");
