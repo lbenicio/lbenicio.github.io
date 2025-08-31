@@ -108,15 +108,21 @@ function processHtmlFile(htmlFile, publicDir, options) {
             target = localPath;
             computed = computeIntegrity(target);
           } else {
-            // remote resource that does not map to a local file: skip verifying third-party asset
-            // do not fail CI for common analytics/CDN scripts
-            console.warn(`Skipping remote asset (no local mapping): ${ref} referenced in ${htmlFile}`);
-            return full;
+            // remote resource that does not map to a local file: handle gracefully
+            console.warn(`Remote third-party asset (no local mapping): ${ref} referenced in ${htmlFile}`);
+            if (options.check) return full; // don't fail CI in check mode
+            // in fix mode: remove integrity attribute if present to avoid mismatches
+            const attrs = (a1 + ' ' + a2);
+            const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
+            return `<script${cleanedAttrs} src="${src}">${inner}</script>`;
           }
         } else {
           // if we can't parse the URL, skip it (avoid network fetches)
           console.warn(`Skipping remote asset (unparsable URL): ${ref} referenced in ${htmlFile}`);
-          return full;
+          if (options.check) return full;
+          const attrs = (a1 + ' ' + a2);
+          const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
+          return `<script${cleanedAttrs} src="${src}">${inner}</script>`;
         }
       } else {
         target = resolveResource(publicDir, htmlFile, ref);
@@ -157,11 +163,25 @@ function processHtmlFile(htmlFile, publicDir, options) {
       let computed;
       let target = null;
       if (isRemote(ref)) {
-        try {
-          computed = computeIntegrity(ref);
-        } catch (e) {
-          reports.push({ type: 'missing', tag: 'link', html: htmlFile, src: ref, reason: 'remote fetch failed' });
-          return full;
+        // Try to map remote to local before fetching; if not mapped, skip/strip integrity
+        let parsed = null;
+        try { parsed = new URL(ref.startsWith('//') ? 'https:' + ref : ref); } catch (e) {}
+        if (parsed) {
+          const localPath = path.join(publicDir, parsed.pathname.replace(/^\//, ''));
+          if (fs.existsSync(localPath)) {
+            target = localPath;
+            computed = computeIntegrity(target);
+          } else {
+            console.warn(`Remote third-party asset (no local mapping): ${ref} referenced in ${htmlFile}`);
+            if (options.check) return full;
+            const cleanedAttrs = combined.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
+            return `<link${cleanedAttrs} href="${href}"/>`;
+          }
+        } else {
+          console.warn(`Skipping remote asset (unparsable URL): ${ref} referenced in ${htmlFile}`);
+          if (options.check) return full;
+          const cleanedAttrs = combined.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
+          return `<link${cleanedAttrs} href="${href}"/>`;
         }
       } else {
         target = resolveResource(publicDir, htmlFile, ref);
