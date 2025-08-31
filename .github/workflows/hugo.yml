@@ -64,17 +64,16 @@ jobs:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          hugo \
-            --minify \
+          npm run build:hugo --
             --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Obfuscate classes/ids in generated site
         run: |
           echo "Running HTML/CSS/JS obfuscator..."
-          node scripts/obfuscate.js ./public --verbose
+          npm run build:obfuscate
       - name: Validate obfuscation and SRI
         run: |
           echo "Validating obfuscation (dry-run + check) — fail on SRI mismatch or missing assets"
-          node scripts/obfuscate.js ./public --dry-run --check --verbose
+          npm run build:obfuscate -- --check
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
