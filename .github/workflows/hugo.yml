@@ -64,7 +64,7 @@ jobs:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          npm run build:hugo --
+          npm run build:hugo
             --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Obfuscate classes/ids in generated site
         run: |
