@@ -71,17 +71,17 @@ jobs:
         if: always()
         run: |
           echo "Running HTML/CSS/JS obfuscator (in-memory mapping)..."
-          node scripts/obfuscate.js ./public
+          node scripts/obfuscate.js --verbose ./public
       - name: Recompute and patch SRI integrity attributes for local assets
         if: always()
         run: |
           echo "Patching integrity attributes for scripts and styles..."
-          node scripts/patch_sri.js ./public
+          node scripts/patch_sri.js --verbose ./public
       - name: Verify SRI integrity (fail on mismatch)
         if: always()
         run: |
           echo "Verifying SRI integrity after patch..."
-          node scripts/patch_sri.js --check ./public
+          node scripts/patch_sri.js --verbose --check ./public
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

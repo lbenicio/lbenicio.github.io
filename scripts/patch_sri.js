@@ -102,28 +102,28 @@ function processHtmlFile(htmlFile, publicDir, options) {
         } catch (e) {
           // if parsing fails, fallback to fetch
         }
-        if (parsed) {
-          const localPath = path.join(publicDir, parsed.pathname.replace(/^\//, ''));
-          if (fs.existsSync(localPath)) {
-            target = localPath;
-            computed = computeIntegrity(target);
+          if (parsed) {
+            const localPath = path.join(publicDir, parsed.pathname.replace(/^\//, ''));
+            if (fs.existsSync(localPath)) {
+              target = localPath;
+              computed = computeIntegrity(target);
+            } else {
+              // remote resource that does not map to a local file: mark as skipped
+              reports.push({ type: 'skipped', tag: 'script', html: htmlFile, src: ref, reason: 'remote-no-local' });
+              if (options.check) return full; // don't fail CI in check mode
+              // in fix mode: remove integrity attribute if present to avoid mismatches
+              const attrs = (a1 + ' ' + a2);
+              const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
+              return `<script${cleanedAttrs} src="${src}">${inner}</script>`;
+            }
           } else {
-            // remote resource that does not map to a local file: handle gracefully
-            console.warn(`Remote third-party asset (no local mapping): ${ref} referenced in ${htmlFile}`);
-            if (options.check) return full; // don't fail CI in check mode
-            // in fix mode: remove integrity attribute if present to avoid mismatches
+            // if we can't parse the URL, record as skipped
+            reports.push({ type: 'skipped', tag: 'script', html: htmlFile, src: ref, reason: 'unparsable-url' });
+            if (options.check) return full;
             const attrs = (a1 + ' ' + a2);
             const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
             return `<script${cleanedAttrs} src="${src}">${inner}</script>`;
           }
-        } else {
-          // if we can't parse the URL, skip it (avoid network fetches)
-          console.warn(`Skipping remote asset (unparsable URL): ${ref} referenced in ${htmlFile}`);
-          if (options.check) return full;
-          const attrs = (a1 + ' ' + a2);
-          const cleanedAttrs = attrs.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
-          return `<script${cleanedAttrs} src="${src}">${inner}</script>`;
-        }
       } else {
         target = resolveResource(publicDir, htmlFile, ref);
         if (!target) {
@@ -172,13 +172,13 @@ function processHtmlFile(htmlFile, publicDir, options) {
             target = localPath;
             computed = computeIntegrity(target);
           } else {
-            console.warn(`Remote third-party asset (no local mapping): ${ref} referenced in ${htmlFile}`);
+            reports.push({ type: 'skipped', tag: 'link', html: htmlFile, src: ref, reason: 'remote-no-local' });
             if (options.check) return full;
             const cleanedAttrs = combined.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
             return `<link${cleanedAttrs} href="${href}"/>`;
           }
         } else {
-          console.warn(`Skipping remote asset (unparsable URL): ${ref} referenced in ${htmlFile}`);
+          reports.push({ type: 'skipped', tag: 'link', html: htmlFile, src: ref, reason: 'unparsable-url' });
           if (options.check) return full;
           const cleanedAttrs = combined.replace(/\s+integrity=\"[^\"]*\"/i, '').replace(/\s+integrity=\'[^\']*\'/i, '');
           return `<link${cleanedAttrs} href="${href}"/>`;
@@ -217,11 +217,12 @@ function processHtmlFile(htmlFile, publicDir, options) {
 
 function main() {
   const argv = process.argv.slice(2);
-  const options = { check: false, dryRun: false };
+  const options = { check: false, dryRun: false, verbose: false };
   let publicDirArg = null;
   for (const a of argv) {
     if (a === '--check') options.check = true;
     else if (a === '--dry-run') options.dryRun = true;
+    else if (a === '--verbose' || a === '-v') options.verbose = true;
     else if (a === '--help' || a === '-h') { console.log('Usage: patch_sri.js [--check] [--dry-run] <public_dir>'); process.exit(0);} 
     else publicDirArg = a;
   }
@@ -267,6 +268,14 @@ function main() {
 
   if (options.check) process.exit(3);
   // If we reach here and there are reports, exit with code 1 to indicate attention needed
+  // if verbose, also list skipped remote assets and counts
+  if (options.verbose) {
+    const skipped = overallReports.filter(r => r.type === 'skipped');
+    if (skipped.length) {
+      console.log('\nSkipped remote/unverifiable assets:');
+      for (const s of skipped) console.log(`  ${s.html} -> ${s.tag} ${s.src} (${s.reason})`);
+    }
+  }
   process.exit(1);
 }
 

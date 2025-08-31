@@ -149,9 +149,15 @@ function buildMapping(names) {
   return mapping;
 }
 
-function replaceInFile(file, mapping) {
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function replaceInFile(file, mapping, verbose) {
   const ext = path.extname(file).toLowerCase();
   let content = fs.readFileSync(file, "utf8");
+  const oldContent = content;
+  let replacements = 0;
   // replace HTML attributes
   if (ext === ".html" || ext === ".htm") {
     // class="a b c" -> map each
@@ -230,13 +236,27 @@ function replaceInFile(file, mapping) {
       });
   }
 
-  fs.writeFileSync(file, content, "utf8");
+  if (content !== oldContent) {
+    // Count occurrences of original names in the old content using a safe separator-aware regex.
+    for (const key of Object.keys(mapping)) {
+      const [, name] = key.split(":");
+      // match name when not surrounded by [A-Za-z0-9_-] (covers selectors, attributes, JS usage)
+      const re = new RegExp("(^|[^A-Za-z0-9_-])" + escapeRegExp(name) + "($|[^A-Za-z0-9_-])", "gi");
+      const m = oldContent.match(re);
+      if (m) replacements += m.length;
+    }
+    fs.writeFileSync(file, content, "utf8");
+    if (verbose) console.log(`Patched ${file} (approx ${replacements} replacements)`);
+    return { changed: true, replacements };
+  }
+  if (verbose) console.log(`No changes in ${file}`);
+  return { changed: false, replacements: 0 };
 }
 
 function main() {
   const argv = process.argv.slice(2);
   if (argv.length < 1) {
-    console.error("Usage: obfuscate.js <public_dir>");
+    console.error("Usage: obfuscate.js <public_dir> [--verbose|-v]");
     process.exit(2);
   }
   const publicDir = path.resolve(argv[0]);
@@ -249,16 +269,35 @@ function main() {
   const names = collectNames(files);
   const mapping = buildMapping(names);
 
+  const verbose = argv.includes("--verbose") || argv.includes("-v");
+
+  let totalFiles = 0;
+  let changedFiles = 0;
+  let totalReplacements = 0;
+
+  if (verbose) {
+    console.log(`Scanning ${files.length} files in ${publicDir}`);
+    console.log(`Found ${names.length} candidate names for obfuscation`);
+  }
+
+  if (verbose) {
+    const keys = Object.keys(mapping);
+    console.log(`Mapping size: ${keys.length}`);
+    const sample = keys.slice(0, 20).map(k => `${k} -> ${mapping[k]}`);
+    if (sample.length) console.log('Sample mapping (first 20):', sample);
+  }
+
   // apply replacements (mapping kept in-memory only)
   for (const f of files) {
     const ext = path.extname(f).toLowerCase();
     if (![".html", ".htm", ".css", ".js"].includes(ext)) continue;
-    replaceInFile(f, mapping);
+    totalFiles++;
+    const { changed, replacements } = replaceInFile(f, mapping, verbose);
+    if (changed) changedFiles++;
+    totalReplacements += replacements;
   }
 
-  console.log(
-    "Obfuscation complete. Mapping kept in memory (not written to disk)."
-  );
+  console.log(`Obfuscation complete. Files scanned: ${totalFiles}, files changed: ${changedFiles}, total replacements (approx): ${totalReplacements}. Mapping kept in memory (not written to disk).`);
 }
 
 if (require.main === module) main();
