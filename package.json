@@ -13,7 +13,9 @@
     "test:static": "node test/static.test.js",
     "test:unit": "npm run test:obfuscate && npm run test:static",
     "start": "npm run start:dev",
-    "test": "npm run test:unit"
+    "test": "npm run test:unit",
+    "update:theme": "cd src/themes/minimalist-simple-dev-theme && git stash && git pull --rebase -X theirs",
+    "wiki:publish": "node scripts/publish-wiki.js"
   },
   "author": "Leonardo Benicio",
   "license": "GPLv3",
