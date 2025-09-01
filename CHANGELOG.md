@@ -4,14 +4,13 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
-## [1.5.0] - 2025-08-31
-
 ## [1.5.1] - 2025-08-31
 
 ### Changed
 
 - Test scripts: updated static and obfuscation tests to point to `.build/public` (CI/build output path). Improved fingerprinted asset resolution in static tests to reduce false negatives when compiled assets use hashed filenames; SRI mismatches are still fatal for exact matches.
 
+## [1.5.0] - 2025-08-31
 
 ### Added
 
