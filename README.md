@@ -97,7 +97,7 @@ Please keep changes small and clearly documented.
 
 ## License
 
-This project is licensed under GPLv3. See `LICENSE` for details.
+This project is licensed under GPLv3. See `LICENSE.txt` for details.
 
 ---
 
