@@ -1,23 +1,17 @@
 {
   "files.exclude": {
-    // "public/": true,
-    // "resources/**": true,
-    "node_modules/": true,
-    // ".hugo_build.lock": true
+    ".build/**": true,
+    "node_modules/": true
   },
   "search.exclude": {
-    // "public/**": true,
-    // "resources/**": true,
-    "node_modules/**": true,
-    // ".hugo_build.lock": true
+    ".build/**": true,
+    "node_modules/**": true
   },
   "files.watcherExclude": {
-    // "public/**": true,
-    // "resources/**": true,
-    "node_modules/**": true,
-    // ".hugo_build.lock": true
+    ".build/**": true,
+    "node_modules/**": true
   },
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"

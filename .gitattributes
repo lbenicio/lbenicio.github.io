@@ -1,0 +1,32 @@
+# Git attributes for the Minimalist Simple Dev Theme
+# Treat most files as text and normalize line endings
+* text=auto
+
+# Force specific types
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.js text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+
+# Export-ignore generated build artifacts and node modules
+public/ export-ignore
+.build/ export-ignore
+node_modules/ export-ignore
+.DS_Store export-ignore
+
+# Ensure src/hugo.yml is included by default (do not export-ignore)
+# (If you previously used export-ignore for this file, we keep it tracked.)
