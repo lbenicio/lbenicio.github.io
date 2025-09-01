@@ -323,6 +323,19 @@ async function main() {
   log("copying docs into wiki workdir");
   copyRecursive(DOCS_DIR, work);
 
+  // Ensure a Home.md exists so the wiki has a homepage; create from README.md when missing
+  try {
+    const readmePath = path.join(work, "README.md");
+    const homePath = path.join(work, "Home.md");
+    if (fs.existsSync(readmePath) && !fs.existsSync(homePath)) {
+      fs.copyFileSync(readmePath, homePath);
+      log("created Home.md from README.md");
+    }
+  } catch (e) {
+    if (VERBOSE)
+      err("failed to create Home.md:", e && e.message ? e.message : e);
+  }
+
   spawnShell("git add -A", work);
   if (!DRY) {
     const st = runCapture("git status --porcelain", { cwd: work });

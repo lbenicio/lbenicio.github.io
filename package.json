@@ -15,7 +15,7 @@
     "start": "npm run start:dev",
     "test": "npm run test:unit",
     "update:theme": "cd src/themes/minimalist-simple-dev-theme && git stash && git pull --rebase -X theirs",
-    "wiki:publish": "node scripts/publish-wiki.js --verbose --docs docs"
+    "wiki:publish": "node scripts/publish-wiki.js --verbose --docs docs --branch master"
   },
   "dependencies": {
     "autoprefixer": "^10.4.21",
