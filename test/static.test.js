@@ -3,7 +3,8 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 const crypto = require('crypto');
 
-const publicDir = path.join(__dirname, '..', 'public');
+// Use .build/public as the output directory (CI/build output path)
+const publicDir = path.join(__dirname, '..', '.build', 'public');
 
 function computeIntegrity(filePath) {
   const buf = fs.readFileSync(filePath);

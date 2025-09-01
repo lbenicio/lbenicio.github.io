@@ -3,7 +3,8 @@ const { spawnSync } = require('child_process');
 const path = require('path');
 
 const bin = path.join(__dirname, '..', 'scripts', 'obfuscate.js');
-const publicDir = path.join(__dirname, '..', 'public');
+// Use .build/public as the output directory (CI/build output path)
+const publicDir = path.join(__dirname, '..', '.build', 'public');
 
 console.log('Running obfuscator --dry-run --assets --check --json against', publicDir);
 const res = spawnSync('node', [bin, publicDir, '--dry-run', '--assets', '--check', '--json'], { encoding: 'utf8' });
