@@ -17,8 +17,6 @@
     "update:theme": "cd src/themes/minimalist-simple-dev-theme && git stash && git pull --rebase -X theirs",
     "wiki:publish": "node scripts/publish-wiki.js"
   },
-  "author": "Leonardo Benicio",
-  "license": "GPLv3",
   "dependencies": {
     "autoprefixer": "^10.4.21",
     "cssnano": "^7.1.1",
@@ -32,6 +30,11 @@
     "jsdom": "^22.1.0",
     "minimist": "^1.2.8"
   },
+  "author": {
+    "name": "Leonardo Benicio",
+    "email": "hi@lbenicio.dev"
+  },
+  "license": "GPLv3",
   "repository": {
     "type": "git",
     "url": "https://github.com/lbenicio/lbenicio.github.io"
