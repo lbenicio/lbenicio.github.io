@@ -23,7 +23,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Copy HTML from previous build into the Workdir.
-COPY --from=build /opt/app/public .
+COPY --from=build /opt/app/.build/public .
 
 
 EXPOSE 80/tcp
