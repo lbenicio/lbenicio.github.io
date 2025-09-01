@@ -95,12 +95,22 @@ jobs:
           echo "- Files (top-level):" >> $GITHUB_STEP_SUMMARY || true
           ls -la .build/public | sed -n '1,50p' | sed 's/^/  /' >> $GITHUB_STEP_SUMMARY || true
           du -sh .build/public | awk '{print "- Total size: " $1}' >> $GITHUB_STEP_SUMMARY || true
-          # include obfuscator health if present
+          # include obfuscator health if present (render as Markdown table when jq is available)
           if [ -f .build/public/obfuscator.health.json ]; then
             echo "- Obfuscator health:" >> $GITHUB_STEP_SUMMARY || true
             if command -v jq >/dev/null 2>&1; then
-              jq . .build/public/obfuscator.health.json | sed 's/^/  /' >> $GITHUB_STEP_SUMMARY || true
+              # core metrics table
+              echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY || true
+              echo "|---|---|" >> $GITHUB_STEP_SUMMARY || true
+              jq -r '.health as $h | $h.sriAnyMismatch as $m | $h.obfuscation as $o | ["|sriAnyMismatch|"+($m|tostring)+"|","|scannedFiles|"+($o.scannedFiles|tostring)+"|","|changedFiles|"+($o.changedFiles|tostring)+"|","|totalReplacements|"+($o.totalReplacements|tostring)+"|","|mappingSize|"+($o.mappingSize|tostring)+"|"] | .[]' .build/public/obfuscator.health.json >> $GITHUB_STEP_SUMMARY || true
+              # SRI breakdown table
+              echo "" >> $GITHUB_STEP_SUMMARY || true
+              echo "#### SRI Summary" >> $GITHUB_STEP_SUMMARY || true
+              echo "| Status | Count |" >> $GITHUB_STEP_SUMMARY || true
+              echo "|---|---|" >> $GITHUB_STEP_SUMMARY || true
+              jq -r '.health.sriSummary | to_entries[] | "|"+(.key)+"|"+(.value|tostring)+"|"' .build/public/obfuscator.health.json >> $GITHUB_STEP_SUMMARY || true
             else
+              # fallback: include raw JSON
               sed 's/^/  /' .build/public/obfuscator.health.json >> $GITHUB_STEP_SUMMARY || true
             fi
           fi

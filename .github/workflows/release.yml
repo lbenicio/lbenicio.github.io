@@ -27,7 +27,8 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@v5
-      - uses: CupOfTea696/gh-action-auto-release@v1.0.2
+      - id: release
+        uses: CupOfTea696/gh-action-auto-release@v1.0.2
         with:
           title: "Release: v$version"
           tag: "v$semver"
@@ -35,3 +36,13 @@ jobs:
           regex: "/^release: v#{semver}$/i"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release summary
+        if: always()
+        run: |
+          echo "## Release summary" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Release tag: v$semver" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Release title: Release: v$version" >> $GITHUB_STEP_SUMMARY || true
+          # If the gh-action-auto-release exposes a release URL, include it
+          if [ -n "${{ steps.release.outputs.html_url }}" ]; then
+            echo "- Release URL: ${{ steps.release.outputs.html_url }}" >> $GITHUB_STEP_SUMMARY || true
+          fi

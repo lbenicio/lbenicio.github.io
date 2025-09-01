@@ -38,3 +38,13 @@ jobs:
         env:
           MERGE_LABELS: ""
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Automerge summary
+        if: always()
+        run: |
+          echo "## Automerge summary" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Actor: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Event: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Run conclusion: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY || true
+          if [ -n "${{ github.event.pull_request.html_url || github.event.pull_request.url }}" ]; then
+            echo "- PR: ${{ github.event.pull_request.html_url || github.event.pull_request.url }}" >> $GITHUB_STEP_SUMMARY || true
+          fi
