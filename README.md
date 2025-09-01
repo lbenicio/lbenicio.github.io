@@ -8,7 +8,7 @@
 [![GitHub Pages](https://img.shields.io/github/actions/workflow/status/lbenicio/lbenicio.github.io/hugo.yml?branch=main&label=pages)](https://github.com/lbenicio/lbenicio.github.io)
 
 <!-- project favicon (from theme static assets) -->
-![favicon](src/themes/minimalist-simple-dev-theme/static/static/favicon/favicon-32x32.png)
+![favicon](src/static/static/favicon/android-chrome-192x192.png)
 
 A minimal personal website and blog built with Hugo and Tailwind CSS.
 
