@@ -76,7 +76,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: $PWD/.build/public
+          path: .build/public
 
   # Deployment job
   deploy:

@@ -1,5 +1,15 @@
 # lbenicio.github.io
 
+<!-- Shields / badges -->
+[![CI](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/hugo.yml/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/hugo.yml)
+[![npm version](https://img.shields.io/badge/version-1.5.1-blue.svg)](https://github.com/lbenicio/lbenicio.github.io)
+[![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
+[![Releases](https://img.shields.io/github/v/release/lbenicio/lbenicio.github.io?sort=semver)](https://github.com/lbenicio/lbenicio.github.io/releases)
+[![GitHub Pages](https://img.shields.io/github/actions/workflow/status/lbenicio/lbenicio.github.io/hugo.yml?branch=main&label=pages)](https://github.com/lbenicio/lbenicio.github.io)
+
+<!-- project favicon (from theme static assets) -->
+![favicon](src/themes/minimalist-simple-dev-theme/static/static/favicon/favicon-32x32.png)
+
 A minimal personal website and blog built with Hugo and Tailwind CSS.
 
 This repository contains the Hugo site source and a theme. The project is optimized for fast static builds and is deployed to GitHub Pages via GitHub Actions. Production builds include an obfuscation step that replaces non-semantic classes/IDs with randomized tokens.
