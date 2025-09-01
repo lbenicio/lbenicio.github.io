@@ -732,10 +732,22 @@ function main() {
 
   function decodeHtmlEntities(str) {
     if (str == null) return str;
-    str = str.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
-    str = str.replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)));
-    str = str.replace(/&#43;/g, '+');
-    return str.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    // Decode only recognized entity patterns in a single pass to avoid turning
+    // already-escaped sequences (e.g. "&amp;lt;") into new entities and
+    // then decoding them (double-unescape). This prevents escalation where an
+    // attacker intentionally double-encodes payloads.
+    return String(str).replace(/&#(\d+);|&#x([0-9A-Fa-f]+);|&(lt|gt|quot|apos|amp);/g, (m, dec, hex, name) => {
+      if (dec) return String.fromCharCode(Number(dec));
+      if (hex) return String.fromCharCode(parseInt(hex, 16));
+      switch (name) {
+        case 'lt': return '<';
+        case 'gt': return '>';
+        case 'quot': return '"';
+        case 'apos': return "'";
+        case 'amp': return '&';
+      }
+      return m;
+    });
   }
 
   function isRemote(url) { if (!url) return false; return /^\s*https?:\/\//i.test(url) || url.startsWith('//'); }
