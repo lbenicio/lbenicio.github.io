@@ -88,24 +88,3 @@ module:
   hugoVersion:
     extended: true
     min: 0.148.2
-  mounts:
-    # Site mounts
-    - source: content
-      target: content
-    - source: static
-      target: static
-    - source: layouts
-      target: layouts
-    - source: assets
-      target: assets
-    - source: archetypes
-      target: archetypes
-    # Theme mounts (theme keeps sources under its own src/)
-    - source: themes/minimalist-simple-dev-theme/src/assets
-      target: assets
-    - source: themes/minimalist-simple-dev-theme/src/layouts
-      target: layouts
-    - source: themes/minimalist-simple-dev-theme/src/static
-      target: static
-    - source: themes/minimalist-simple-dev-theme/src/archetypes
-      target: archetypes
