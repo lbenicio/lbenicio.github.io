@@ -1,6 +1,6 @@
 {
   "name": "lbenicio.github.io",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "A minimal website/blog theme for developers. It is a simple and clean theme for developers who want to showcase their work and write about their experiences.",
   "scripts": {
     "start:dev": "hugo server --source src --destination $PWD/.build/public --cacheDir $PWD/.build/cache --noBuildLock --buildDrafts --buildFuture --buildExpired",
@@ -11,7 +11,9 @@
     "clear:build:cache": "rm -rf resources && rm -rf .hugo_build.lock && rm -rf ./public",
     "test:obfuscate": "node test/obfuscate.test.js",
     "test:static": "node test/static.test.js",
-    "test:unit": "npm run test:obfuscate && npm run test:static"
+    "test:unit": "npm run test:obfuscate && npm run test:static",
+    "start": "npm run start:dev",
+    "test": "npm run test:unit"
   },
   "author": "Leonardo Benicio",
   "license": "GPLv3",

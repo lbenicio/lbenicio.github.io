@@ -6,6 +6,13 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 ## [1.5.0] - 2025-08-31
 
+## [1.5.1] - 2025-08-31
+
+### Changed
+
+- Test scripts: updated static and obfuscation tests to point to `.build/public` (CI/build output path). Improved fingerprinted asset resolution in static tests to reduce false negatives when compiled assets use hashed filenames; SRI mismatches are still fatal for exact matches.
+
+
 ### Added
 
 - Asset filename obfuscation support (`--assets`) now includes files under `public/assets` and static image paths (`public/static/images` and `public/static/static/images`). When enabled the script renames files in-place (or reports planned renames in `--dry-run`/`--check`).
