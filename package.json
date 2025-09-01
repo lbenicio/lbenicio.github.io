@@ -3,8 +3,8 @@
   "version": "1.5.1",
   "description": "A minimal website/blog theme for developers. It is a simple and clean theme for developers who want to showcase their work and write about their experiences.",
   "scripts": {
-    "start:dev": "hugo server --source src --destination $PWD/.build/public --cacheDir $PWD/.build/cache --noBuildLock --buildDrafts --buildFuture --buildExpired",
-    "build:hugo": "hugo --source src --minify --cacheDir $PWD/.build/cache --noBuildLock --destination $PWD/.build/public",
+    "start:dev": "hugo server --source src --destination $PWD/.build/public --cacheDir $PWD/.build/cache --noBuildLock --buildDrafts --buildFuture --buildExpired --environment development",
+    "build:hugo": "hugo --source src --minify --cacheDir $PWD/.build/cache --noBuildLock --destination $PWD/.build/public --environment production",
     "build:obfuscate": "node scripts/obfuscate.js $PWD/.build/public --verbose --assets",
     "build:prod": "npm run build:hugo && npm run build:obfuscate",
     "build:preview": "node scripts/preview-server.js --port 1313",

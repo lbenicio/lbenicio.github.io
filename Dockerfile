@@ -11,10 +11,10 @@ WORKDIR /opt/app
 COPY . .
 
 # install node dependencies
-RUN npm ci
+RUN npm ci --no-audit --no-fund --omit=dev
 
 # Run Hugo in the Workdir to generate HTML.
-RUN hugo --minify --environment production
+RUN npm run build:prod
 
 # Stage 2
 FROM nginx:alpine
