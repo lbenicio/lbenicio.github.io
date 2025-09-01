@@ -3,6 +3,8 @@
   "version": "1.5.2",
   "description": "A minimal website/blog theme for developers. It is a simple and clean theme for developers who want to showcase their work and write about their experiences.",
   "scripts": {
+    "start": "npm run start:dev",
+    "test": "npm run test:unit",
     "start:dev": "hugo server --source src --destination $PWD/.build/public --cacheDir $PWD/.build/cache --noBuildLock --buildDrafts --buildFuture --buildExpired --environment development",
     "build:hugo": "hugo --source src --minify --cacheDir $PWD/.build/cache --noBuildLock --destination $PWD/.build/public --environment production",
     "build:obfuscate": "node scripts/obfuscate.js $PWD/.build/public --verbose --assets",
@@ -12,8 +14,6 @@
     "test:obfuscate": "node test/obfuscate.test.js",
     "test:static": "node test/static.test.js",
     "test:unit": "npm run test:obfuscate && npm run test:static",
-    "start": "npm run start:dev",
-    "test": "npm run test:unit",
     "update:theme": "cd src/themes/minimalist-simple-dev-theme && git stash && git pull --rebase -X theirs",
     "wiki:publish": "node scripts/publish-wiki.js --verbose --docs docs --branch master"
   },
