@@ -58,6 +58,14 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install Node.js dependencies
         run: npm ci --no-audit --no-fund --omit=dev
+      - name: Ensure jq is available
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            echo "jq not found, installing..."
+            sudo apt-get update -y && sudo apt-get install -y jq
+          else
+            echo "jq already installed"
+          fi
       - name: Build with Hugo
         env:
           # For maximum backward compatibility with Hugo modules
@@ -77,6 +85,30 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: .build/public
+      - name: Build summary
+        if: always()
+        run: |
+          echo "## Build summary" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Commit: $GITHUB_SHA" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Built path: .build/public" >> $GITHUB_STEP_SUMMARY || true
+          # list top-level files and total size
+          echo "- Files (top-level):" >> $GITHUB_STEP_SUMMARY || true
+          ls -la .build/public | sed -n '1,50p' | sed 's/^/  /' >> $GITHUB_STEP_SUMMARY || true
+          du -sh .build/public | awk '{print "- Total size: " $1}' >> $GITHUB_STEP_SUMMARY || true
+          # include obfuscator health if present
+          if [ -f .build/public/obfuscator.health.json ]; then
+            echo "- Obfuscator health:" >> $GITHUB_STEP_SUMMARY || true
+            if command -v jq >/dev/null 2>&1; then
+              jq . .build/public/obfuscator.health.json | sed 's/^/  /' >> $GITHUB_STEP_SUMMARY || true
+            else
+              sed 's/^/  /' .build/public/obfuscator.health.json >> $GITHUB_STEP_SUMMARY || true
+            fi
+          fi
+          # include human friendly markdown summary if present
+          if [ -f .build/public/obfuscation-summary.md ]; then
+            echo "---" >> $GITHUB_STEP_SUMMARY || true
+            sed 's/^/  /' .build/public/obfuscation-summary.md >> $GITHUB_STEP_SUMMARY || true
+          fi
 
   # Deployment job
   deploy:
@@ -93,4 +125,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Deployment summary
+        if: always()
+        run: |
+          echo "## Deployment summary" >> $GITHUB_STEP_SUMMARY || true
+          echo "- Deployment job status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY || true
+          # output URL from deploy action if available
+          if [ -n "${{ steps.deployment.outputs.page_url }}" ]; then
+            echo "- Site URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY || true
+          fi
   # `actions/deploy-pages` uses the default GITHUB_TOKEN and the job permissions above.

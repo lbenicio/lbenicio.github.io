@@ -201,6 +201,30 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// Helper to persist health JSON and markdown summary into publicDir reliably.
+function persistHealthAndMarkdown(publicDir, healthObj, mdLines, verbose) {
+  try {
+    // ensure publicDir exists
+    fs.mkdirSync(publicDir, { recursive: true });
+  } catch (e) {
+    if (verbose) console.error('Failed to ensure publicDir exists:', e && e.message);
+  }
+  try {
+    const healthPath = path.join(publicDir, 'obfuscator.health.json');
+    fs.writeFileSync(healthPath, JSON.stringify({ health: healthObj }, null, 2), 'utf8');
+    if (verbose) console.error(`Wrote health JSON to ${healthPath}`);
+  } catch (e) {
+    if (verbose) console.error('Failed to write health JSON:', e && e.message);
+  }
+  try {
+    const mdPath = path.join(publicDir, 'obfuscation-summary.md');
+    fs.writeFileSync(mdPath, (Array.isArray(mdLines) ? mdLines.join('\n') : String(mdLines)), 'utf8');
+    if (verbose) console.error(`Wrote markdown summary to ${mdPath}`);
+  } catch (e) {
+    if (verbose) console.error('Failed to write markdown summary:', e && e.message);
+  }
+}
+
 function transformCssContent(content, mapping) {
   // Accepts raw CSS text and returns transformed CSS with selectors rewritten
   // using PostCSS+selector parser when available, otherwise the safer regex fallback.
@@ -830,6 +854,28 @@ function main() {
       obfuscation: summary
     };
     if (jsonOut) {
+      // persist health and markdown for CI consumers before emitting JSON
+      try {
+        const mdLines = [];
+        mdLines.push('# Obfuscation Report');
+        mdLines.push('');
+        mdLines.push(`Generated: ${new Date().toISOString()}`);
+        mdLines.push('');
+        mdLines.push('## Obfuscation');
+        mdLines.push('');
+        mdLines.push(`- Scanned files: ${summary.scannedFiles}`);
+        mdLines.push(`- Files changed (obfuscation): ${summary.changedFiles}`);
+        mdLines.push(`- Total replacements (approx): ${summary.totalReplacements}`);
+        mdLines.push(`- Mapping size: ${summary.mappingSize}`);
+        mdLines.push(`- Dry run: ${!!dryRun}`);
+        mdLines.push('');
+        mdLines.push('## SRI Summary');
+        mdLines.push('');
+        if (Object.keys(sriSummary).length === 0) mdLines.push('- (none)');
+        else for (const k of Object.keys(sriSummary)) mdLines.push(`- ${k}: ${sriSummary[k]}`);
+        persistHealthAndMarkdown(publicDir, { sriAnyMismatch: !!sriAnyMismatch, sriSummary: sriSummary, obfuscation: summary }, mdLines, verbose);
+      } catch (e) { if (verbose) console.error('Failed to persist summary files (jsonOut):', e && e.message); }
+
       console.log(JSON.stringify({ health }, null, 2));
       process.exit(sriAnyMismatch ? 3 : 0);
     }
@@ -838,6 +884,37 @@ function main() {
     console.error(`  SRI mismatches/missing: ${sriAnyMismatch ? 'YES' : 'NO'}`);
     console.error(`  SRI details: ${Object.keys(sriSummary).map(k=>`${k}=${sriSummary[k]}`).join(', ')}`);
     console.error(`  Obfuscation candidates: ${summary.mappingSize}, files that would change: ${summary.changedFiles}`);
+    // persist health and summary even in checkOnly mode so CI can consume the artifacts
+    try {
+      const mdLines = [];
+      mdLines.push('# Obfuscation Report');
+      mdLines.push('');
+      mdLines.push(`Generated: ${new Date().toISOString()}`);
+      mdLines.push('');
+      mdLines.push('## Obfuscation');
+      mdLines.push('');
+      mdLines.push(`- Scanned files: ${summary.scannedFiles}`);
+      mdLines.push(`- Files changed (obfuscation): ${summary.changedFiles}`);
+      mdLines.push(`- Total replacements (approx): ${summary.totalReplacements}`);
+      mdLines.push(`- Mapping size: ${summary.mappingSize}`);
+      mdLines.push(`- Dry run: ${!!dryRun}`);
+      mdLines.push('');
+      mdLines.push('## SRI Summary');
+      mdLines.push('');
+      if (Object.keys(sriSummary).length === 0) mdLines.push('- (none)');
+      else for (const k of Object.keys(sriSummary)) mdLines.push(`- ${k}: ${sriSummary[k]}`);
+      mdLines.push('');
+      if (changedFileList.length) {
+        mdLines.push('## Changed files');
+        mdLines.push('');
+        for (const c of changedFileList) mdLines.push(`- ${path.relative(process.cwd(), c.file)} — ~${c.replacements} replacements`);
+        mdLines.push('');
+      }
+      persistHealthAndMarkdown(publicDir, { sriAnyMismatch: !!sriAnyMismatch, sriSummary: sriSummary, obfuscation: summary }, mdLines, verbose);
+    } catch (e) {
+      if (verbose) console.error('Failed to persist obfuscation summary files (checkOnly):', e && e.message);
+    }
+
     if (sriAnyMismatch) {
       console.error('\nSRI check: mismatches or missing integrity found.');
       process.exit(3);
@@ -854,7 +931,84 @@ function main() {
     changedFiles: changedFileList
   };
 
+  // Persist health and a human-friendly markdown summary into the public directory
+  try {
+    const health = {
+      sriAnyMismatch: !!sriAnyMismatch,
+      sriSummary: sriSummary,
+      obfuscation: summary
+    };
+    const healthPath = path.join(publicDir, 'obfuscator.health.json');
+    try { fs.writeFileSync(healthPath, JSON.stringify({ health }, null, 2), 'utf8'); } catch(e) { if (verbose) console.error('Failed to write health JSON:', e && e.message); }
+
+    const mdLines = [];
+    mdLines.push('# Obfuscation Report');
+    mdLines.push('');
+    mdLines.push(`Generated: ${new Date().toISOString()}`);
+    mdLines.push('');
+    mdLines.push('## Obfuscation');
+    mdLines.push('');
+    mdLines.push(`- Scanned files: ${summary.scannedFiles}`);
+    mdLines.push(`- Files changed (obfuscation): ${summary.changedFiles}`);
+    mdLines.push(`- Total replacements (approx): ${summary.totalReplacements}`);
+    mdLines.push(`- Mapping size: ${summary.mappingSize}`);
+    mdLines.push(`- Dry run: ${!!dryRun}`);
+    mdLines.push('');
+    mdLines.push('## SRI Summary');
+    mdLines.push('');
+    if (Object.keys(sriSummary).length === 0) mdLines.push('- (none)');
+    else for (const k of Object.keys(sriSummary)) mdLines.push(`- ${k}: ${sriSummary[k]}`);
+    mdLines.push('');
+    if (changedFileList.length) {
+      mdLines.push('## Changed files');
+      mdLines.push('');
+      for (const c of changedFileList) mdLines.push(`- ${path.relative(process.cwd(), c.file)} — ~${c.replacements} replacements`);
+      mdLines.push('');
+    }
+    if (summary.mappingSize && Object.keys(summary.sampleMapping || {}).length) {
+      mdLines.push('## Sample mapping');
+      mdLines.push('');
+      mdLines.push('| token | mapped |');
+      mdLines.push('|---|---|');
+      for (const k of Object.keys(summary.sampleMapping)) {
+        mdLines.push(`| ${k} | ${summary.sampleMapping[k]} |`);
+      }
+      mdLines.push('');
+    }
+
+    const mdPath = path.join(publicDir, 'obfuscation-summary.md');
+    try { fs.writeFileSync(mdPath, mdLines.join('\n'), 'utf8'); } catch(e) { if (verbose) console.error('Failed to write markdown summary:', e && e.message); }
+  } catch (e) {
+    if (verbose) console.error('Failed to persist obfuscation summary files:', e && e.message);
+  }
+
   if (jsonOut) {
+    // persist health + markdown before printing JSON so CI workflows can consume them
+    try {
+      const health = { sriAnyMismatch: !!sriAnyMismatch, sriSummary: sriSummary, obfuscation: summary };
+      const healthPath = path.join(publicDir, 'obfuscator.health.json');
+      try { fs.writeFileSync(healthPath, JSON.stringify({ health }, null, 2), 'utf8'); } catch(e) { if (verbose) console.error('Failed to write health JSON (final jsonOut):', e && e.message); }
+      const mdPath = path.join(publicDir, 'obfuscation-summary.md');
+      const mdLines = [];
+      mdLines.push('# Obfuscation Report');
+      mdLines.push('');
+      mdLines.push(`Generated: ${new Date().toISOString()}`);
+      mdLines.push('');
+      mdLines.push('## Obfuscation');
+      mdLines.push('');
+      mdLines.push(`- Scanned files: ${summary.scannedFiles}`);
+      mdLines.push(`- Files changed (obfuscation): ${summary.changedFiles}`);
+      mdLines.push(`- Total replacements (approx): ${summary.totalReplacements}`);
+      mdLines.push(`- Mapping size: ${summary.mappingSize}`);
+      mdLines.push(`- Dry run: ${!!dryRun}`);
+      mdLines.push('');
+      mdLines.push('## SRI Summary');
+      mdLines.push('');
+      if (Object.keys(sriSummary).length === 0) mdLines.push('- (none)');
+      else for (const k of Object.keys(sriSummary)) mdLines.push(`- ${k}: ${sriSummary[k]}`);
+      try { fs.writeFileSync(mdPath, mdLines.join('\n'), 'utf8'); } catch(e) { if (verbose) console.error('Failed to write markdown summary (final jsonOut):', e && e.message); }
+    } catch (e) { if (verbose) console.error('Failed to persist summary files (final jsonOut):', e && e.message); }
+
     console.log(JSON.stringify(finalReport, null, 2));
     return;
   }
