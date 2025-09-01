@@ -39,6 +39,9 @@
     "type": "git",
     "url": "https://github.com/lbenicio/lbenicio.github.io"
   },
+  "bugs": {
+    "url": "https://github.com/lbenicio/lbenicio.github.io/issues"
+  },
   "keywords": [
     "hugo",
     "theme",
