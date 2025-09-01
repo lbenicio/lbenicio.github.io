@@ -1,21 +1,21 @@
 {
   "files.exclude": {
-    "public/": true,
-    "resources/**": true,
+    // "public/": true,
+    // "resources/**": true,
     "node_modules/": true,
-    ".hugo_build.lock": true
+    // ".hugo_build.lock": true
   },
   "search.exclude": {
-    "public/**": true,
-    "resources/**": true,
+    // "public/**": true,
+    // "resources/**": true,
     "node_modules/**": true,
-    ".hugo_build.lock": true
+    // ".hugo_build.lock": true
   },
   "files.watcherExclude": {
-    "public/**": true,
-    "resources/**": true,
+    // "public/**": true,
+    // "resources/**": true,
     "node_modules/**": true,
-    ".hugo_build.lock": true
+    // ".hugo_build.lock": true
   },
   "editor.formatOnSave": false,
   "editor.tabSize": 2,
