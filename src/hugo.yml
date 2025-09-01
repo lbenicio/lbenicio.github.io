@@ -87,4 +87,4 @@ resourceDir: "../.build/resources"
 module:
   hugoVersion:
     extended: true
-    min: 0.135.0
+    min: 0.148.2
