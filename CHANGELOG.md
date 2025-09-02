@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
+## [1.5.3] - 2025-09-01
+
+### Fixed
+
+- start:dev script now works with the theme's internal `src/` layout via Hugo Module mounts in `src/hugo.yml`.
+- More robust PostCSS config resolution in `partials/head/css.html` to handle different run contexts.
+
+### Changed
+
+- Exposed site version in Hugo as `params.version` for easier surfacing in templates.
+
 ## [1.5.2] - 2025-08-31
 
 ### Added
