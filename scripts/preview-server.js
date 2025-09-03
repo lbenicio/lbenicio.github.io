@@ -14,7 +14,7 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--open') doOpen = true;
 }
 
-const publicDir = path.resolve(process.cwd(), 'public');
+const publicDir = path.resolve(process.cwd(), ".build/public");
 if (!fs.existsSync(publicDir)) {
   console.error('Public directory not found:', publicDir);
   process.exit(2);
