@@ -1,16 +1,161 @@
-name: Deploy Pages
+name: Export and Deploy (reusable)
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       variant:
         description: Export variant to deploy (about | blog | single-contact | single-newsletter | single-socials)
         required: false
         type: string
-        default: about
+        default: blog
 
 jobs:
-  call-reusable:
-    uses: lbenicio/aboutme-v2/.github/workflows/export-and-deploy.yml@main
-    with:
-      variant: ${{ inputs.variant }}
+  export-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Checkout exporter (aboutme-v2)
+        uses: actions/checkout@v4
+        with:
+          repository: lbenicio/aboutme-v2
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.140.2'
+          extended: true
+
+      - name: Build export
+        run: node scripts/export.mjs --variant "${{ inputs.variant }}"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .build/export/${{ inputs.variant }}
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+name: Export and Deploy Pages
+
+on:
+  workflow_call:
+    inputs:
+      variant:
+        description: "Variant to build (about|blog|single-contact|single-newsletter|single-socials)"
+        required: true
+        type: string
+      about_url:
+        description: "Public URL for the About site (used to set siteUrl/aboutOrigin)"
+        required: false
+        type: string
+      blog_url:
+        description: "Public URL for the Blog site (used to set blogOrigin)"
+        required: false
+        type: string
+      code_ref:
+        description: "aboutme-v2 git ref to build from"
+        default: main
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout aboutme-v2
+        uses: actions/checkout@v4
+        with:
+          repository: lbenicio/aboutme-v2
+          ref: ${{ inputs.code_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Hugo (extended)
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      - name: Cache Hugo build artifacts
+        uses: actions/cache@v4
+        with:
+          path: .build/cache
+          key: ${{ runner.os }}-hugo-cache-${{ hashFiles('src/hugo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-hugo-cache-
+
+      - name: Compute exporter flags
+        id: flags
+        shell: bash
+        run: |
+          FLAGS="--clean"
+          if [ -n "${{ inputs.about_url }}" ]; then FLAGS+=" --about-url '${{ inputs.about_url }}'"; fi
+          if [ -n "${{ inputs.blog_url }}" ]; then FLAGS+=" --blog-url '${{ inputs.blog_url }}'"; fi
+          echo "flags=$FLAGS" >> "$GITHUB_OUTPUT"
+
+      - name: Export all variants (reuses caches)
+        run: node scripts/export.mjs ${{ steps.flags.outputs.flags }}
+
+      - name: Select variant directory
+        id: variant
+        shell: bash
+        run: |
+          case "${{ inputs.variant }}" in
+            about) DIR=".build/export/about" ;;
+            blog) DIR=".build/export/blog" ;;
+            single-contact) DIR=".build/export/single-contact" ;;
+            single-newsletter) DIR=".build/export/single-newsletter" ;;
+            single-socials) DIR=".build/export/single-socials" ;;
+            *) echo "Unknown variant: ${{ inputs.variant }}" >&2; exit 1 ;;
+          esac
+          if [ ! -d "$DIR" ]; then
+            echo "Variant directory not found: $DIR" >&2
+            echo "Available exports:" >&2
+            ls -la .build/export || true
+            exit 1
+          fi
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.variant.outputs.dir }}
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
