@@ -48,8 +48,9 @@ twitterHandler = "lbenicio_"
 
 # Site
 siteUrl = "https://lbenicio.dev"
-appMode = "FULL"
+appMode = "ABOUT_ONLY"
 aboutOrigin = "https://lbenicio.dev"
+blogOrigin = "https://lbenicio.github.io/blog"
 
 # Umami analytics
 umamiWebsiteId = "c3cde340-7e81-480f-a38a-dc20a57081fa"
