@@ -100,8 +100,8 @@ jobs:
             - name: Build with Hugo
               run: hugo --minify --environment production --cleanDestinationDir
 
-            - name: Obfuscate
-              run: go run github.com/lbenicio/aboutme-v2-theme/cmd/obfuscate@b5bafa3 ./public
+            # - name: Obfuscate
+            #   run: go run github.com/lbenicio/aboutme-v2-theme/cmd/obfuscate@b5bafa3 ./public
 
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
