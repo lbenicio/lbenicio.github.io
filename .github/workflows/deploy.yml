@@ -100,6 +100,9 @@ jobs:
             - name: Build with Hugo
               run: hugo --minify --environment production --cleanDestinationDir
 
+            - name: Verify publications exists
+              run: ls -la public/publications/
+
             - name: Obfuscate
               run: go run github.com/lbenicio/aboutme-v2-theme/cmd/obfuscate@092bdb1 ./public
               continue-on-error: true
