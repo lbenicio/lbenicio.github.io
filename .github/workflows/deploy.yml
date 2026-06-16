@@ -102,7 +102,6 @@ jobs:
 
             - name: Obfuscate
               run: go run github.com/lbenicio/aboutme-v2-theme/cmd/obfuscate@latest ./public
-              continue-on-error: true
 
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
