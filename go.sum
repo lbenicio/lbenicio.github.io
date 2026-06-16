@@ -4,3 +4,5 @@ github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616035158-5a9854f9b4bf h1:+bcWZ
 github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616035158-5a9854f9b4bf/go.mod h1:UxkAdvpzoRHKmSK0xkLaEye+CuARQofQKMudYqD+4lk=
 github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616045500-bdec31115664 h1:Sp4SSHUHe6eG6uySvWnS8NarM7ZHRIhgsOh8w0fH8Vw=
 github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616045500-bdec31115664/go.mod h1:UxkAdvpzoRHKmSK0xkLaEye+CuARQofQKMudYqD+4lk=
+github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616045617-1bb7339e67b0 h1:QVyVYiFiodlx7cS9X+TY5rehVyqJTYo3oHhzoBYilI4=
+github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616045617-1bb7339e67b0/go.mod h1:UxkAdvpzoRHKmSK0xkLaEye+CuARQofQKMudYqD+4lk=
