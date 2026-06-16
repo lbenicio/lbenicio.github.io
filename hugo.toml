@@ -1,6 +1,5 @@
 title = "Leonardo Benicio"
-theme = "aboutme-v2-theme"
-themesDir = "../../"
+theme = "github.com/lbenicio/aboutme-v2-theme"
 baseURL = "https://lbenicio.dev/"
 locale = "en-us"
 resourceDir = "resources"
