@@ -1,18 +1,18 @@
-# Stage 1
+# Stage 1 — dev server
 FROM alpine:latest AS build
 
-# Install dependencies
-RUN apk add --update --no-cache npm hugo
+# Install Hugo Extended and Go
+RUN apk add --update --no-cache hugo go git
 
-RUN hugo version
+RUN hugo version && go version
 
-WORKDIR /opt/app
+WORKDIR /src
 
 COPY . .
 
-# install node dependencies
-RUN npm ci
+# Download Hugo modules
+RUN hugo mod get
 
-EXPOSE 1313/tcp
+EXPOSE 1313
 
-CMD ["hugo", "server"]
+CMD ["hugo", "server", "--bind", "0.0.0.0", "--port", "1313", "--buildDrafts", "--buildFuture", "--environment", "development"]

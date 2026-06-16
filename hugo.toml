@@ -33,7 +33,7 @@ filename = "sitemap.xml"
 
 [permalinks]
 post = "/post/:year/:month/:day/:slug/"
-publications = "/publications/:slug/"
+publications = "/publication/:slug/"
 reading = "/reading/:slug/"
 
 [params]
@@ -41,31 +41,15 @@ author = "Leonardo Benicio"
 description = "About me, writing, and publications"
 showReadingTime = true
 
-# Homepage hero
-homepageHeading = "About Leonardo Benicio"
-homepageSubtitle = "This is a personal space to learn about my journey, skills, and passions. Explore to learn more about me and feel free to get in touch."
-
-# Profile picture
-profilePicture = "static/assets/images/avatar/profile-picture.png"
-profilePictureAvif = "static/assets/images/avatar/profile-picture.avif"
-profilePictureWebp = "static/assets/images/avatar/profile-picture.webp"
-profilePictureAlt = "Leonardo Benicio"
-
-# Site URL (for canonical links, SEO)
-siteUrl = "https://lbenicio.dev"
-appMode = "ABOUT_ONLY"
-aboutOrigin = "https://lbenicio.dev"
-
-# Contact
-contactEmail = "hi@lbenicio.dev"
-contactName = "Leonardo Benicio"
-contactPostUrl = "https://formbold.com/s/3nqz5"
-contactAuthToken = "XQKURG66oM4coZZDRQi990QL5iLXNjxA3X1z8GPshFHUwV5ldy8oPZ6pBfeo3qIRe161P330zhI9umgX/eVQNX2Rge7VenGatdKLNQ4qRELAu3I0WPGc+bx9Lx5izIWVifLydmcnzyVKumt36eIZiEhNWAdzkHH4ho6fxzql+JpOqKkOBGUYm77VAHkbfXBwdJheXy4phi9ltZEXEcC7X4fzfev8WsAidM2XKVPA7hyIBrTrDTKFkZ1UhTUcOpmso/WFOGAtzEv0SUEuR4r5JZ8yFmKWqEJL3mOzjIBR2hrRaPw8lNGOJWjMjtK5t22fLLwEpNsW7HBaWW9MCrTT18050m6Sffoy89r1sQt3I0Fc5HruxceCTUzDKGf3KQHiCL/w4lNc4kULaVBY"
-
-# Social
+# Social handlers (global defaults; overridable per-page via front matter)
 githubHandler = "lbenicio"
 linkedinHandler = "leonardo-benicio"
 twitterHandler = "lbenicio_"
+
+# Site
+siteUrl = "https://lbenicio.dev"
+appMode = "ABOUT_ONLY"
+aboutOrigin = "https://lbenicio.dev"
 
 # Umami analytics
 umamiWebsiteId = "c3cde340-7e81-480f-a38a-dc20a57081fa"
@@ -77,75 +61,9 @@ newsletterCheckboxId = "5e6df"
 newsletterCheckboxValue = "5e6df944-ee28-4612-a16f-72838fe90224"
 newsletterCheckboxName = "l"
 
-# PGP (disabled by default)
-pgpPublicKey = ""
-
 # Fork me ribbon
 enableForkMe = true
 forkMeRepoUrl = "https://github.com/lbenicio/aboutme-v2"
-
-# Skills
-skills = [
-  "Algorithms",
-  "Data Structures",
-  "Distributed Systems (MPI, Raft, Gossip)",
-  "Concurrency & Synchronization",
-  "Performance Engineering",
-  "Profiling & Tracing (perf, flamegraphs)",
-  "Benchmarking & Reproducible Experiments",
-  "GPU Programming (CUDA, ROCm, Thrust)",
-  "Compilers & Program Analysis",
-  "Numerical Methods & High-precision Computing",
-  "Systems Languages: C/C++, Rust",
-  "Scripting: Python, Bash",
-  "Go & TypeScript for tooling and infra",
-  "HPC: OpenMP, MPI, SLURM",
-  "Cloud & Infra: Docker, Kubernetes, Terraform",
-  "Storage & Filesystems (POSIX, RADOS, object stores)",
-  "Networking fundamentals & TCP/IP",
-  "Observability: logging, metrics, tracing",
-  "CI/CD and Release Engineering",
-  "Testing & Fuzzing",
-  "Performance Portability & Auto-tuning",
-]
-
-interests = [
-  "Mathematics",
-  "Open Source",
-  "Teaching & Mentoring",
-  "Reproducible Research",
-  "Performance Benchmarking",
-  "Systems Design",
-  "Reading (CS papers & tech books)",
-  "Cycling",
-  "Hiking & Outdoor Exploration",
-  "Photography",
-  "Coffee & Home Roasting",
-  "Public Speaking & Workshops",
-]
-
-researchInterests = [
-  "Parallel Scheduling and Runtime Systems",
-  "Load Balancing & Work Stealing",
-  "Memory Hierarchies and NUMA-aware Algorithms",
-  "Heterogeneous & Accelerator-aware Computing",
-  "Communication-avoiding and Collective Algorithms",
-  "Deterministic and Reproducible Systems",
-  "Scalability and Performance Portability",
-  "Energy-efficient and Low-power High-performance Computing",
-  "Auto-tuning and Adaptive Optimization",
-  "Streaming & Approximate Algorithms for Big Data",
-  "Fault Tolerance and Resilient Distributed Algorithms",
-]
-
-# Social links
-[[params.socials]]
-name = "GitHub"
-url = "https://github.com/lbenicio"
-
-[[params.socials]]
-name = "LinkedIn"
-url = "https://www.linkedin.com/in/leonardo-benicio"
 
 # Legal links
 privacyUrl = "https://legal.4686189.xyz/docs/privacy-policy"

@@ -1,6 +1,58 @@
 ---
-Title: "About Me"
+title: "About Me"
 description: "A brief about me: background, interests, and highlights."
+name: "Leonardo Benicio"
+role: "Computer Scientist"
+github: "lbenicio"
+linkedin: "leonardo-benicio"
+twitter: "lbenicio_"
+skills:
+  - "Algorithms"
+  - "Data Structures"
+  - "Distributed Systems (MPI, Raft, Gossip)"
+  - "Concurrency & Synchronization"
+  - "Performance Engineering"
+  - "Profiling & Tracing (perf, flamegraphs)"
+  - "Benchmarking & Reproducible Experiments"
+  - "GPU Programming (CUDA, ROCm, Thrust)"
+  - "Compilers & Program Analysis"
+  - "Numerical Methods & High-precision Computing"
+  - "Systems Languages: C/C++, Rust"
+  - "Scripting: Python, Bash"
+  - "Go & TypeScript for tooling and infra"
+  - "HPC: OpenMP, MPI, SLURM"
+  - "Cloud & Infra: Docker, Kubernetes, Terraform"
+  - "Storage & Filesystems (POSIX, RADOS, object stores)"
+  - "Networking fundamentals & TCP/IP"
+  - "Observability: logging, metrics, tracing"
+  - "CI/CD and Release Engineering"
+  - "Testing & Fuzzing"
+  - "Performance Portability & Auto-tuning"
+interests:
+  - "Mathematics"
+  - "Open Source"
+  - "Teaching & Mentoring"
+  - "Reproducible Research"
+  - "Performance Benchmarking"
+  - "Systems Design"
+  - "Reading (CS papers & tech books)"
+  - "Cycling"
+  - "Hiking & Outdoor Exploration"
+  - "Photography"
+  - "Coffee & Home Roasting"
+  - "Public Speaking & Workshops"
+researchInterests:
+  - "Parallel Scheduling and Runtime Systems"
+  - "Load Balancing & Work Stealing"
+  - "Memory Hierarchies and NUMA-aware Algorithms"
+  - "Heterogeneous & Accelerator-aware Computing"
+  - "Communication-avoiding and Collective Algorithms"
+  - "Deterministic and Reproducible Systems"
+  - "Scalability and Performance Portability"
+  - "Energy-efficient and Low-power High-performance Computing"
+  - "Auto-tuning and Adaptive Optimization"
+  - "Streaming & Approximate Algorithms for Big Data"
+  - "Fault Tolerance and Resilient Distributed Algorithms"
 certifications:
   - id: aws-cloud-practitioner
     name: AWS Certified Cloud Practitioner
@@ -37,8 +89,7 @@ certifications:
       - IAM
       - Deployment
     url: https://aws.amazon.com/certification/certified-developer-associate/
-    notes: "Designing and deploying cloud-native apps: IAM auth, serverless patterns,
-      event orchestration."
+    notes: "Designing and deploying cloud-native apps: IAM auth, serverless patterns, event orchestration."
   - id: azure-fundamentals
     name: "Microsoft Certified: Azure Fundamentals (AZ-900)"
     issuer: Microsoft
