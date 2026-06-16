@@ -2,4 +2,4 @@ module github.com/lbenicio/lbenicio.github.io
 
 go 1.26.4
 
-require github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616173437-0f84a0dddeae
+require github.com/lbenicio/aboutme-v2-theme v0.0.0-20260616174746-bc53e8876845

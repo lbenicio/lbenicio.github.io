@@ -101,7 +101,7 @@ jobs:
               run: hugo --minify --environment production --cleanDestinationDir
 
             - name: Obfuscate
-              run: go run github.com/lbenicio/aboutme-v2-theme/cmd/obfuscate@0f84a0d ./public
+              run: go run github.com/lbenicio/aboutme-v2-theme/cmd/obfuscate@bc53e88 ./public
 
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
