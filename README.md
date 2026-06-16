@@ -27,27 +27,37 @@ A modern, fast, and accessible personal website built with Hugo and the aboutme-
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/lbenicio/aboutme.git
    cd aboutme
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
-3. **Start the development server**:
+3. **Initialize Hugo modules** (first time only):
+
    ```bash
-   hugo server --themesDir ../../
+   hugo mod init github.com/lbenicio/aboutme
+   hugo mod get github.com/lbenicio/aboutme-v2-theme
    ```
 
-4. **Open your browser**:
+4. **Start the development server**:
+
+   ```bash
+   hugo server
+   ```
+
+5. **Open your browser**:
    Navigate to `http://localhost:1313`
 
 ## 📁 Project Structure
 
-```
+```text
 aboutme/
 ├── content/              # Site content
 │   ├── about/           # About section with certifications
