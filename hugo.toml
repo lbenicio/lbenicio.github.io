@@ -6,7 +6,7 @@ resourceDir = "resources"
 
 [pagination]
 pagerSize = 24
-path = "p"
+path = "page"
 
 [markup]
 [markup.goldmark]
@@ -34,7 +34,7 @@ filename = "sitemap.xml"
 [permalinks]
 post = "/post/:year/:month/:day/:slug/"
 publications = "/publication/:slug/"
-reading = "/reading/:slug/"
+reading = "/artifact/:slug/"
 
 [params]
 author = "Leonardo Benicio"
@@ -64,11 +64,8 @@ newsletterCheckboxName = "l"
 
 # Fork me ribbon
 enableForkMe = true
-forkMeRepoUrl = "https://github.com/lbenicio/aboutme-v2"
+forkMeRepoUrl = "https://github.com/lbenicio/lbenicio.github.io"
 
 # Legal links
-privacyUrl = "https://legal.4686189.xyz/docs/privacy-policy"
-termsUrl = "https://legal.4686189.xyz/docs/terms-of-service"
-
-[security.node.permissions]
-disable = true
+privacyUrl = "https://legal.lbenicio.dev/docs/privacy-policy"
+termsUrl = "https://legal.lbenicio.dev/docs/terms-of-service"
