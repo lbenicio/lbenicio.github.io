@@ -1,5 +1,11 @@
 # AboutMe - Personal Website
 
+![GitHub License](https://img.shields.io/github/license/lbenicio/lbenicio.github.io?style=flat&color=blue)
+![GitHub Release](https://img.shields.io/github/v/release/lbenicio/lbenicio.github.io?color=blue)
+[![CodeQL](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/github-code-scanning/codeql)
+[![Build and Publish Docker Image](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/release.yml/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/release.yml)
+[![Build and Deploy to GitHub Pages](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/deploy.yml)
+
 A modern, fast, and accessible personal website built with Hugo and the aboutme-v2-theme. This site showcases professional background, research publications, reading list, timeline of achievements, and contact information.
 
 ## 🌟 Features
