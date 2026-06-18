@@ -122,6 +122,7 @@ jobs:
         needs: [deps, build, push]
         if: always()
         runs-on: ubuntu-latest
+        permissions: {}
         steps:
             - name: Generate summary
               run: |
