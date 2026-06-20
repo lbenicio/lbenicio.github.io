@@ -4,6 +4,21 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
+## [2.0.1] - 2026-06-20
+
+### Changed
+
+- **Timeline page**: converted from section (`_index.md`) to leaf bundle single page (`index.md`).
+- **Static directory**: restructured to `static/static/` for `/static/` URL prefix (images, files, pgp).
+- **Front matter paths**: avatar and PGP key paths updated to `/static/` prefix.
+- **Theme updated** to v0.1.0 — SCSS framework, obfuscator fixes, page refactoring.
+
+### Fixed
+
+- PGP key now renders correctly on contact page (obfuscator `querySelector` bug fixed in theme).
+- Navbar spacing restored (gap utilities correctly applied).
+- Font files (OpenSans Regular, Italic, Bold, BoldItalic) restored.
+
 ## [2.0.0] - 2026-06-16
 
 ### Added
