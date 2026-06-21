@@ -46,11 +46,11 @@ githubHandler = "lbenicio"
 linkedinHandler = "leonardo-benicio"
 twitterHandler = "lbenicio_"
 
-# Site
-siteUrl = "https://lbenicio.dev"
+# Site (overridden by CI via /tmp/hugo-dynamic.toml)
+siteUrl = "http://localhost:1313/"
 appMode = "ABOUT_ONLY"
-aboutOrigin = "https://lbenicio.dev"
-blogOrigin = "https://lbenicio.github.io/blog"
+aboutOrigin = "http://localhost:1313/"
+blogOrigin = "http://localhost:1313/blog/"
 
 # Umami analytics
 umamiWebsiteId = "c3cde340-7e81-480f-a38a-dc20a57081fa"

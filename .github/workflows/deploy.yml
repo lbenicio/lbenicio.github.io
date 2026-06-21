@@ -112,6 +112,7 @@ jobs:
                   BLOG_URL="${BLOG_URL%/}/"
 
                   HOME_URL="${{ steps.pages.outputs.origin }}"
+                  HOME_URL="${HOME_URL%/}/"
 
                   cat > /tmp/hugo-dynamic.toml << EOF
                   baseURL = "${BASE_URL}"
