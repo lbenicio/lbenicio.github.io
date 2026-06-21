@@ -104,27 +104,28 @@ jobs:
             - name: Build with Hugo
               env:
                   BASE_URL: ${{ steps.pages.outputs.base_url }}
-                  ORIGIN: ${{ steps.pages.outputs.origin }}
               run: |
-                  ABOUT="${ORIGIN}"
-                  # Ask GitHub for the blog repo's actual Pages URL
-                  BLOG=$(curl -sS -H "Authorization: Bearer ${{ github.token }}" \
+                  # Ask GitHub for the blog site's actual Pages URL
+                  BLOG_URL=$(curl -sS -H "Authorization: Bearer ${{ github.token }}" \
                     "https://api.github.com/repos/${{ github.repository_owner }}/blog/pages" \
-                    | jq -r '.html_url // "${ORIGIN}/blog/"')
-                  BLOG="${BLOG%/}/"
+                    | jq -r '.html_url // "${{ steps.pages.outputs.origin }}/blog/"')
+                  BLOG_URL="${BLOG_URL%/}/"
+
+                  HOME_URL="${{ steps.pages.outputs.origin }}"
 
                   cat > /tmp/hugo-dynamic.toml << EOF
                   baseURL = "${BASE_URL}"
                   [params]
-                  siteUrl = "${ABOUT}"
-                  aboutOrigin = "${ABOUT}"
-                  blogOrigin = "${BLOG}"
+                  siteUrl = "${HOME_URL}"
+                  aboutOrigin = "${HOME_URL}"
+                  blogOrigin = "${BLOG_URL}"
                   EOF
 
-                  echo "::group::Hugo build (baseURL=${BASE_URL})"
-                  echo "  siteUrl     = ${ABOUT}"
-                  echo "  aboutOrigin = ${ABOUT}"
-                  echo "  blogOrigin  = ${BLOG}"
+                  echo "::group::Hugo build"
+                  echo "  baseURL     = ${BASE_URL}"
+                  echo "  siteUrl     = ${HOME_URL}"
+                  echo "  aboutOrigin = ${HOME_URL}"
+                  echo "  blogOrigin  = ${BLOG_URL}"
                   hugo --minify --environment production --cleanDestinationDir --config hugo.toml,/tmp/hugo-dynamic.toml --logLevel info
                   echo "::endgroup::"
                   echo "Build complete — $(find public -type f | wc -l) files generated"
