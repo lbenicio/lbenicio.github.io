@@ -107,11 +107,11 @@ jobs:
                   ORIGIN: ${{ steps.pages.outputs.origin }}
               run: |
                   ABOUT="${ORIGIN}"
-                  if [ "${{ github.event.repository.name }}" = "blog" ]; then
-                    BLOG="${BASE_URL}"
-                  else
-                    BLOG="${ORIGIN}/blog/"
-                  fi
+                  # Ask GitHub for the blog repo's actual Pages URL
+                  BLOG=$(curl -sS -H "Authorization: Bearer ${{ github.token }}" \
+                    "https://api.github.com/repos/${{ github.repository_owner }}/blog/pages" \
+                    | jq -r '.html_url // "${ORIGIN}/blog/"')
+                  BLOG="${BLOG%/}/"
 
                   cat > /tmp/hugo-dynamic.toml << EOF
                   baseURL = "${BASE_URL}"
