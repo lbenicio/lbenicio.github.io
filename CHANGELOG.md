@@ -4,6 +4,22 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
+## [2.0.2] - 2026-06-21
+
+### Changed
+
+- **Theme updated** to v0.4.0 — calendar views, content adapter, blog subnav, SCSS grid/rx utilities.
+- **Dynamic URL resolution** — CI workflow queries GitHub API for cross-repo Pages URLs and writes a `/tmp/hugo-dynamic.toml` config at build time.
+- **Hardcoded URLs** — replaced production URLs in `hugo.toml` with `localhost:1313` dev defaults; CI overrides them dynamically.
+- **Go version** — CI workflows updated from Go 1.23 to 1.26.
+- **Action versions** — synced across deploy and release workflows (`cache@v5`, `setup-go@v6`, `deploy-pages@v5`, `download-artifact@v8`, `metadata-action@v6`, `login-action@v4`).
+- **Dockerfile** — added `GOTOOLCHAIN=auto` to handle go.mod requiring Go ≥ 1.26.4 when Alpine ships 1.26.3.
+
+### Fixed
+
+- **Deploy workflow** — added missing trailing-slash normalization on `HOME_URL`.
+- **Release workflow** — synced `download-artifact`, `metadata-action`, and `login-action` to latest versions.
+
 ## [2.0.1] - 2026-06-20
 
 ### Changed
