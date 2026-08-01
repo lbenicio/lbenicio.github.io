@@ -48,9 +48,10 @@ linkedinHandler = "leonardo-benicio"
 twitterHandler = "lbenicio_"
 
 # Site (overridden by CI via /tmp/hugo-dynamic.toml)
+# appMode = "ABOUT_ONLY" keeps about/publications/contact local; only Blog is external.
 siteUrl = "http://localhost:1313/"
 appMode = "ABOUT_ONLY"
-aboutOrigin = "http://localhost:1313/"
+aboutOrigin = ""
 blogOrigin = "http://localhost:1313/blog/"
 
 # Umami analytics
