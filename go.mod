@@ -2,4 +2,4 @@ module github.com/lbenicio/lbenicio.github.io
 
 go 1.26.4
 
-require github.com/lbenicio/aboutme-v2-theme v0.0.0-20260917201126-58cec7d3f4c2 // indirect
+require github.com/lbenicio/aboutme-v2-theme v0.0.0-20260917201644-1d03ba20c0a0 // indirect
