@@ -1,0 +1,314 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Creates S3 bucket + CloudFront CDN with security headers, OAC,
+  and an ACM certificate. Does NOT build or upload site files.
+  Run deploy.sh after stack creation.
+  DNS in Cloudflare; add validation CNAMEs and site CNAME there.
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: Primary domain for the site (e.g., lbenicio.dev).
+    Default: lbenicio.dev
+
+  AlternativeDomains:
+    Type: String
+    Description: >
+      Semicolon-separated list of additional domain names for the certificate
+      and CloudFront aliases (e.g., "www.lbenicio.dev;lbenicio.com").
+      Leave empty to skip.
+    Default: ""
+
+  CertificateArn:
+    Type: String
+    Description: >
+      ARN of an existing ACM certificate in us-east-1 that covers the domain
+      and all alternative domains. Required when deploying outside us-east-1
+      (CloudFront only accepts us-east-1 certificates). Leave empty to have
+      the stack create one ? only works if stack region is us-east-1.
+    Default: ""
+
+  PriceClass:
+    Type: String
+    Description: CloudFront price class.
+    AllowedValues:
+      - PriceClass_All
+      - PriceClass_200
+      - PriceClass_100
+    Default: PriceClass_100
+
+  DefaultRootObject:
+    Type: String
+    Description: Default index document.
+    Default: index.html
+
+Conditions:
+  HasAlternativeDomains: !Not [!Equals [!Ref AlternativeDomains, ""]]
+  CreateCertificate: !Equals [!Ref CertificateArn, ""]
+
+Resources:
+  # ?? S3 bucket (private ? only CloudFront OAC can read) ??????????????????
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DomainName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - { Key: app, Value: lbenicio-community }
+        - { Key: Project, Value: aboutme }
+        - { Key: ManagedBy, Value: cloudformation }
+
+  # ?? CloudFront Origin Access Control ????????????????????????????????????
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: aboutme-oac
+        Description: OAC for the aboutme S3 origin ? only CloudFront can read
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # ?? S3 bucket policy: CloudFront OAC read + deny non-HTTPS ??????????????
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudFrontOACRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Join ["", [!GetAtt SiteBucket.Arn, "/*"]]
+          - Sid: DenyNonSecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !Join ["", [!GetAtt SiteBucket.Arn, "/*"]]
+              - !GetAtt SiteBucket.Arn
+            Condition:
+              Bool:
+                "aws:SecureTransport": "false"
+
+  # ?? ACM certificate (only created if CertificateArn is empty) ???????????
+  SiteCertificate:
+    Condition: CreateCertificate
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      SubjectAlternativeNames: !If
+        - HasAlternativeDomains
+        - !Split [";", !Ref AlternativeDomains]
+        - !Ref AWS::NoValue
+      Tags:
+        - { Key: app, Value: lbenicio-community }
+        - { Key: Project, Value: aboutme }
+
+  # ?? CloudFront Function: resolve /dir/ ? /dir/index.html ???????????
+  IndexRewriteFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: aboutme-index-rewrite
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Append index.html to directory requests (S3 REST API fix)
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          if (request.uri.endsWith('/')) request.uri += 'index.html';
+          else if (!request.uri.includes('.')) request.uri += '/index.html';
+          return request;
+        }
+
+  # ?? CloudFront Response Headers Policy (security headers) ???????????????
+  SecurityHeadersPolicy:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: aboutme-security-headers
+        Comment: Security headers for the aboutme static site
+        SecurityHeadersConfig:
+          StrictTransportSecurity:
+            Override: true
+            AccessControlMaxAgeSec: 63072000
+            IncludeSubdomains: true
+            Preload: false
+          ContentTypeOptions:
+            Override: true
+          FrameOptions:
+            Override: true
+            FrameOption: DENY
+          ReferrerPolicy:
+            Override: true
+            ReferrerPolicy: strict-origin-when-cross-origin
+          XSSProtection:
+            Override: true
+            Protection: true
+            ModeBlock: true
+          ContentSecurityPolicy:
+            Override: true
+            ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://analytics.4686189.xyz 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://analytics.4686189.xyz; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formbold.com https://mail.4686189.xyz; upgrade-insecure-requests"
+        CustomHeadersConfig:
+          Items:
+            - Header: Permissions-Policy
+              Value: "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+              Override: true
+
+  # ?? CloudFront distribution ?????????????????????????????????????????????
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        IPV6Enabled: true
+        DefaultRootObject: !Ref DefaultRootObject
+        PriceClass: !Ref PriceClass
+        HttpVersion: http2and3
+        Aliases: !If
+          - HasAlternativeDomains
+          - !Split
+            - ";"
+            - !Sub "${DomainName};${AlternativeDomains}"
+          - - !Ref DomainName
+        Origins:
+          - DomainName: !GetAtt SiteBucket.RegionalDomainName
+            Id: s3-origin
+            OriginAccessControlId: !GetAtt CloudFrontOAC.Id
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: s3-origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt IndexRewriteFunction.FunctionMetadata.FunctionARN
+          ResponseHeadersPolicyId: !Ref SecurityHeadersPolicy
+          ForwardedValues:
+            QueryString: false
+            Headers: [Origin]
+            Cookies:
+              Forward: none
+          MinTTL: 0
+          DefaultTTL: 86400
+          MaxTTL: 31536000
+        CacheBehaviors:
+          - PathPattern: assets/*
+            TargetOriginId: s3-origin
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods: [GET, HEAD, OPTIONS]
+            CachedMethods: [GET, HEAD]
+            Compress: true
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt IndexRewriteFunction.FunctionMetadata.FunctionARN
+            ResponseHeadersPolicyId: !Ref SecurityHeadersPolicy
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            MinTTL: 0
+            DefaultTTL: 31536000
+            MaxTTL: 31536000
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 10
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 10
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: none
+        ViewerCertificate:
+          AcmCertificateArn: !If [CreateCertificate, !Ref SiteCertificate, !Ref CertificateArn]
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+      Tags:
+        - { Key: app, Value: lbenicio-community }
+        - { Key: Project, Value: aboutme }
+
+Outputs:
+  S3BucketName:
+    Description: S3 bucket name ? upload exported site files here.
+    Value: !Ref SiteBucket
+
+  CloudFrontDomainName:
+    Description: CloudFront domain. Create a CNAME in Cloudflare pointing your domain to this.
+    Value: !GetAtt CloudFrontDistribution.DomainName
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution ID (for cache invalidations).
+    Value: !Ref CloudFrontDistribution
+
+  CertificateArn:
+    Description: ACM certificate ARN (created or provided).
+    Value: !If [CreateCertificate, !Ref SiteCertificate, !Ref CertificateArn]
+
+  GetValidationRecords:
+    Description: >
+      Run this CLI command with the CertificateArn output above to get
+      DNS validation CNAMEs. Add them in Cloudflare.
+    Value: !Sub
+      - |
+        aws acm describe-certificate \
+          --region us-east-1 \
+          --certificate-arn ${certArn} \
+          --query "Certificate.DomainValidationOptions[*].{Domain:DomainName,Name:ResourceRecord.Name,Value:ResourceRecord.Value}" \
+          --output table
+      - certArn: !If [CreateCertificate, !Ref SiteCertificate, !Ref CertificateArn]
+
+  NextSteps:
+    Description: Instructions for DNS setup and deployment.
+    Value: !Sub
+      - |
+        ============================================================
+        NEXT STEPS
+        ============================================================
+
+        1. Get ACM validation CNAMEs (if stack created the cert):
+           ${getValidationCommand}
+
+        2. Add each Name/Value pair as a CNAME in Cloudflare DNS.
+
+        3. Deploy the site files:
+           cd infra/aboutme
+           ./deploy.sh --stack-name ${stackName}
+
+        4. Add site CNAME in Cloudflare:
+           ${domain} -> CNAME -> ${cfDomain}
+           Proxy: Off (DNS only)
+
+        5. Visit https://${domain}
+        ============================================================
+      - stackName: !Ref AWS::StackName
+        domain: !Ref DomainName
+        cfDomain: !GetAtt CloudFrontDistribution.DomainName
+        getValidationCommand: !Sub
+          - |
+            aws acm describe-certificate \
+              --region us-east-1 \
+              --certificate-arn ${certArn} \
+              --query "Certificate.DomainValidationOptions[*].{Domain:DomainName,Name:ResourceRecord.Name,Value:ResourceRecord.Value}" \
+              --output table
+          - certArn: !If [CreateCertificate, !Ref SiteCertificate, !Ref CertificateArn]
+

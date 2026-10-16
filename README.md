@@ -97,7 +97,16 @@ Pushes to `main` trigger the [deploy workflow](.github/workflows/deploy.yml):
 1. Install Go + Hugo dependencies
 2. Build with Hugo (`--minify --environment production`)
 3. Obfuscate class/id/data-* names
-4. Deploy to GitHub Pages
+4. Resolve the `aboutme` CloudFormation stack outputs
+5. Sync the site to its S3 bucket
+6. Invalidate the CloudFront cache
+
+The workflow expects these repository secrets:
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+
+The IAM user needs permission to read the `aboutme` CloudFormation stack, upload/delete objects in the `lbenicio.dev` S3 bucket, and create CloudFront invalidations.
 
 Manual build:
 ```bash
