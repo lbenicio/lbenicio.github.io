@@ -4,6 +4,21 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
+## [2.0.3] - 2026-10-16
+
+### Changed
+
+- **Theme updated** to v0.4.1 — production-only class obfuscation, readable local development classes, valid CSS aliases, and improved hero fallback sizing.
+- **Site version** bumped to 2.0.3.
+
+### Fixed
+
+- **Contact form encryption** — uses the encryption-capable PGP key and encrypts the visitor name, email, subject, and message fields.
+- **Contact submission** — sends the expected flat payload and prevents duplicate submissions.
+- **Umami analytics** — enables production tracking with the configured home website ID and analytics script.
+- **Navigation and layout** — keeps local publications/contact links internal and restores homepage/header sizing styles.
+- **Hugo build warning** — replaces deprecated `.Page.IsNode` usage with `.IsBranch` in the theme.
+
 ## [2.0.2] - 2026-06-21
 
 ### Changed
