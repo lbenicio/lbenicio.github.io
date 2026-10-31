@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file. This project fo
 
 Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
+## [Unreleased]
+
+## [2.0.5] - 2026-10-31
+
+### Changed
+
+- Bumped the project patch version to `2.0.5`.
+- Routed AWS deployment through GitHub’s `production` environment, restricted to the `main` branch.
+
 ## [2.0.3] - 2026-10-16
 
 ### Changed
