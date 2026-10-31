@@ -163,7 +163,7 @@ Resources:
             ModeBlock: true
           ContentSecurityPolicy:
             Override: true
-            ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://analytics.4686189.xyz 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://analytics.4686189.xyz; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formbold.com https://mail.4686189.xyz; upgrade-insecure-requests"
+            ContentSecurityPolicy: "default-src 'self'; script-src 'self' https://analytics.4686189.xyz 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://analytics.4686189.xyz https://formbold.com/s/3nqz5; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formbold.com/s/3nqz5 https://mail.4686189.xyz; upgrade-insecure-requests"
         CustomHeadersConfig:
           Items:
             - Header: Permissions-Policy
