@@ -6,6 +6,12 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 ## [Unreleased]
 
+## [2.0.6] - 2026-10-31
+
+### Fixed
+
+- Pinned the GHCR Docker build to the same checksum-verified Hugo Extended release used by the AWS deployment workflow, fixing unsupported template methods.
+
 ## [2.0.5] - 2026-10-31
 
 ### Changed
