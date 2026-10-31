@@ -6,6 +6,12 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 ## [Unreleased]
 
+## [2.0.7] - 2026-10-31
+
+### Fixed
+
+- Run the checksum-verified Hugo binary in a glibc-compatible builder and support both amd64 and arm64 image builds.
+
 ## [2.0.6] - 2026-10-31
 
 ### Fixed
