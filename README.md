@@ -1,6 +1,6 @@
 # AboutMe — Personal Website
 
-**Current version:** `2.0.8`
+**Current version:** `2.0.9`
 
 ![GitHub License](https://img.shields.io/github/license/lbenicio/lbenicio.github.io?style=flat&color=blue)
 ![GitHub Release](https://img.shields.io/github/v/release/lbenicio/lbenicio.github.io?color=blue)

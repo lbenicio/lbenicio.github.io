@@ -6,6 +6,12 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 ## [Unreleased]
 
+## [2.0.9] - 2026-10-31
+
+### Fixed
+
+- Fixed GHCR image handoff: preserve all generated tags in the Docker archive, push each tag from its artifact, and fail the export step when Docker save fails.
+
 ## [2.0.8] - 2026-10-31
 
 ### Fixed
