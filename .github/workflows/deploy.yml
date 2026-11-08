@@ -37,7 +37,7 @@ jobs:
             - name: Setup Go
               uses: actions/setup-go@v7
               with:
-                  go-version: "1.26"
+                  go-version: "1.27.x"
                   cache: false
 
             - name: Cache Go modules
@@ -80,7 +80,7 @@ jobs:
             - name: Setup Go
               uses: actions/setup-go@v7
               with:
-                  go-version: "1.26"
+                  go-version: "1.27.x"
                   cache: false
 
             - name: Restore Go cache
@@ -136,7 +136,7 @@ jobs:
             - name: Setup Go
               uses: actions/setup-go@v7
               with:
-                  go-version: "1.26"
+                  go-version: "1.27.x"
                   cache: false
 
             - name: Download built site artifact
