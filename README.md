@@ -120,7 +120,7 @@ hugo --minify --environment production
 Zero Node.js dependencies. The only requirement is Hugo Extended (for SCSS compilation via LibSass).
 
 ```
-require github.com/lbenicio/theme v0.3.0
+require github.com/lbenicio/theme v0.5.0
 ```
 
 ## 📧 Contact
