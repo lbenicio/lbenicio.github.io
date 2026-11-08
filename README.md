@@ -6,7 +6,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/lbenicio/lbenicio.github.io?color=blue)
 [![Deploy](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/deploy.yml)
 
-Personal website built with [Hugo](https://gohugo.io/) and the [aboutme-v2-theme](https://github.com/lbenicio/aboutme-v2-theme). No Node.js required — SCSS is compiled natively by Hugo Pipes.
+Personal website built with [Hugo](https://gohugo.io/) and the [aboutme-theme](https://github.com/lbenicio/theme). No Node.js required — SCSS is compiled natively by Hugo Pipes.
 
 ## 🚀 Quick Start
 
@@ -120,7 +120,7 @@ hugo --minify --environment production
 Zero Node.js dependencies. The only requirement is Hugo Extended (for SCSS compilation via LibSass).
 
 ```
-require github.com/lbenicio/aboutme-v2-theme v0.3.0
+require github.com/lbenicio/theme v0.3.0
 ```
 
 ## 📧 Contact
@@ -131,4 +131,4 @@ require github.com/lbenicio/aboutme-v2-theme v0.3.0
 
 ---
 
-**Built with Hugo + aboutme-v2-theme • © 2026 Leonardo Benicio**
+**Built with Hugo + aboutme-theme • © 2026 Leonardo Benicio**
