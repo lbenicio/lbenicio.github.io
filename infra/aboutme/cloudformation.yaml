@@ -10,6 +10,7 @@ Parameters:
     Type: String
     Description: Primary domain for the site (e.g., lbenicio.dev).
     Default: lbenicio.dev
+    AllowedPattern: "^[A-Za-z0-9.-]+$"
 
   AlternativeDomains:
     Type: String
@@ -18,6 +19,7 @@ Parameters:
       and CloudFront aliases (e.g., "www.lbenicio.dev;lbenicio.com").
       Leave empty to skip.
     Default: ""
+    AllowedPattern: "^$|^[A-Za-z0-9.-]+(;[A-Za-z0-9.-]+)*$"
 
   CertificateArn:
     Type: String
@@ -119,18 +121,23 @@ Resources:
         - { Key: app, Value: lbenicio-community }
         - { Key: Project, Value: aboutme }
 
-  # ?? CloudFront Function: resolve /dir/ ? /dir/index.html ???????????
+  # CloudFront Function: allow configured hosts and resolve directory paths.
   IndexRewriteFunction:
     Type: AWS::CloudFront::Function
     Properties:
       Name: aboutme-index-rewrite
       AutoPublish: true
       FunctionConfig:
-        Comment: Append index.html to directory requests (S3 REST API fix)
+        Comment: Allow configured hosts and append index.html to directory requests.
         Runtime: cloudfront-js-2.0
-      FunctionCode: |
+      FunctionCode: !Sub |
         function handler(event) {
           var request = event.request;
+          var host = request.headers.host && request.headers.host.value;
+          var allowedHosts = '${DomainName};${AlternativeDomains}'.toLowerCase().split(';');
+          if (!host || allowedHosts.indexOf(host.toLowerCase()) === -1) {
+            return { statusCode: 403, statusDescription: 'Forbidden' };
+          }
           if (request.uri.endsWith('/')) request.uri += 'index.html';
           else if (!request.uri.includes('.')) request.uri += '/index.html';
           return request;
