@@ -1,19 +1,20 @@
 # AboutMe — Personal Website
 
-**Current version:** `2.1.0`
+**Current version:** `2.1.1`
 
 ![GitHub License](https://img.shields.io/github/license/lbenicio/lbenicio.github.io?style=flat&color=blue)
 ![GitHub Release](https://img.shields.io/github/v/release/lbenicio/lbenicio.github.io?color=blue)
 [![Deploy](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/lbenicio/lbenicio.github.io/actions/workflows/deploy.yml)
 
-Personal website built with [Hugo](https://gohugo.io/) and the [aboutme-theme](https://github.com/lbenicio/theme). No Node.js required — SCSS is compiled natively by Hugo Pipes.
+Personal website built with [Hugo](https://gohugo.io/) and the [aboutme-theme](https://github.com/lbenicio/theme). No Node.js required; Hugo Pipes compiles SCSS using Dart Sass.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Hugo Extended** v0.163.0 or higher
-- **Go** 1.23+ (for module resolution)
+- **Hugo** v0.163.0 or higher (standard or extended edition)
+- **Dart Sass** with the `sass` executable available on `PATH`
+- **Go** 1.27.0 or higher (for module resolution)
 
 ### Run locally
 
@@ -23,7 +24,7 @@ cd lbenicio.github.io
 hugo server
 ```
 
-That's it. No `npm install`, no `node_modules`. Hugo handles everything — SCSS compilation, CSS minification, and asset fingerprinting.
+No `npm install` or `node_modules` are required. Hugo uses Dart Sass on `PATH` for SCSS compilation, CSS minification, and asset fingerprinting.
 
 ## 📁 Project Structure
 
@@ -117,10 +118,10 @@ hugo --minify --environment production
 
 ## 📦 Dependencies
 
-Zero Node.js dependencies. The only requirement is Hugo Extended (for SCSS compilation via LibSass).
+Zero Node.js dependencies. Hugo 0.163.0 or later and Dart Sass on `PATH` are required.
 
 ```
-require github.com/lbenicio/theme v0.5.0
+require github.com/lbenicio/theme v0.6.0
 ```
 
 ## 📧 Contact
