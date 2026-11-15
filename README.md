@@ -96,25 +96,9 @@ pgpKey: "/static/pgp/public.asc"
 
 ## 🚢 Deployment
 
-Pushes to `main` trigger the [deploy workflow](.github/workflows/deploy.yml):
-1. Install Go + Hugo dependencies
-2. Build with Hugo (`--minify --environment production`)
-3. Obfuscate class/id/data-* names
-4. Resolve the `aboutme` CloudFormation stack outputs
-5. Sync the site to its S3 bucket
-6. Invalidate the CloudFront cache
+Pushes to `main` trigger the [deploy workflow](.github/workflows/deploy.yml), which builds the Hugo site, obfuscates identifiers, and deploys the generated files to Cloudflare Workers.
 
-The workflow expects these repository secrets:
-
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-
-The IAM user needs permission to read the `aboutme` CloudFormation stack, upload/delete objects in the `lbenicio.dev` S3 bucket, and create CloudFront invalidations.
-
-Manual build:
-```bash
-hugo --minify --environment production
-```
+GitHub Actions deploys this static site to Cloudflare Workers. Configure the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`; the Worker serves the site on its custom domain.
 
 ## 📦 Dependencies
 
