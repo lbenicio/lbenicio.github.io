@@ -1,4 +1,4 @@
-name = "lbenicio-github-io-worker"
+name = "lbenicio-github-io"
 compatibility_date = "2026-11-14"
 workers_dev = false
 preview_urls = false
