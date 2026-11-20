@@ -92,7 +92,7 @@ pgpKey: "/static/pgp/public.asc"
 
 - **Class/ID obfuscation**: All HTML, CSS, and JS identifiers are deterministically obfuscated post-build.
 - **PGP encryption**: Contact form supports OpenPGP encryption via `openpgp.js`.
-- **No external scripts**: Only self-hosted assets (except Umami analytics).
+- **Analytics**: Google Analytics 4 runs on production builds and respects the browser's Do Not Track signal.
 
 ## 🚢 Deployment
 

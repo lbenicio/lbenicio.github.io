@@ -61,10 +61,6 @@ appMode = "ABOUT_ONLY"
 aboutOrigin = ""
 blogOrigin = "http://localhost:1313/blog/"
 
-# Umami analytics
-umamiWebsiteId = "c3cde340-7e81-480f-a38a-dc20a57081fa"
-umamiScriptUrl = "https://analytics.4686189.xyz/script.js"
-
 # Newsletter
 newsletterPostUrl = "https://mail.4686189.xyz/subscription/form"
 newsletterCheckboxId = "5e6df"
@@ -78,3 +74,9 @@ forkMeRepoUrl = "https://github.com/lbenicio/lbenicio.github.io"
 # Legal links
 privacyUrl = "https://legal.lbenicio.dev/docs/privacy-policy"
 termsUrl = "https://legal.lbenicio.dev/docs/terms-of-service"
+
+[services.googleAnalytics]
+id = "G-WRFGH7NXBP"
+
+[privacy.googleAnalytics]
+respectDoNotTrack = true
