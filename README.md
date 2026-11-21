@@ -84,7 +84,7 @@ certifications:
 **Contact** (`content/contact/index.md`):
 ```yaml
 email: "hi@lbenicio.dev"
-postUrl: "https://formbold.com/s/..."
+postUrl: "https://contact.api.lbenicio.dev/contact"
 pgpKey: "/static/pgp/public.asc"
 ```
 
