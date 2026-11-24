@@ -1,6 +1,6 @@
 title = "Leonardo Benicio"
 theme = "github.com/lbenicio/theme"
-baseURL = "/"
+baseURL = "https://lbenicio.dev/"
 version = "2.1.1"
 locale = "en-us"
 resourceDir = "resources"
@@ -54,12 +54,12 @@ githubHandler = "lbenicio"
 linkedinHandler = "leonardo-benicio"
 twitterHandler = "lbenicio_"
 
-# Site (overridden by CI via /tmp/hugo-dynamic.toml)
+# Production site URLs
 # appMode = "ABOUT_ONLY" keeps about/publications/contact local; only Blog is external.
-siteUrl = "http://localhost:1313/"
+siteUrl = "https://lbenicio.dev/"
 appMode = "ABOUT_ONLY"
-aboutOrigin = ""
-blogOrigin = "http://localhost:1313/blog/"
+aboutOrigin = "https://lbenicio.dev/"
+blogOrigin = "https://blog.lbenicio.dev/"
 
 # Newsletter
 newsletterPostUrl = "https://mailing.api.lbenicio.dev/subscribe"
