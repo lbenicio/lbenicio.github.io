@@ -6,6 +6,10 @@ Full changelog: <https://github.com/lbenicio/lbenicio.github.io/commits/main>
 
 ## [Unreleased]
 
+### Changed
+
+- Use theme `v0.7.1`, including the production Google Ads tag integration.
+
 ## [2.1.1] - 2026-11-11
 
 ### Changed
