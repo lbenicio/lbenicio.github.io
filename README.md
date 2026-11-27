@@ -105,7 +105,7 @@ GitHub Actions deploys this static site to Cloudflare Workers. Configure the rep
 Zero Node.js dependencies. Hugo 0.163.0 or later and Dart Sass on `PATH` are required.
 
 ```
-require github.com/lbenicio/theme v0.7.1
+require github.com/lbenicio/theme v0.7.2
 ```
 
 ## 📧 Contact
